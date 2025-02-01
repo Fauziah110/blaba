@@ -14,7 +14,7 @@ public class ConnectionManager {
             + "encrypt=true;"
             + "trustServerCertificate=false;"
             + "hostNameInCertificate=*.database.windows.net;"
-            + "loginTimeout=30;";
+            + "loginTimeout=60;";
 
     public static Connection getConnection() throws SQLException {
         try {

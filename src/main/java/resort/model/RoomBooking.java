@@ -3,47 +3,48 @@ package resort.model;
 public class RoomBooking {
     private int roomID;
     private String roomType;
-    private int quantity;
     private double price;
+    private int quantity;
 
-    // Constructor
-    public RoomBooking(int roomID, String roomType, int quantity, double price) {
+    // ✅ Add a constructor that matches (int, String, double, int)
+    public RoomBooking(int roomID, String roomType, double price, int quantity) {
         this.roomID = roomID;
         this.roomType = roomType;
-        this.quantity = quantity;
         this.price = price;
+        this.quantity = quantity;
     }
 
-    // Getters and Setters
+    // Getters
     public int getRoomID() {
         return roomID;
-    }
-
-    public void setRoomID(int roomID) {
-        this.roomID = roomID;
     }
 
     public String getRoomType() {
         return roomType;
     }
 
-    public void setRoomType(String roomType) {
-        this.roomType = roomType;
+    public double getPrice() {
+        return price;
     }
 
     public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    // Setters (Optional, only if needed)
+    public void setRoomID(int roomID) {
+        this.roomID = roomID;
     }
 
-    public double getPrice() {
-        return price;
+    public void setRoomType(String roomType) {
+        this.roomType = roomType;
     }
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

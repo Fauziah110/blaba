@@ -1,232 +1,227 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login</title>
+<title>Login - MD Resort</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-	<div class="container">
-		<div class="login-box">
-			<div class="logo">
-				<img src="Images/MDResort.PNG" alt="Resort Logo">
-				<h1>MD Resort Pantai Siring Melaka</h1>
-			</div>
 
-			<div class="tab-menu">
-				<button class="tab active" onclick="switchTab('Customer')">Customer</button>
-				<button class="tab" onclick="switchTab('Admin')">Admin</button>
-			</div>
+    <div class="container">
+        <div class="login-box">
+            <div class="logo">
+                <img src="images/MDResort.png" alt="Resort Logo">
+                <h1>MD Resort Pantai Siring Melaka</h1>
+            </div>
 
-			<!-- Display error message if it exists -->
-			<%
-			String errorMessage = (String) request.getAttribute("errorMessage");
-			if (errorMessage != null) {
-			%>
-			<div class="error-message">
-				<%=errorMessage%>
-			</div>
-			<%
-			}
-			%>
+            <div class="tab-menu">
+                <button class="tab active" onclick="switchTab('Customer')">Customer</button>
+                <button class="tab" onclick="switchTab('Admin')">Admin</button>
+            </div>
 
-			<form id="loginForm" action="AdminLoginController" method="post">
-				<div class="form-group">
-					<label for="email">Email</label> <input type="text" id="email"
-						name="email" placeholder="Admin Email">
-				</div>
+            <!-- Display error message if it exists -->
+            <%
+            String errorMessage = (String) request.getAttribute("errorMessage");
+            if (errorMessage != null) {
+            %>
+            <div class="error-message">
+                <%=errorMessage%>
+            </div>
+            <%
+            }
+            %>
 
-				<div class="form-group">
-					<label for="password">Password</label> <input type="password"
-						id="password" name="password" placeholder="Admin Password">
-					<a href="#" class="forgot-password">Forgot your password?</a>
-				</div>
+            <!-- Updated Form with Dynamic Action Switching -->
+            <form id="loginForm" action="CustomerLoginController" method="post">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="text" id="email" name="email" placeholder="Customer Email" required>
+                </div>
 
-				<button type="submit" class="login-button">Log In</button>
-			</form>
-			<div class="separator">OR</div>
-			<button type="button" class="google-button">Sign in with
-				Google</button>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Customer Password" required>
+                    <a href="#" class="forgot-password">Forgot your password?</a>
+                </div>
 
-			<p class="account-link" id="signupLink">
-				Don't have an account? <a href="#">Sign Up</a>
-			</p>
+                <button type="submit" class="login-button">Log In</button>
+            </form>
+            
+            
 
-			<footer>
-				<p>Contact Us</p>
-				<p>MD Resort: 03 - 5644 8969 / 03 - 5644 8177</p>
-			</footer>
-		</div>
-	</div>
+            <p class="account-link" id="signupLink">
+                Don't have an account? <a href="#">Sign Up</a>
+            </p>
 
-	<script src="script.js"></script>
-	<style>
-/* Inline CSS for styling, you can move this to styles.css */
-body {
-	margin: 0;
-	font-family: Arial, sans-serif;
-	background-color: #f8f9fa;
-	color: #728687;
-}
+            <footer>
+                <p>Contact Us</p>
+                <p>MD Resort: 03 - 5644 8969 / 03 - 5644 8177</p>
+            </footer>
+        </div>
+    </div>
 
-.container {
-	text-align: center;
-}
+    <script>
+    function switchTab(tabName) {
+        var loginForm = document.getElementById('loginForm');
+        var signupLink = document.getElementById('signupLink');
 
-.login-box {
-	width: 400px;
-	margin: 50px auto;
-	background: white;
-	border-radius: 8px;
-	padding: 40px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+        if (tabName === 'Customer') {
+            loginForm.setAttribute('action', 'CustomerLoginController');
+            document.getElementById('email').setAttribute('placeholder', 'Customer Email');
+            document.getElementById('password').setAttribute('placeholder', 'Customer Password');
+            signupLink.style.display = 'block'; // Show sign-up link
+        } else if (tabName === 'Admin') {
+            loginForm.setAttribute('action', 'AdminLoginController');
+            document.getElementById('email').setAttribute('placeholder', 'Admin Email');
+            document.getElementById('password').setAttribute('placeholder', 'Admin Password');
+            signupLink.style.display = 'none'; // Hide sign-up link
+        }
 
-.logo img {
-	width: 100px;
-	height: auto;
-}
+        // Add active class to highlight the selected button
+        var tabs = document.getElementsByClassName('tab');
+        for (var i = 0; i < tabs.length; i++) {
+            tabs[i].classList.remove('active');
+        }
+        document.querySelector('.tab[onclick="switchTab(\'' + tabName + '\')"]').classList.add('active');
+    }
 
-.logo h1 {
-	font-size: 24px;
-	margin: 10px 0;
-	color: #728687;
-}
+    // Initialize with Customer tab active
+    switchTab('Customer');
+    </script>
 
-.tab-menu {
-	display: flex;
-	justify-content: space-around;
-	margin-bottom: 20px;
-}
+    <style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        color: #728687;
+    }
 
-.tab {
-	padding: 10px 20px;
-	border: none;
-	cursor: pointer;
-	background-color: #f1f1f1;
-	color: #728687;
-	border-radius: 5px 5px 0 0;
-	font-weight: bold;
-	font-size: 16px;
-}
+    .container {
+        text-align: center;
+    }
 
-.tab.active {
-	background-color: white;
-	border-bottom: 2px solid #728687;
-}
+    .login-box {
+        width: 400px;
+        margin: 50px auto;
+        background: white;
+        border-radius: 8px;
+        padding: 40px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-.form-group {
-	text-align: left;
-	margin-bottom: 15px;
-}
+    .logo img {
+        width: 100px;
+        height: auto;
+    }
 
-.form-group label {
-	display: block;
-	font-weight: bold;
-}
+    .logo h1 {
+        font-size: 24px;
+        margin: 10px 0;
+        color: #728687;
+    }
 
-.form-group input {
-	width: 100%;
-	padding: 10px;
-	margin-top: 5px;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-}
+    .tab-menu {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 20px;
+    }
 
-.forgot-password {
-	float: right;
-	font-size: 12px;
-	color: #007bff;
-	text-decoration: none;
-}
+    .tab {
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        background-color: #f1f1f1;
+        color: #728687;
+        border-radius: 5px 5px 0 0;
+        font-weight: bold;
+        font-size: 16px;
+    }
 
-.forgot-password:hover {
-	text-decoration: underline;
-}
+    .tab.active {
+        background-color: white;
+        border-bottom: 2px solid #728687;
+    }
 
-.login-button, .google-button {
-	width: 100%;
-	padding: 10px;
-	margin-top: 10px;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-}
+    .form-group {
+        text-align: left;
+        margin-bottom: 15px;
+    }
 
-.login-button {
-	background-color: #728687;
-	color: white;
-	font-weight: bold;
-}
+    .form-group label {
+        display: block;
+        font-weight: bold;
+    }
 
-.google-button {
-	background-color: #4285f4;
-	color: white;
-	font-weight: bold;
-}
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
 
-.separator {
-	margin: 15px 0;
-	font-size: 14px;
-	color: #999;
-}
+    .forgot-password {
+        float: right;
+        font-size: 12px;
+        color: #007bff;
+        text-decoration: none;
+    }
 
-.account-link {
-	margin-top: 10px;
-}
+    .forgot-password:hover {
+        text-decoration: underline;
+    }
 
-.account-link a {
-	color: #4285f4;
-	text-decoration: none;
-}
+    .login-button, .google-button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
 
-footer {
-	margin-top: 20px;
-	font-size: 12px;
-	color: #728687;
-}
+    .login-button {
+        background-color: #728687;
+        color: white;
+        font-weight: bold;
+    }
 
-.error-message {
-	color: red;
-	margin-bottom: 10px;
-}
-</style>
+    .google-button {
+        background-color: #4285f4;
+        color: white;
+        font-weight: bold;
+    }
 
-	<script>
-		function switchTab(tabName) {
-			var loginForm = document.getElementById('loginForm');
-			var signupLink = document.getElementById('signupLink');
+    .separator {
+        margin: 15px 0;
+        font-size: 14px;
+        color: #999;
+    }
 
-			if (tabName === 'Customer') {
-				loginForm.setAttribute('action', 'CustomerLoginController');
-				document.getElementById('email').setAttribute('placeholder',
-						'Customer Email');
-				document.getElementById('password').setAttribute('placeholder',
-						'Customer Password');
-				signupLink.style.display = 'block'; // Show the sign-up link
-			} else if (tabName === 'Admin') {
-				loginForm.setAttribute('action', 'AdminLoginController');
-				document.getElementById('email').setAttribute('placeholder',
-						'Admin Email');
-				document.getElementById('password').setAttribute('placeholder',
-						'Admin Password');
-				signupLink.style.display = 'none'; // Hide the sign-up link
-			}
+    .account-link {
+        margin-top: 10px;
+    }
 
-			// Add active class to the current button (highlight it)
-			var tabs = document.getElementsByClassName('tab');
-			for (var i = 0; i < tabs.length; i++) {
-				tabs[i].classList.remove('active');
-			}
-			document.querySelector('.tab[onclick="switchTab(\'' + tabName
-					+ '\')"]').classList.add('active');
-		}
+    .account-link a {
+        color: #4285f4;
+        text-decoration: none;
+    }
 
-		// Initialize with the default tab active
-		switchTab('Customer');
-	</script>
+    footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #728687;
+    }
+
+    .error-message {
+        color: red;
+        margin-bottom: 10px;
+    }
+    </style>
+
 </body>
 </html>

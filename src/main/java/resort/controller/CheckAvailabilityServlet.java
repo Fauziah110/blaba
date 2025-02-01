@@ -2,6 +2,8 @@ package resort.controller;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.servlet.ServletException;
@@ -11,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import resort.connection.ConnectionManager;
 import resort.model.Room;
+
 public class CheckAvailabilityServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -18,54 +21,82 @@ public class CheckAvailabilityServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        // Retrieve parameters from session or request
-        String checkInDate = request.getParameter("checkInDate");
-        String checkOutDate = request.getParameter("checkOutDate");
+        // Retrieve parameters
+        String checkInDateStr = request.getParameter("checkInDate");
+        String checkOutDateStr = request.getParameter("checkOutDate");
         String adultsParam = request.getParameter("adults");
         String kidsParam = request.getParameter("kids");
 
-        // Log the retrieved parameters
-        System.out.println("Check-In Date: " + checkInDate);
-        System.out.println("Check-Out Date: " + checkOutDate);
-        System.out.println("Adults: " + adultsParam);
-        System.out.println("Kids: " + kidsParam);
+        // Log input values
+        System.out.println("✅ DEBUG: Check-In Date: " + checkInDateStr);
+        System.out.println("✅ DEBUG: Check-Out Date: " + checkOutDateStr);
+        System.out.println("✅ DEBUG: Adults: " + adultsParam);
+        System.out.println("✅ DEBUG: Kids: " + kidsParam);
 
-        // Validate and set defaults if missing
-        if ((checkInDate == null || checkInDate.isEmpty()) && session.getAttribute("checkInDate") != null) {
-            checkInDate = (String) session.getAttribute("checkInDate");
+        // Validate input: Ensure dates are in the correct format and not in the past
+        LocalDate today = LocalDate.now();
+        LocalDate checkInDate, checkOutDate;
+
+        try {
+            checkInDate = LocalDate.parse(checkInDateStr);
+            checkOutDate = LocalDate.parse(checkOutDateStr);
+
+            // Prevent past dates from being booked
+            if (checkInDate.isBefore(today) || checkOutDate.isBefore(today)) {
+                request.setAttribute("errorMessage", "❌ Error: You cannot book a past date.");
+                request.getRequestDispatcher("roomCustomer.jsp").forward(request, response);
+                return;
+            }
+
+            // Ensure check-in date is before check-out date
+            if (checkOutDate.isBefore(checkInDate)) {
+                request.setAttribute("errorMessage", "❌ Error: Check-out date must be after check-in date.");
+                request.getRequestDispatcher("roomCustomer.jsp").forward(request, response);
+                return;
+            }
+        } catch (DateTimeParseException e) {
+            request.setAttribute("errorMessage", "❌ Error: Invalid date format. Please use YYYY-MM-DD.");
+            request.getRequestDispatcher("roomCustomer.jsp").forward(request, response);
+            return;
         }
-        if ((checkOutDate == null || checkOutDate.isEmpty()) && session.getAttribute("checkOutDate") != null) {
-            checkOutDate = (String) session.getAttribute("checkOutDate");
-        }
-        int adults = (adultsParam != null) ? Integer.parseInt(adultsParam) : (session.getAttribute("adults") != null ? (Integer) session.getAttribute("adults") : 1);
-        int kids = (kidsParam != null) ? Integer.parseInt(kidsParam) : (session.getAttribute("kids") != null ? (Integer) session.getAttribute("kids") : 0);
 
         // Store parameters in session
-        session.setAttribute("checkInDate", checkInDate);
-        session.setAttribute("checkOutDate", checkOutDate);
-        session.setAttribute("adults", adults);
-        session.setAttribute("kids", kids);
+        session.setAttribute("checkInDate", checkInDateStr);
+        session.setAttribute("checkOutDate", checkOutDateStr);
+        session.setAttribute("adults", adultsParam);
+        session.setAttribute("kids", kidsParam);
 
         // Retrieve customer details from session
-        String customerName = (String) session.getAttribute("customer_name");
-        String customerEmail = (String) session.getAttribute("customer_email");
-        String customerPhoneNo = (String) session.getAttribute("customer_phoneno");
+        String customerName = (String) session.getAttribute("customerName");
+        String customerEmail = (String) session.getAttribute("customerEmail");
+        String customerPhoneNo = (String) session.getAttribute("customerPhoneNo");
 
         // Debugging: Ensure customer details are carried correctly
-        System.out.println("Customer Name: " + customerName);
-        System.out.println("Customer Email: " + customerEmail);
-        System.out.println("Customer Phone Number: " + customerPhoneNo);
+        System.out.println("✅ DEBUG: Customer Name: " + customerName);
+        System.out.println("✅ DEBUG: Customer Email: " + customerEmail);
+        System.out.println("✅ DEBUG: Customer Phone Number: " + customerPhoneNo);
+
+        // Check if session attributes are null
+        if (customerName == null || customerEmail == null || customerPhoneNo == null) {
+            System.out.println("❌ DEBUG: Customer session attributes are NULL. Redirecting to login page.");
+            response.sendRedirect("login.jsp");
+            return;
+        }
 
         // Query available rooms
         List<Room> availableRooms = new ArrayList<>();
         String query = "SELECT * FROM Room WHERE roomStatus = 'Available' AND roomID NOT IN " +
-                       "(SELECT roomID FROM Reservation WHERE checkinDate <= TO_DATE(?, 'YYYY-MM-DD') AND checkoutDate >= TO_DATE(?, 'YYYY-MM-DD'))";
+                       "(SELECT roomID FROM Reservation WHERE checkinDate <= CAST(? AS DATE) " +
+                       "AND checkoutDate >= CAST(? AS DATE))";
 
-        try (Connection conn = ConnectionManager.getConnection(); // Use DatabaseUtility
+        try (Connection conn = ConnectionManager.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setString(1, checkOutDate);
-            stmt.setString(2, checkInDate);
+             
+            stmt.setString(1, checkOutDateStr);
+            stmt.setString(2, checkInDateStr);
 
+            System.out.println("✅ DEBUG: Executing query for room availability...");
+            
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     availableRooms.add(new Room(
@@ -79,7 +110,7 @@ public class CheckAvailabilityServlet extends HttpServlet {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            response.getWriter().println("Error: Database error occurred. " + e.getMessage());
+            response.getWriter().println("❌ Error: Database error occurred. " + e.getMessage());
             return;
         }
 
@@ -89,8 +120,12 @@ public class CheckAvailabilityServlet extends HttpServlet {
         request.setAttribute("customerEmail", customerEmail);
         request.setAttribute("customerPhoneNo", customerPhoneNo);
 
+        // Debugging: Ensure data is being passed
+        System.out.println("✅ DEBUG: Forwarding to AvailableRoom.jsp...");
+        System.out.println("✅ DEBUG: Available Rooms Count: " + availableRooms.size());
+
         // Forward to AvailableRoom.jsp
-        request.getRequestDispatcher("AvailableRoom.jsp").forward(request, response);
+        request.getRequestDispatcher("availableRoom.jsp").forward(request, response);
     }
 
     // Handle GET requests

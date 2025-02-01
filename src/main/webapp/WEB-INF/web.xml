@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:web="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd http://xmlns.jcp.org/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="5.0">
-  <display-name>Admin</display-name>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:web="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd" id="WebApp_ID" version="5.0">
+  
+  <display-name>MD Resort Admin</display-name>
+
+  <!-- ✅ Welcome Page Configuration -->
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.jsp</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>default.html</welcome-file>
     <welcome-file>default.jsp</welcome-file>
-    <welcome-file>default.htm</welcome-file>
   </welcome-file-list>
+
+  <!-- ✅ Admin Login -->
   <servlet>
-    <display-name>AdminLoginController</display-name>
     <servlet-name>AdminLoginController</servlet-name>
     <servlet-class>resort.controller.AdminLoginController</servlet-class>
   </servlet>
@@ -18,148 +19,9 @@
     <servlet-name>AdminLoginController</servlet-name>
     <url-pattern>/AdminLoginController</url-pattern>
   </servlet-mapping>
+
+  <!-- ✅ Customer Login -->
   <servlet>
-    <display-name>AdminProfileServlet</display-name>
-    <servlet-name>AdminProfileServlet</servlet-name>
-    <servlet-class>com.resort.AdminProfileServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AdminProfileServlet</servlet-name>
-    <url-pattern>/AdminProfileServlet</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>DeleteAccountServlet</display-name>
-    <servlet-name>DeleteAccountServlet</servlet-name>
-    <servlet-class>com.resort.DeleteAccountServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DeleteAccountServlet</servlet-name>
-    <url-pattern>/DeleteAccountServlet</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>EditProfileServlet</display-name>
-    <servlet-name>EditProfileServlet</servlet-name>
-    <servlet-class>com.resort.EditProfileServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>EditProfileServlet</servlet-name>
-    <url-pattern>/EditProfileServlet</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>Connection</display-name>
-    <servlet-name>Connection</servlet-name>
-    <servlet-class>resort.Connection</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Connection</servlet-name>
-    <url-pattern>/Connection</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>connection</display-name>
-    <servlet-name>connection</servlet-name>
-    <servlet-class>resort.connection.connection</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>connection</servlet-name>
-    <url-pattern>/connection</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>RegisterController</display-name>
-    <servlet-name>RegisterController</servlet-name>
-    <servlet-class>resort.controller.RegisterController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>RegisterController</servlet-name>
-    <url-pattern>/RegisterController</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>ConnectionManager</display-name>
-    <servlet-name>ConnectionManager</servlet-name>
-    <servlet-class>resort.connection.ConnectionManager</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ConnectionManager</servlet-name>
-    <url-pattern>/ConnectionManager</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>AddRoomController</display-name>
-    <servlet-name>AddRoomController</servlet-name>
-    <servlet-class>resort.controller.AddRoomController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>AddRoomController</servlet-name>
-    <url-pattern>/AddRoomController</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>EditRoomController</display-name>
-    <servlet-name>EditRoomController</servlet-name>
-    <servlet-class>resort.controller.EditRoomController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>EditRoomController</servlet-name>
-    <url-pattern>/EditRoomController</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>DeleteRoomController</display-name>
-    <servlet-name>DeleteRoomController</servlet-name>
-    <servlet-class>resort.controller.DeleteRoomController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DeleteRoomController</servlet-name>
-    <url-pattern>/DeleteRoomController</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>EditServiceController</display-name>
-    <servlet-name>EditServiceController</servlet-name>
-    <servlet-class>resort.controller.EditServiceController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>EditServiceController</servlet-name>
-    <url-pattern>/EditServiceController</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>DeleteServiceController</display-name>
-    <servlet-name>DeleteServiceController</servlet-name>
-    <servlet-class>resort.controller.DeleteServiceController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DeleteServiceController</servlet-name>
-    <url-pattern>/DeleteServiceController</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>RegisterStaffController</display-name>
-    <servlet-name>RegisterStaffController</servlet-name>
-    <servlet-class>resort.controller.RegisterStaffController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>RegisterStaffController</servlet-name>
-    <url-pattern>/RegisterStaffController</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>LoginController</display-name>
-    <servlet-name>LoginController</servlet-name>
-    <servlet-class>resort.controller.LoginController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>LoginController</servlet-name>
-    <url-pattern>/LoginController</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>CustomerLoginController</display-name>
     <servlet-name>CustomerLoginController</servlet-name>
     <servlet-class>resort.controller.CustomerLoginController</servlet-class>
   </servlet>
@@ -167,89 +29,57 @@
     <servlet-name>CustomerLoginController</servlet-name>
     <url-pattern>/CustomerLoginController</url-pattern>
   </servlet-mapping>
+
+  <!-- ✅ Signup Customer -->
   <servlet>
-    <description></description>
-    <display-name>EditUsernameController</display-name>
-    <servlet-name>EditUsernameController</servlet-name>
-    <servlet-class>resort.controller.EditUsernameController</servlet-class>
+    <servlet-name>SignupCustomerServlet</servlet-name>
+    <servlet-class>resort.controller.SignupCustomerServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>EditUsernameController</servlet-name>
-    <url-pattern>/EditUsernameController</url-pattern>
+    <servlet-name>SignupCustomerServlet</servlet-name>
+    <url-pattern>/SignupCustomerServlet</url-pattern>
   </servlet-mapping>
+
+  <!-- ✅ Customer Profile -->
   <servlet>
-    <description></description>
-    <display-name>EditEmailController</display-name>
-    <servlet-name>EditEmailController</servlet-name>
-    <servlet-class>resort.controller.EditEmailController</servlet-class>
+    <servlet-name>ProfileCustomerController</servlet-name>
+    <servlet-class>resort.controller.ProfileCustomerController</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>EditEmailController</servlet-name>
-    <url-pattern>/EditEmailController</url-pattern>
+    <servlet-name>ProfileCustomerController</servlet-name>
+    <url-pattern>/ProfileCustomerController</url-pattern>
   </servlet-mapping>
+
+  <!-- ✅ Room Management -->
   <servlet>
-    <description></description>
-    <display-name>EditPhoneController</display-name>
-    <servlet-name>EditPhoneController</servlet-name>
-    <servlet-class>resort.controller.EditPhoneController</servlet-class>
+    <servlet-name>AddRoomController</servlet-name>
+    <servlet-class>resort.controller.AddRoomController</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>EditPhoneController</servlet-name>
-    <url-pattern>/EditPhoneController</url-pattern>
+    <servlet-name>AddRoomController</servlet-name>
+    <url-pattern>/AddRoomController</url-pattern>
   </servlet-mapping>
+
   <servlet>
-    <description></description>
-    <display-name>EditPasswordController</display-name>
-    <servlet-name>EditPasswordController</servlet-name>
-    <servlet-class>resort.controller.EditPasswordController</servlet-class>
+    <servlet-name>EditRoomController</servlet-name>
+    <servlet-class>resort.controller.EditRoomController</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>EditPasswordController</servlet-name>
-    <url-pattern>/EditPasswordController</url-pattern>
+    <servlet-name>EditRoomController</servlet-name>
+    <url-pattern>/EditRoomController</url-pattern>
   </servlet-mapping>
+
   <servlet>
-    <description></description>
-    <display-name>EditFoodController</display-name>
-    <servlet-name>EditFoodController</servlet-name>
-    <servlet-class>resort.controller.EditFoodController</servlet-class>
+    <servlet-name>DeleteRoomController</servlet-name>
+    <servlet-class>resort.controller.DeleteRoomController</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>EditFoodController</servlet-name>
-    <url-pattern>/EditFoodController</url-pattern>
+    <servlet-name>DeleteRoomController</servlet-name>
+    <url-pattern>/DeleteRoomController</url-pattern>
   </servlet-mapping>
+
+  <!-- ✅ Booking & Availability -->
   <servlet>
-    <description></description>
-    <display-name>DeleteFoodController</display-name>
-    <servlet-name>DeleteFoodController</servlet-name>
-    <servlet-class>resort.controller.DeleteFoodController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DeleteFoodController</servlet-name>
-    <url-pattern>/DeleteFoodController</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>EditEventController</display-name>
-    <servlet-name>EditEventController</servlet-name>
-    <servlet-class>resort.controller.EditEventController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>EditEventController</servlet-name>
-    <url-pattern>/EditEventController</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>DeleteEventController</display-name>
-    <servlet-name>DeleteEventController</servlet-name>
-    <servlet-class>resort.controller.DeleteEventController</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>DeleteEventController</servlet-name>
-    <url-pattern>/DeleteEventController</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <description></description>
-    <display-name>ConfirmBookingServlet</display-name>
     <servlet-name>ConfirmBookingServlet</servlet-name>
     <servlet-class>resort.controller.ConfirmBookingServlet</servlet-class>
   </servlet>
@@ -257,6 +87,7 @@
     <servlet-name>ConfirmBookingServlet</servlet-name>
     <url-pattern>/ConfirmBookingServlet</url-pattern>
   </servlet-mapping>
+
   <servlet>
     <servlet-name>CheckAvailabilityServlet</servlet-name>
     <servlet-class>resort.controller.CheckAvailabilityServlet</servlet-class>
@@ -265,34 +96,99 @@
     <servlet-name>CheckAvailabilityServlet</servlet-name>
     <url-pattern>/CheckAvailabilityServlet</url-pattern>
   </servlet-mapping>
+
+  <!-- ✅ Account Management -->
   <servlet>
-    <description></description>
-    <display-name>ProfileController</display-name>
-    <servlet-name>ProfileController</servlet-name>
-    <servlet-class>resort.controller.ProfileController</servlet-class>
+    <servlet-name>EditUsernameController</servlet-name>
+    <servlet-class>resort.controller.EditUsernameController</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>ProfileController</servlet-name>
-    <url-pattern>/ProfileController</url-pattern>
+    <servlet-name>EditUsernameController</servlet-name>
+    <url-pattern>/EditUsernameController</url-pattern>
   </servlet-mapping>
+
   <servlet>
-    <description></description>
-    <display-name>ProfileCustomerController</display-name>
-    <servlet-name>ProfileCustomerController</servlet-name>
-    <servlet-class>resort.controller.ProfileCustomerController</servlet-class>
+    <servlet-name>EditEmailController</servlet-name>
+    <servlet-class>resort.controller.EditEmailController</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>ProfileCustomerController</servlet-name>
-    <url-pattern>/ProfileCustomerController</url-pattern>
+    <servlet-name>EditEmailController</servlet-name>
+    <url-pattern>/EditEmailController</url-pattern>
   </servlet-mapping>
+
   <servlet>
-    <description></description>
-    <display-name>SignupCustomerServlet</display-name>
-    <servlet-name>SignupCustomerServlet</servlet-name>
-    <servlet-class>resort.controller.SignupCustomerServlet</servlet-class>
+    <servlet-name>EditPhoneController</servlet-name>
+    <servlet-class>resort.controller.EditPhoneController</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>SignupCustomerServlet</servlet-name>
-    <url-pattern>/SignupCustomerServlet</url-pattern>
+    <servlet-name>EditPhoneController</servlet-name>
+    <url-pattern>/EditPhoneController</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>EditPasswordController</servlet-name>
+    <servlet-class>resort.controller.EditPasswordController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditPasswordController</servlet-name>
+    <url-pattern>/EditPasswordController</url-pattern>
+  </servlet-mapping>
+
+  <!-- ✅ Food Service Management -->
+  <servlet>
+    <servlet-name>EditFoodController</servlet-name>
+    <servlet-class>resort.controller.EditFoodController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditFoodController</servlet-name>
+    <url-pattern>/EditFoodController</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>DeleteFoodController</servlet-name>
+    <servlet-class>resort.controller.DeleteFoodController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteFoodController</servlet-name>
+    <url-pattern>/DeleteFoodController</url-pattern>
+  </servlet-mapping>
+
+  <!-- ✅ Event Service Management -->
+  <servlet>
+    <servlet-name>EditEventController</servlet-name>
+    <servlet-class>resort.controller.EditEventController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>EditEventController</servlet-name>
+    <url-pattern>/EditEventController</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>DeleteEventController</servlet-name>
+    <servlet-class>resort.controller.DeleteEventController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DeleteEventController</servlet-name>
+    <url-pattern>/DeleteEventController</url-pattern>
+  </servlet-mapping>
+
+  <!-- ✅ Database Connection -->
+  <servlet>
+    <servlet-name>ConnectionManager</servlet-name>
+    <servlet-class>resort.connection.ConnectionManager</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ConnectionManager</servlet-name>
+    <url-pattern>/ConnectionManager</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>ReservationController</servlet-name>
+    <servlet-class>resort.controller.ReservationController</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>ReservationController</servlet-name>
+    <url-pattern>/ReservationController</url-pattern>
+</servlet-mapping>
+  
+
 </web-app>

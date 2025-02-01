@@ -332,9 +332,9 @@ footer {
 		</div>
 		<nav>
 			<ul>
-				<li><a href="RoomCustomer.jsp">Room</a></li>
-				<li><a href="FacilitiesCustomer.jsp">Facilities</a></li>
-				<li><a href="ServiceCustomer.jsp">Service</a></li>
+				<li><a href="roomCustomer.jsp">Room</a></li>
+				<li><a href="facilityCustomer.jsp">Facilities</a></li>
+				<li><a href="serviceCustomer.jsp">Service</a></li>
 
 				<%
 				if (isLoggedIn) {

@@ -2,11 +2,6 @@
 <%@ page import="java.util.*" %>
 <%@ page import="resort.model.RoomBooking" %>
 
-<% session.setAttribute("customerID", request.getParameter("customerID")); %>
-<% session.setAttribute("totalAdult", request.getParameter("totalAdult")); %>
-<% session.setAttribute("totalKids", request.getParameter("totalKids")); %>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -82,23 +77,9 @@
             background: #0056b3;
         }
     </style>
-    <script>
-        function updateTotalPrice() {
-            let basePrice = parseFloat(document.getElementById("baseTotalPrice").value);
-            let foodPrice = document.getElementById("menuName").value ? parseFloat(document.getElementById("menuName").value.split("|")[1]) : 0;
-            let foodQuantity = parseInt(document.getElementById("menuQuantity").value) || 1;
-            let eventPrice = document.getElementById("eventType").value ? 100 : 0; // Assume RM100 per event
-            let duration = parseInt(document.getElementById("duration").value) || 1;
-
-            let totalServicePrice = (foodPrice * foodQuantity) + (eventPrice * duration);
-            let finalTotal = basePrice + totalServicePrice;
-
-            document.getElementById("totalPayment").value = finalTotal.toFixed(2);
-            document.getElementById("displayTotalPayment").innerText = "RM" + finalTotal.toFixed(2);
-        }
-    </script>
 </head>
 <body>
+
 <header>
     <h1>Booking Summary</h1>
 </header>
@@ -106,17 +87,17 @@
 <main>
     <div class="section">
         <h3>Customer Details</h3>
-        <p><strong>Name:</strong> <%= session.getAttribute("customer_name") %></p>
-        <p><strong>Email:</strong> <%= session.getAttribute("customer_email") %></p>
-        <p><strong>Phone:</strong> <%= session.getAttribute("customer_phoneno") %></p>
+        <p><strong>Name:</strong> <%= session.getAttribute("customerName") != null ? session.getAttribute("customerName") : "Not Available" %></p>
+        <p><strong>Email:</strong> <%= session.getAttribute("customerEmail") != null ? session.getAttribute("customerEmail") : "Not Available" %></p>
+        <p><strong>Phone:</strong> <%= session.getAttribute("customerPhoneNo") != null ? session.getAttribute("customerPhoneNo") : "Not Available" %></p>
     </div>
 
     <div class="section">
         <h3>Stay Details</h3>
-        <p><strong>Check-In:</strong> <%= session.getAttribute("checkInDate") %></p>
-        <p><strong>Check-Out:</strong> <%= session.getAttribute("checkOutDate") %></p>
-        <p><strong>Adults:</strong> <%= session.getAttribute("adults") %></p>
-        <p><strong>Kids:</strong> <%= session.getAttribute("kids") %></p>
+        <p><strong>Check-In:</strong> <%= session.getAttribute("checkInDate") != null ? session.getAttribute("checkInDate") : "Not Set" %></p>
+        <p><strong>Check-Out:</strong> <%= session.getAttribute("checkOutDate") != null ? session.getAttribute("checkOutDate") : "Not Set" %></p>
+        <p><strong>Adults:</strong> <%= session.getAttribute("adults") != null ? session.getAttribute("adults") : "0" %></p>
+        <p><strong>Kids:</strong> <%= session.getAttribute("kids") != null ? session.getAttribute("kids") : "0" %></p>
     </div>
 
     <div class="section">
@@ -129,6 +110,7 @@
         <table>
             <thead>
                 <tr>
+                    <th>Room ID</th>
                     <th>Room Type</th>
                     <th>Quantity</th>
                     <th>Price/Night</th>
@@ -142,6 +124,7 @@
                         totalRoomPrice += roomTotal;
                 %>
                 <tr>
+                    <td><%= booking.getRoomID() %></td>
                     <td><%= booking.getRoomType() %></td>
                     <td><%= booking.getQuantity() %></td>
                     <td>RM<%= booking.getPrice() %></td>
@@ -151,60 +134,32 @@
                     }
                 %>
                 <tr>
-                    <th colspan="3">Room Grand Total</th>
+                    <th colspan="4">Room Grand Total</th>
                     <th>RM<%= totalRoomPrice %></th>
                 </tr>
             </tbody>
         </table>
         <% } else { %>
-            <p>No rooms booked. Please select a room.</p>
+            <p style="color: red;">No rooms booked. Please select a room.</p>
         <% } %>
     </div>
 
     <form action="ReservationController" method="POST">
-         <input type="hidden" name="customerID" value="<%= session.getAttribute("customerID") %>">
-	    <input type="hidden" name="roomType" value="<%= session.getAttribute("roomType") %>"> 
-	    <input type="hidden" id="baseTotalPrice" value="<%= totalRoomPrice %>">
-	    <input type="hidden" id="totalPayment" name="totalPrice" value="<%= totalRoomPrice %>">
-
-        <div class="section">
-            <h3>Food Service</h3>
-            <label>Menu:</label>
-            <select name="menuName" id="menuName" onchange="updateTotalPrice()">
-                <option value="">-- Select Food --</option>
-                <option value="Chicken Rice|10">Chicken Rice (RM10)</option>
-                <option value="Nasi Lemak|8.5">Nasi Lemak (RM8.5)</option>
-                <option value="Spaghetti|12">Spaghetti (RM12)</option>
-            </select>
-
-            <label>Quantity:</label>
-            <input type="number" id="menuQuantity" name="menuQuantity" min="1" value="1" onchange="updateTotalPrice()">
-        </div>
-
-        <div class="section">
-            <h3>Event Service</h3>
-            <label>Venue:</label>
-            <select name="venue">
-                <option value="Hall A">Hall A</option>
-                <option value="Hall B">Hall B</option>
-            </select>
-
-            <label>Event Type:</label>
-            <select name="eventType" id="eventType" onchange="updateTotalPrice()">
-                <option value="">-- Select Event --</option>
-                <option value="Wedding">Wedding (RM100)</option>
-                <option value="Conference">Conference (RM100)</option>
-            </select>
-
-            <label>Duration (Hours):</label>
-            <input type="number" id="duration" name="duration" min="1" value="1" onchange="updateTotalPrice()">
-        </div>
+        <input type="hidden" name="customerID" value="<%= session.getAttribute("customerID") %>">
+        <input type="hidden" name="roomID" value="<%= session.getAttribute("roomID") != null ? session.getAttribute("roomID") : "" %>">
+        <input type="hidden" name="roomType" value="<%= session.getAttribute("roomType") != null ? session.getAttribute("roomType") : "" %>"> 
+        <input type="hidden" id="baseTotalPrice" value="<%= totalRoomPrice %>">
+        <input type="hidden" id="totalPayment" name="totalPrice" value="<%= totalRoomPrice %>">
 
         <div class="total-price">
             Total Payment: <span id="displayTotalPayment">RM<%= totalRoomPrice %></span>
         </div>
 
-        <button type="submit" class="btn">Confirm Booking</button>
+        <% if (bookingList != null && !bookingList.isEmpty()) { %>
+            <button type="submit" class="btn">Confirm Booking</button>
+        <% } else { %>
+            <button type="button" class="btn" disabled>Please Select a Room First</button>
+        <% } %>
     </form>
 </main>
 

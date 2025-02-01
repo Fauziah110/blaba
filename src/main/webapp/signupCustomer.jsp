@@ -1,6 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,231 +12,171 @@
             margin: 0;
             padding: 0;
             background-color: #f4f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-        /* Header */
-        header {
+        /* Container */
+        .container {
+            text-align: center;
+        }
+
+        /* Sign-Up Box */
+        .signup-box {
+            width: 400px;
             background: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 25px;
-            font-size: 18px;
-            color: #728687;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        header .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        header .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        header .logo a {
-            font-size: 18px;
-            color: #728687;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        header nav ul {
-            list-style: none;
-            display: flex;
-            margin: 0;
-            padding: 0;
-        }
-
-        header nav ul li {
-            margin-left: 20px;
-        }
-
-        header nav ul li a {
-            text-decoration: none;
-            color: #728687;
-            font-weight: bold;
-            padding: 5px 20px;
-        }
-
-        header nav ul li a:hover {
-            color: black;
-        }
-
-        /* Sign up form styles */
-        .signup-container {
-            max-width: 400px;
-            margin: 50px auto;
-            background-color: #fff;
-            padding: 30px;
+            border-radius: 10px;
+            padding: 40px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
         }
 
-        .signup-container h1 {
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 20px;
+        /* Logo */
+        .logo img {
+            width: 80px;
+            height: auto;
         }
 
-        .signup-form input, .signup-btn {
-            width: 100%; /* Match input and button widths */
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-
-        .signup-btn {
-            background-color: #728687;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        .signup-btn:hover {
-            background-color: #728687;
-        }
-
-        .privacy-text {
-            font-size: 12px;
-            text-align: center;
-            color: #888;
+        .logo h1 {
+            font-size: 20px;
             margin-top: 10px;
+            color: #5f7268;
         }
 
-        .login-text {
-            text-align: center;
+        /* Form Group */
+        .form-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
             font-size: 14px;
-            margin-top: 20px;
         }
 
-        .login-text a {
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        /* Buttons */
+        .signup-button, .google-button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .signup-button {
+            background-color: #5f7268;
+            color: white;
+            font-weight: bold;
+        }
+
+        .google-button {
+            background-color: #4285f4;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Separator */
+        .separator {
+            margin: 15px 0;
+            font-size: 14px;
+            color: #999;
+            font-weight: bold;
+        }
+
+        /* Error Message */
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        /* Account Link */
+        .account-link {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .account-link a {
             color: #007bff;
             text-decoration: none;
+            font-weight: bold;
         }
 
-        .login-text a:hover {
+        .account-link a:hover {
             text-decoration: underline;
         }
 
         /* Footer */
         footer {
-            background: #728687;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            margin-top: auto;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .footer-logo img {
-            max-width: 100px;
-            margin-bottom: 5px;
-        }
-
-        .social-icons {
-            margin: 10px 0;
-        }
-
-        .social-icons a {
-            margin: 0 10px;
-            display: inline-block;
-        }
-
-        .social-icons a img {
-            width: 30px;
-            height: 30px;
-        }
-
-        .footer-links {
-            list-style: none;
-            padding: 0;
-            margin-top: 10px;
-            border-top: 1px solid #8B6A50;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding-top: 10px;
-        }
-
-        .footer-links a {
-            color: black;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .footer-links a:hover {
-            text-decoration: underline;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #5f7268;
         }
     </style>
 </head>
 <body>
-    <!-- header -->
-    <header>
-        <div class="logo">
-            <a href="index.jsp">
-                <img src="Images/MDResort.PNG" alt="MD Resort Logo">
-            </a>
-            <a href="index.jsp">MD Resort Pantai Siring Melaka</a>
+    <div class="container">
+        <div class="signup-box">
+            <div class="logo">
+                <img src="images/MDResort.png" alt="Resort Logo">
+                <h1>MD Resort Pantai Siring Melaka</h1>
+            </div>
+
+            <!-- Error Message -->
+            <% String errorMessage = (String) request.getAttribute("errorMessage"); 
+               if (errorMessage != null) { %>
+                <div class="error-message"><%=errorMessage%></div>
+            <% } %>
+
+            <!-- Sign-Up Form -->
+            <form action="SignupCustomerController" method="POST">
+                <div class="form-group">
+                    <label for="customer-name">Full Name</label>
+                    <input type="text" id="customer-name" name="customer-name" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone-no">Phone Number</label>
+                    <input type="text" id="phone-no" name="phone-no" placeholder="Enter your phone number" required>
+                </div>
+
+                <button type="submit" class="signup-button">Sign Up</button>
+            </form>
+
+            
+
+            <p class="account-link">
+                Already have an account? <a href="login.jsp">Log In</a>
+            </p>
+
+            <footer>
+                <p>Contact Us</p>
+                <p>MD Resort: 03 - 5644 8969 / 03 - 5644 8177</p>
+            </footer>
         </div>
-        <nav>
-            <ul>
-                <li><a href="index.jsp">Home</a></li>
-                <li><a href="RoomCustomer.jsp">Room</a></li>
-                <li><a href="FacilitiesCustomer.jsp">Facilities</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Sign up form -->
-    <div class="signup-container">
-        <h1>Create Your Account</h1>
-        <form action="/mdresortmanagementsystem/model/SignUpCustomerServlet" method="post" class="signup-form">
-		    <input type="text" placeholder="Name" name="name" required aria-label="Customer Name">
-		    <input type="email" placeholder="Email" name="email" required aria-label="Email Address">
-		    <input type="password" placeholder="Password" name="password" required aria-label="Password">
-		    <input type="tel" placeholder="Phone Number" name="phone" required aria-label="Phone Number" pattern="^\+?[0-9]{10,15}$" title="Please enter a valid phone number">
-		    <button type="submit" class="signup-btn">Sign Up</button>
-		</form>
-
-
-        
-        <p class="login-text">Already have an account? <a href="Login.jsp">Log In</a></p>
     </div>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-logo">
-                <a href="index.jsp">
-    <img src="Images/MdResort_logo.png" alt="Logo">
-</a>
-            </div>
-            <div class="social-icons">
-                <a href="https://facebook.com"><img src="Images/facebook_icon.png" alt="Facebook"></a>
-                <a href="https://instagram.com"><img src="Images/insta_icon.png" alt="Instagram"></a>
-                <a href="https://whatsapp.com"><img src="Images/whatsapp_icon.png" alt="WhatsApp"></a>
-            </div>
-            <ul class="footer-links">
-                <li><a href="index.jsp">Home</a></li>
-                <li><a href="RoomCustomer.jsp">Room</a></li>
-                <li><a href="FacilitiesCustomer.jsp">Facilities</a></li>
-            </ul>
-        </div>
-    </footer>
 </body>
 </html>
-
-

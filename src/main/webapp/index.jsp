@@ -269,14 +269,14 @@ footer {
 <body>
 	<header>
 		<div class="logo">
-			<a href="index.jsp"> <img src="Images/MDResort.PNG" alt="Logo">
+			<a href="index.jsp"> <img src="images/MDResort.png" alt="Logo">
 			</a> <a href="index.jsp">MD Resort Pantai Siring Melaka</a>
 		</div>
 		<nav>
 			<ul>
-				<li><a href="RoomCustomer.jsp">Room</a></li>
-				<li><a href="FacilitiesCustomer.jsp">Facilities</a></li>
-				<li><a href="ServiceCustomer.jsp">Service</a></li>
+				<li><a href="roomCustomer.jsp">Room</a></li>
+				<li><a href="facilityCustomer.jsp">Facilities</a></li>
+				<li><a href="serviceCustomer.jsp">Service</a></li>
 
 				<%
 				if (isLoggedIn) {
@@ -296,7 +296,7 @@ footer {
 				} else {
 				%>
 				<!-- Show login/signup buttons for guests -->
-				<li><a href="SignupCustomer.jsp">Sign Up</a></li>
+				<li><a href="signupCustomer.jsp">Sign Up</a></li>
 				<%
 				}
 				%>
@@ -304,7 +304,7 @@ footer {
 		</nav>
 	</header>
 
-	<img src="Images/home_front.png" alt="Homepage-background">
+	<img src="images/home_front.jpg" alt="Homepage-background">
 
 	<div class="welcome-section">
 		<h1>WELCOME TO MD RESORT</h1>
@@ -314,36 +314,36 @@ footer {
 	<div class="features">
 		<div class="features-grid">
 			<div class="feature">
-				<img src="Images/nature.png" alt="Nature">
+				<img src="images/nature.png" alt="Nature">
 				<h3>Live Amidst Nature</h3>
 				<p>Feel and experience nature in its fullest glory to refresh
 					yourself</p>
 			</div>
 			<div class="feature">
-				<img src="Images/adventure.png" alt="Adventure">
+				<img src="images/adventure.png" alt="Adventure">
 				<h3>Adventure and Activities</h3>
 				<p>Explore the natural beauty of Pantai with our guided tours</p>
 			</div>
 			<div class="feature">
-				<img src="Images/family.png" alt="Family">
+				<img src="images/family.png" alt="Family">
 				<h3>Family Friendly</h3>
 				<p>The calm and comfortable environment will make your family
 					feel at home</p>
 			</div>
 			<div class="feature">
-				<img src="Images/beach-volleyball.png" alt="Beach">
+				<img src="images/beach-volleyball.png" alt="Beach">
 				<h3>Beach Games</h3>
 				<p>Whether it's beach volleyball, sandcastle building, or
 					frisbee, the beach is a great place for family fun</p>
 			</div>
 			<div class="feature">
-				<img src="Images/kayaking.png" alt="Kayak">
+				<img src="images/kayaking.png" alt="Kayak">
 				<h3>Water Sports</h3>
 				<p>For a more adventurous experience, tourists can try kayaking
 					or even jet skiing</p>
 			</div>
 			<div class="feature">
-				<img src="Images/stall.png" alt="Stall">
+				<img src="images/stall.png" alt="Stall">
 				<h3>Local Delights</h3>
 				<p>Explore the vibrant food stalls along the beach offering a
 					variety of delicious local dishes, refreshing beverages, fresh
@@ -361,16 +361,16 @@ footer {
 	<footer>
 		<div class="footer-container">
 			<div class="footer-logo">
-				<a href="index.jsp"> <img src="Images/MdResort_logo.png"
+				<a href="index.jsp"> <img src="images/MDResort.png"
 					alt="Logo">
 				</a>
 			</div>
 			<div class="social-icons">
 				<a href="https://facebook.com"><img
-					src="Images/facebook_icon.png" alt="Facebook"></a> <a
-					href="https://instagram.com"><img src="Images/insta_icon.png"
+					src="images/facebook_icon.png" alt="Facebook"></a> <a
+					href="https://instagram.com"><img src="images/insta_icon.png"
 					alt="Instagram"></a> <a href="https://whatsapp.com"><img
-					src="Images/whatsapp_icon.png" alt="WhatsApp"></a>
+					src="images/whatsapp_icon.png" alt="WhatsApp"></a>
 			</div>
 			<ul class="footer-links">
 				<li><a href="index.jsp">Home</a></li>

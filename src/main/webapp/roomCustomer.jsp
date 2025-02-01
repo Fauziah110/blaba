@@ -290,14 +290,14 @@ footer {
 <body>
 	<header>
 		<div class="logo">
-			<a href="index.jsp"> <img src="Images/MDResort.PNG" alt="Logo">
+			<a href="index.jsp"> <img src="images/MDResort.png" alt="Logo">
 			</a> <a href="index.jsp">MD Resort Pantai Siring Melaka</a>
 		</div>
 		<nav>
 			<ul>
-				<li><a href="RoomCustomer.jsp">Room</a></li>
-				<li><a href="FacilitiesCustomer.jsp">Facilities</a></li>
-				<li><a href="ServiceCustomer.jsp">Service</a></li>
+				<li><a href="roomCustomer.jsp">Room</a></li>
+				<li><a href="facilityCustomer.jsp">Facilities</a></li>
+				<li><a href="serviceCustomer.jsp">Service</a></li>
 
 				<%
 				if (isLoggedIn) {
@@ -305,7 +305,7 @@ footer {
 				<!-- Display the profile icon and dropdown for logged-in users -->
 				<li>
 					<div class="profile-icon">
-						<img src="Images/profile-icon.png" alt="Profile"> <span><%=customerName%></span>
+						<img src="images/profile-icon.png" alt="Profile"> <span><%=customerName%></span>
 						<div class="dropdown-menu">
 							<a href="ProfileCustomer.jsp">Profile</a> <a
 								href="BookingServlet">Booking</a> <a
@@ -326,7 +326,7 @@ footer {
 	</header>
 
 
-	<img src="Images/room_front.png" style="width: 100%;">
+	<img src="images/room_front.png" style="width: 100%;">
 
 	<!-- Reservation Form -->
 	<div class="reservation-form">
@@ -351,7 +351,7 @@ footer {
 		<section class="content3"
 			style="background-image: url('wood-texture.jpg');">
 			<h2>Family Room</h2>
-			<img src="Images/family-room.jpg" alt="Family Room" class="room-image">
+			<img src="images/family-room.jpg" alt="Family Room" class="room-image">
 			<div class="description">
 				<p>From RM150 / night</p>
 				<p>It features 1 king-sized bed, 1 day bed (which can be made up
@@ -366,7 +366,7 @@ footer {
 		<section class="content3"
 			style="background-image: url('wood-texture.jpg');">
 			<h2>Cabin Room</h2>
-			<img src="Images/cabin-room.jpg" alt="Cabin Room" class="room-image">
+			<img src="images/cabin-room.jpg" alt="Cabin Room" class="room-image">
 			<p>From RM100 / night</p>
 			<p>The room is furnished with 1 king-sized bed, 1 day bed (can be
 				made up for sleeping), and 2 bunk beds in the annexe for children,
@@ -382,7 +382,7 @@ footer {
 		<section class="content3"
 			style="background-image: url('wood-texture.jpg');">
 			<h2>Wood Room</h2>
-			<img src="Images/wood-room.jpg" alt="Wood Room" class="room-image">
+			<img src="images/wood-room.jpg" alt="Wood Room" class="room-image">
 			<p>From RM150 / night</p>
 			<p>All our rooms have small windows to help you take a view of
 				the beach nearby. For this wood house, we offer a room with one
@@ -397,16 +397,16 @@ footer {
 	<footer>
 		<div class="footer-container">
 			<div class="footer-logo">
-				<a href="index.jsp"> <img src="Images/MdResort_logo.png"
+				<a href="index.jsp"> <img src="images/MDResort.png"
 					alt="Logo">
 				</a>
 			</div>
 			<div class="social-icons">
 				<a href="https://facebook.com"><img
-					src="Images/facebook_icon.png" alt="Facebook"></a> <a
-					href="https://instagram.com"><img src="Images/insta_icon.png"
+					src="images/facebook_icon.png" alt="Facebook"></a> <a
+					href="https://instagram.com"><img src="images/insta_icon.png"
 					alt="Instagram"></a> <a href="https://whatsapp.com"><img
-					src="Images/whatsapp_icon.png" alt="WhatsApp"></a>
+					src="images/whatsapp_icon.png" alt="WhatsApp"></a>
 			</div>
 			<ul class="footer-links">
 				<li><a href="index.jsp">Home</a></li>
