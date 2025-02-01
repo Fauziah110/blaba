@@ -65,7 +65,7 @@ public class AdminLoginController extends HttpServlet {
                 session.setAttribute("staffPhoneNo", rs.getString("staffPhoneNo"));
                 session.setAttribute("adminId", rs.getInt("adminId"));
 
-                response.sendRedirect("Dashboard.jsp");
+                response.sendRedirect("dashboard.jsp");
             } else {
                 // Login failed: Show error message
                 System.out.println("Login failed. Invalid email or password.");

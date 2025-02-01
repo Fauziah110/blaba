@@ -1,6 +1,6 @@
 <%@ page session="true" %>
 <%@ page import="java.util.*" %>
-<%@ page import="com.mdresort.RoomBooking" %>
+<%@ page import="resort.model.RoomBooking" %>
 
 <% session.setAttribute("customerID", request.getParameter("customerID")); %>
 <% session.setAttribute("totalAdult", request.getParameter("totalAdult")); %>
@@ -161,7 +161,7 @@
         <% } %>
     </div>
 
-    <form action="ReservationServiceServlet" method="POST">
+    <form action="ReservationController" method="POST">
          <input type="hidden" name="customerID" value="<%= session.getAttribute("customerID") %>">
 	    <input type="hidden" name="roomType" value="<%= session.getAttribute("roomType") %>"> 
 	    <input type="hidden" id="baseTotalPrice" value="<%= totalRoomPrice %>">

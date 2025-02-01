@@ -7,22 +7,52 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DatabaseUtility {
-	private static final String DB_URL = "jdbc:oracle:thin:@localhost:1521:xe";
-	private static final String DB_USER = "mdresort25";
-	private static final String DB_PASSWORD = "mdresort123"; // New password
+    // ✅ Updated for Microsoft SQL Server
+    private static final String DB_URL = "jdbc:sqlserver://mdresort.database.windows.net:1433;"
+            + "databaseName=mdresort;"  // ✅ Fixed 'database' → 'databaseName'
+            + "user=mdresort;"
+            + "password=resort_2025;"
+            + "encrypt=true;"
+            + "trustServerCertificate=false;"
+            + "hostNameInCertificate=*.database.windows.net;"
+            + "loginTimeout=30;";
 
-    public static Connection getConnection() throws SQLException, ClassNotFoundException {
-        Class.forName("oracle.jdbc.driver.OracleDriver");
-        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+    public static Connection getConnection() throws SQLException {
+        try {
+            // ✅ Ensure SQL Server JDBC driver is loaded
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            System.out.println("✅ DEBUG: SQL Server JDBC Driver loaded successfully.");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("❌ SQL Server JDBC Driver not found! Please check the JAR file.", e);
+        }
+
+        // ✅ Establish database connection
+        Connection conn = DriverManager.getConnection(DB_URL);
+        System.out.println("✅ DEBUG: Database connected successfully.");
+        return conn;
     }
 
+    // ✅ Close ResultSet, PreparedStatement, and Connection safely
     public static void closeResources(ResultSet rs, PreparedStatement pstmt, Connection conn) {
         try {
             if (rs != null) rs.close();
-            if (pstmt != null) pstmt.close();
-            if (conn != null) conn.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("❌ ERROR: Failed to close ResultSet - " + e.getMessage());
+        }
+
+        try {
+            if (pstmt != null) pstmt.close();
+        } catch (SQLException e) {
+            System.err.println("❌ ERROR: Failed to close PreparedStatement - " + e.getMessage());
+        }
+
+        try {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+                System.out.println("✅ DEBUG: Database connection closed.");
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ ERROR: Failed to close Connection - " + e.getMessage());
         }
     }
 }
