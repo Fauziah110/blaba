@@ -8,8 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import resort.utils.DatabaseUtility;
+import resort.connection.ConnectionManager;
 
 public class EditRoomController extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -26,7 +25,7 @@ public class EditRoomController extends HttpServlet {
             String roomPrice = request.getParameter("roomPrice");
             String staffId = request.getParameter("staffInCharge"); // Use staffId for the column
 
-            conn = DatabaseUtility.getConnection();
+            conn = ConnectionManager.getConnection();
 
             if ("true".equals(isEdit)) {
                 String originalRoomId = request.getParameter("originalRoomId");
@@ -52,11 +51,11 @@ public class EditRoomController extends HttpServlet {
             } else {
                 response.getWriter().println("Failed to save room details.");
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             response.getWriter().println("Error: " + e.getMessage());
         } finally {
-            DatabaseUtility.closeResources(null, pstmt, conn);
+        	ConnectionManager.closeResources(null, pstmt, conn);
         }
     }
 }

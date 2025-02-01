@@ -9,7 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import resort.utils.DatabaseUtility;
+import resort.connection.ConnectionManager;
 
 public class RegisterStaffController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -27,7 +27,7 @@ public class RegisterStaffController extends HttpServlet {
 		ResultSet rs = null;
 
 		try {
-			conn = DatabaseUtility.getConnection();
+			conn = ConnectionManager.getConnection();
 
 			// Check if staffEmail already exists
 			String checkEmailQuery = "SELECT COUNT(*) FROM staff WHERE staffemail = ?";
@@ -64,18 +64,13 @@ public class RegisterStaffController extends HttpServlet {
 			e.printStackTrace();
 			request.setAttribute("errorMessage", "SQL Exception: " + e.getMessage());
 			request.getRequestDispatcher("Error.jsp").forward(request, response);
-		} catch (ClassNotFoundException e) {
-			System.out.println("Class Not Found Exception: " + e.getMessage());
-			e.printStackTrace();
-			request.setAttribute("errorMessage", "Class Not Found Exception: " + e.getMessage());
-			request.getRequestDispatcher("Error.jsp").forward(request, response);
 		} catch (Exception e) {
 			System.out.println("General Exception: " + e.getMessage());
 			e.printStackTrace();
 			request.setAttribute("errorMessage", "General Exception: " + e.getMessage());
 			request.getRequestDispatcher("Error.jsp").forward(request, response);
 		} finally {
-			DatabaseUtility.closeResources(rs, pstmt, conn);
+			ConnectionManager.closeResources(rs, pstmt, conn);
 		}
 	}
 

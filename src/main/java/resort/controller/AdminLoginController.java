@@ -10,7 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import resort.utils.DatabaseUtility;
+
+import resort.connection.ConnectionManager;
 
 public class AdminLoginController extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -41,7 +42,7 @@ public class AdminLoginController extends HttpServlet {
 
         try {
             // Establish database connection
-            conn = DatabaseUtility.getConnection();
+            conn = ConnectionManager.getConnection();
             System.out.println("Database connection established successfully.");
 
             // Use parameterized query to prevent SQL injection
@@ -71,14 +72,14 @@ public class AdminLoginController extends HttpServlet {
                 request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
                 request.getRequestDispatcher("Login.jsp").forward(request, response);
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             // Log error and show generic error message
             e.printStackTrace();
             request.setAttribute("errorMessage", "An error occurred. Please try again later.");
             request.getRequestDispatcher("Login.jsp").forward(request, response);
         } finally {
             // Close resources
-            DatabaseUtility.closeResources(rs, pstmt, conn);
+        	ConnectionManager.closeResources(rs, pstmt, conn);
             System.out.println("Database resources closed.");
         }
     }
