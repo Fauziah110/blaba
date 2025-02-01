@@ -9,9 +9,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import resort.connection.ConnectionManager;
 import resort.model.Room;
-import resort.utils.DatabaseUtility;
-
 public class CheckAvailabilityServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -62,7 +61,7 @@ public class CheckAvailabilityServlet extends HttpServlet {
         String query = "SELECT * FROM Room WHERE roomStatus = 'Available' AND roomID NOT IN " +
                        "(SELECT roomID FROM Reservation WHERE checkinDate <= TO_DATE(?, 'YYYY-MM-DD') AND checkoutDate >= TO_DATE(?, 'YYYY-MM-DD'))";
 
-        try (Connection conn = DatabaseUtility.getConnection(); // Use DatabaseUtility
+        try (Connection conn = ConnectionManager.getConnection(); // Use DatabaseUtility
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, checkOutDate);
             stmt.setString(2, checkInDate);
@@ -78,7 +77,7 @@ public class CheckAvailabilityServlet extends HttpServlet {
                     ));
                 }
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             response.getWriter().println("Error: Database error occurred. " + e.getMessage());
             return;

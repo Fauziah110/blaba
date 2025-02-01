@@ -2,44 +2,62 @@ package resort.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ConnectionManager {
-    // Database connection parameters
-	private static final String DB_URL = "jdbc:oracle:thin:@localhost:1521:xe";
-	private static final String DB_USER = "mdresort25";
-	private static final String DB_PASSWORD = "mdresort123"; // New password
+    // Azure SQL Database connection details
+    private static final String URL = "jdbc:sqlserver://mdresort.database.windows.net:1433;"
+                                    + "database=mdresort;"
+                                    + "encrypt=true;trustServerCertificate=false;"
+                                    + "hostNameInCertificate=*.database.windows.net;"
+                                    + "loginTimeout=30;";
+    private static final String USERNAME = "mdresort";
+    private static final String PASSWORD = "mdresort_2025";
 
-
-    // Method to get a database connection
-    public static Connection getConnection() throws SQLException {
-        Connection connection = null;
+    // Static block to load the JDBC driver
+    static {
         try {
-            // Load Oracle JDBC driver
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            // Establish the connection
-            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-            System.out.println("Database connected successfully!");
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         } catch (ClassNotFoundException e) {
-            System.out.println("Oracle JDBC Driver not found. Please add the driver to your classpath.");
-            e.printStackTrace();
-            throw new SQLException("Unable to load JDBC driver.", e);
-        } catch (SQLException e) {
-            System.out.println("Database connection failed.");
-            e.printStackTrace();
-            throw e;
+            throw new RuntimeException("SQL Server JDBC Driver not found", e);
         }
-        return connection;
     }
 
-    // Main method for testing the connection
-    public static void main(String[] args) {
-        try (Connection connection = ConnectionManager.getConnection()) {
-            if (connection != null) {
-                System.out.println("Connection test successful!");
+    // Method to get database connection
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USERNAME, PASSWORD);
+    }
+
+    // Method to close database connection
+    public static void closeConnection(Connection conn) {
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
+        }
+    }
+
+    // Method to close ResultSet, PreparedStatement, and Connection
+    public static void closeResources(ResultSet rs, PreparedStatement stmt, Connection conn) {
+        try {
+            if (rs != null) rs.close();
         } catch (SQLException e) {
-            System.out.println("Connection test failed.");
+            e.printStackTrace();
+        }
+
+        try {
+            if (stmt != null) stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (conn != null) conn.close();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

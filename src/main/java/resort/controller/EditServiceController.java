@@ -8,8 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import resort.utils.DatabaseUtility;
+import resort.connection.ConnectionManager;
 
 public class EditServiceController extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -24,7 +23,7 @@ public class EditServiceController extends HttpServlet {
             String serviceType = request.getParameter("serviceType");
             String serviceCharge = request.getParameter("serviceCharge");
 
-            conn = DatabaseUtility.getConnection();
+            conn = ConnectionManager.getConnection();
 
             // Update existing service
             String updateQuery = "UPDATE service SET serviceType = ?, serviceCharge = ? WHERE serviceId = ?";
@@ -39,11 +38,11 @@ public class EditServiceController extends HttpServlet {
             } else {
                 response.getWriter().println("Failed to update service details.");
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             response.getWriter().println("Error: " + e.getMessage());
         } finally {
-            DatabaseUtility.closeResources(null, pstmt, conn);
+        	ConnectionManager.closeResources(null, pstmt, conn);
         }
     }
 }

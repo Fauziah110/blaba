@@ -9,7 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import resort.utils.DatabaseUtility;
+import resort.connection.ConnectionManager;
 
 public class EditEventController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -40,7 +40,7 @@ public class EditEventController extends HttpServlet {
 
 			int duration = Integer.parseInt(durationStr);
 
-			conn = DatabaseUtility.getConnection();
+			conn = ConnectionManager.getConnection();
 
 			// Update existing eventservice
 			String updateQuery = "UPDATE eventservice SET venue = ?, eventtype = ?, duration = ? WHERE serviceID = ?";
@@ -56,11 +56,11 @@ public class EditEventController extends HttpServlet {
 			} else {
 				response.getWriter().println("Failed to update event service details.");
 			}
-		} catch (SQLException | ClassNotFoundException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			response.getWriter().println("Error: " + e.getMessage());
 		} finally {
-			DatabaseUtility.closeResources(null, pstmt, conn);
+			ConnectionManager.closeResources(null, pstmt, conn);
 		}
 	}
 

@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import resort.utils.DatabaseUtility;
+import resort.connection.ConnectionManager;
 
 public class EditEmailController extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -23,7 +23,7 @@ public class EditEmailController extends HttpServlet {
         PreparedStatement pstmt = null;
 
         try {
-            conn = DatabaseUtility.getConnection();
+            conn = ConnectionManager.getConnection();
             String sql = "UPDATE staff SET STAFFEMAIL = ? WHERE STAFFEMAIL = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, newEmail);
@@ -37,12 +37,12 @@ public class EditEmailController extends HttpServlet {
                 request.setAttribute("errorMessage", "No rows updated.");
                 request.getRequestDispatcher("Error.jsp").forward(request, response);
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "SQL Exception: " + e.getMessage());
             request.getRequestDispatcher("Error.jsp").forward(request, response);
         } finally {
-            DatabaseUtility.closeResources(null, pstmt, conn);
+        	ConnectionManager.closeResources(null, pstmt, conn);
         }
     }
 

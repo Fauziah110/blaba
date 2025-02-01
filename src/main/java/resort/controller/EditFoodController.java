@@ -9,7 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import resort.utils.DatabaseUtility;
+import resort.connection.ConnectionManager;
 
 public class EditFoodController extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -25,7 +25,7 @@ public class EditFoodController extends HttpServlet {
             double menuPrice = Double.parseDouble(request.getParameter("menuPrice"));
             int quantityMenu = Integer.parseInt(request.getParameter("quantityMenu"));
 
-            conn = DatabaseUtility.getConnection();
+            conn = ConnectionManager.getConnection();
 
             // Update existing foodservice
             String updateQuery = "UPDATE foodservice SET menuName = ?, menuPrice = ?, quantityMenu = ? WHERE serviceId = ?";
@@ -41,11 +41,11 @@ public class EditFoodController extends HttpServlet {
             } else {
                 response.getWriter().println("Failed to update foodservice details.");
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             response.getWriter().println("Error: " + e.getMessage());
         } finally {
-            DatabaseUtility.closeResources(null, pstmt, conn);
+        	ConnectionManager.closeResources(null, pstmt, conn);
         }
     }
 
