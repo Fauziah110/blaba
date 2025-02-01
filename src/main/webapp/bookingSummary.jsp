@@ -1,6 +1,12 @@
 <%@ page session="true" %>
 <%@ page import="java.util.*" %>
-<%@ page import="resort.model.RoomBooking" %>
+<%@ page import="com.mdresort.RoomBooking" %>
+
+<% session.setAttribute("customerID", request.getParameter("customerID")); %>
+<% session.setAttribute("totalAdult", request.getParameter("totalAdult")); %>
+<% session.setAttribute("totalKids", request.getParameter("totalKids")); %>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,15 +16,15 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
         }
         header, footer {
             background: #003580;
             color: white;
             text-align: center;
-            padding: 20px 0;
+            padding: 20px;
         }
         main {
             padding: 20px;
@@ -28,201 +34,183 @@
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-        .form-section {
+        .section {
+            padding: 20px;
+            border-radius: 8px;
+            background: #f4f4f4;
             margin-top: 20px;
         }
-        .form-section label {
+        .section h3 {
+            margin-top: 0;
+            color: #003580;
+        }
+        label {
+            font-weight: bold;
             display: block;
             margin: 10px 0 5px;
-            font-weight: bold;
         }
-        .form-section input, .form-section select {
+        select, input {
             width: 100%;
             padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 5px;
+            margin-bottom: 10px;
         }
-        .buttons {
-            margin-top: 20px;
+        .total-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #003580;
             text-align: center;
+            padding: 10px;
+            background: #e0f7ff;
+            border-radius: 5px;
+            margin-top: 10px;
         }
-        .buttons button {
-            padding: 10px 20px;
+        .btn {
+            display: block;
+            width: 100%;
             background: #007BFF;
             color: white;
+            padding: 12px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
         }
-        .buttons button:hover {
+        .btn:hover {
             background: #0056b3;
         }
-        .hidden {
-            display: none;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #003580;
-            color: white;
-        }
     </style>
+    <script>
+        function updateTotalPrice() {
+            let basePrice = parseFloat(document.getElementById("baseTotalPrice").value);
+            let foodPrice = document.getElementById("menuName").value ? parseFloat(document.getElementById("menuName").value.split("|")[1]) : 0;
+            let foodQuantity = parseInt(document.getElementById("menuQuantity").value) || 1;
+            let eventPrice = document.getElementById("eventType").value ? 100 : 0; // Assume RM100 per event
+            let duration = parseInt(document.getElementById("duration").value) || 1;
+
+            let totalServicePrice = (foodPrice * foodQuantity) + (eventPrice * duration);
+            let finalTotal = basePrice + totalServicePrice;
+
+            document.getElementById("totalPayment").value = finalTotal.toFixed(2);
+            document.getElementById("displayTotalPayment").innerText = "RM" + finalTotal.toFixed(2);
+        }
+    </script>
 </head>
 <body>
 <header>
     <h1>Booking Summary</h1>
 </header>
+
 <main>
-    <h2>Customer Details</h2>
-    <p><strong>Name:</strong> <%= session.getAttribute("customer_name") %></p>
-    <p><strong>Email:</strong> <%= session.getAttribute("customer_email") %></p>
-    <p><strong>Phone Number:</strong> <%= session.getAttribute("customer_phoneno") %></p>
+    <div class="section">
+        <h3>Customer Details</h3>
+        <p><strong>Name:</strong> <%= session.getAttribute("customer_name") %></p>
+        <p><strong>Email:</strong> <%= session.getAttribute("customer_email") %></p>
+        <p><strong>Phone:</strong> <%= session.getAttribute("customer_phoneno") %></p>
+    </div>
 
-    <h2>Stay Details</h2>
-    <p><strong>Check-In Date:</strong> <%= session.getAttribute("checkInDate") %></p>
-    <p><strong>Check-Out Date:</strong> <%= session.getAttribute("checkOutDate") %></p>
-    <p><strong>Adults:</strong> <%= session.getAttribute("adults") %></p>
-    <p><strong>Kids:</strong> <%= session.getAttribute("kids") %></p>
+    <div class="section">
+        <h3>Stay Details</h3>
+        <p><strong>Check-In:</strong> <%= session.getAttribute("checkInDate") %></p>
+        <p><strong>Check-Out:</strong> <%= session.getAttribute("checkOutDate") %></p>
+        <p><strong>Adults:</strong> <%= session.getAttribute("adults") %></p>
+        <p><strong>Kids:</strong> <%= session.getAttribute("kids") %></p>
+    </div>
 
-    <!-- Rooms Booked Section -->
-    <h2>Rooms Booked</h2>
-    <% 
-        List<RoomBooking> bookingList = (List<RoomBooking>) session.getAttribute("bookingList");
-        double totalRoomPrice = 0;
-        if (bookingList != null && !bookingList.isEmpty()) {
-    %>
-    <table>
-        <thead>
-            <tr>
-                <th>Room Type</th>
-                <th>Quantity</th>
-                <th>Price Per Night</th>
-                <th>Total Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            <%
-                for (RoomBooking booking : bookingList) {
-                    double roomTotal = booking.getQuantity() * booking.getPrice();
-                    totalRoomPrice += roomTotal;
-            %>
-            <tr>
-                <td><%= booking.getRoomType() %></td>
-                <td><%= booking.getQuantity() %></td>
-                <td>RM<%= booking.getPrice() %></td>
-                <td>RM<%= roomTotal %></td>
-            </tr>
-            <%
-                }
-            %>
-            <tr>
-                <th colspan="3">Room Grand Total</th>
-                <th>RM<%= totalRoomPrice %></th>
-            </tr>
-        </tbody>
-    </table>
-    <% 
-        } else {
-    %>
-    <p class="no-data">No rooms booked yet. Please add rooms to your booking.</p>
-    <% 
-        }
-    %>
+    <div class="section">
+        <h3>Rooms Booked</h3>
+        <%
+            List<RoomBooking> bookingList = (List<RoomBooking>) session.getAttribute("bookingList");
+            double totalRoomPrice = 0;
+            if (bookingList != null && !bookingList.isEmpty()) {
+        %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Room Type</th>
+                    <th>Quantity</th>
+                    <th>Price/Night</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%
+                    for (RoomBooking booking : bookingList) {
+                        double roomTotal = booking.getQuantity() * booking.getPrice();
+                        totalRoomPrice += roomTotal;
+                %>
+                <tr>
+                    <td><%= booking.getRoomType() %></td>
+                    <td><%= booking.getQuantity() %></td>
+                    <td>RM<%= booking.getPrice() %></td>
+                    <td>RM<%= roomTotal %></td>
+                </tr>
+                <%
+                    }
+                %>
+                <tr>
+                    <th colspan="3">Room Grand Total</th>
+                    <th>RM<%= totalRoomPrice %></th>
+                </tr>
+            </tbody>
+        </table>
+        <% } else { %>
+            <p>No rooms booked. Please select a room.</p>
+        <% } %>
+    </div>
 
-    <h2>Service Selection</h2>
-    <form action="ReservationServiceServlet" method="POST" id="serviceForm">
-        <div>
-            <input type="checkbox" id="foodServiceCheckbox" name="serviceType" value="FoodService">
-            <label for="foodServiceCheckbox">Food Service</label>
-        </div>
-        <div>
-            <input type="checkbox" id="eventServiceCheckbox" name="serviceType" value="EventService">
-            <label for="eventServiceCheckbox">Event Service</label>
-        </div>
+    <form action="ReservationServiceServlet" method="POST">
+         <input type="hidden" name="customerID" value="<%= session.getAttribute("customerID") %>">
+	    <input type="hidden" name="roomType" value="<%= session.getAttribute("roomType") %>"> 
+	    <input type="hidden" id="baseTotalPrice" value="<%= totalRoomPrice %>">
+	    <input type="hidden" id="totalPayment" name="totalPrice" value="<%= totalRoomPrice %>">
 
-        <!-- Food Service Form -->
-        <div id="foodServiceForm" class="form-section hidden">
+        <div class="section">
             <h3>Food Service</h3>
-            <label for="menuName">Menu Name:</label>
-            <select name="menuName" id="menuName">
-                <option value="Chicken Rice|10.00">Chicken Rice (RM10.00)</option>
-                <option value="Nasi Lemak|8.50">Nasi Lemak (RM8.50)</option>
-                <option value="Spaghetti|12.00">Spaghetti (RM12.00)</option>
+            <label>Menu:</label>
+            <select name="menuName" id="menuName" onchange="updateTotalPrice()">
+                <option value="">-- Select Food --</option>
+                <option value="Chicken Rice|10">Chicken Rice (RM10)</option>
+                <option value="Nasi Lemak|8.5">Nasi Lemak (RM8.5)</option>
+                <option value="Spaghetti|12">Spaghetti (RM12)</option>
             </select>
-            <label for="menuPrice">Price (RM):</label>
-            <input type="text" id="menuPrice" name="menuPrice" readonly>
-            <label for="menuQuantity">Quantity:</label>
-            <input type="number" id="menuQuantity" name="menuQuantity" min="1" value="1">
+
+            <label>Quantity:</label>
+            <input type="number" id="menuQuantity" name="menuQuantity" min="1" value="1" onchange="updateTotalPrice()">
         </div>
 
-        <!-- Event Service Form -->
-        <div id="eventServiceForm" class="form-section hidden">
+        <div class="section">
             <h3>Event Service</h3>
-            <label for="venue">Venue:</label>
-            <select name="venue" id="venue">
+            <label>Venue:</label>
+            <select name="venue">
                 <option value="Hall A">Hall A</option>
                 <option value="Hall B">Hall B</option>
-                <option value="Garden">Garden</option>
             </select>
-            <label for="eventType">Event Type:</label>
-            <select name="eventType" id="eventType">
-                <option value="Wedding">Wedding</option>
-                <option value="Conference">Conference</option>
-                <option value="Birthday Party">Birthday Party</option>
+
+            <label>Event Type:</label>
+            <select name="eventType" id="eventType" onchange="updateTotalPrice()">
+                <option value="">-- Select Event --</option>
+                <option value="Wedding">Wedding (RM100)</option>
+                <option value="Conference">Conference (RM100)</option>
             </select>
-            <label for="duration">Duration (Hours):</label>
-            <input type="number" id="duration" name="duration" min="1" value="1">
+
+            <label>Duration (Hours):</label>
+            <input type="number" id="duration" name="duration" min="1" value="1" onchange="updateTotalPrice()">
         </div>
 
-        <div class="buttons">
-            <button type="submit">Add Service</button>
+        <div class="total-price">
+            Total Payment: <span id="displayTotalPayment">RM<%= totalRoomPrice %></span>
         </div>
-    </form>
 
-    <!-- Book Now Button -->
-    <form action="ReservationServiceServlet" method="POST">
-        <input type="hidden" name="checkInDate" value="<%= session.getAttribute("checkInDate") %>">
-        <input type="hidden" name="checkOutDate" value="<%= session.getAttribute("checkOutDate") %>">
-        <input type="hidden" name="totalAdults" value="<%= session.getAttribute("adults") %>">
-        <input type="hidden" name="totalKids" value="<%= session.getAttribute("kids") %>">
-        <input type="hidden" name="totalPrice" value="<%= totalRoomPrice %>">
-        <button type="submit">Book Now</button>
+        <button type="submit" class="btn">Confirm Booking</button>
     </form>
 </main>
+
 <footer>
     <p>&copy; 2025 MD Resort</p>
 </footer>
 
-<script>
-    const foodServiceCheckbox = document.getElementById("foodServiceCheckbox");
-    const eventServiceCheckbox = document.getElementById("eventServiceCheckbox");
-    const foodServiceForm = document.getElementById("foodServiceForm");
-    const eventServiceForm = document.getElementById("eventServiceForm");
-    const menuName = document.getElementById("menuName");
-    const menuPrice = document.getElementById("menuPrice");
-
-    // Show/Hide forms based on checkbox selection
-    foodServiceCheckbox.addEventListener("change", () => {
-        foodServiceForm.classList.toggle("hidden", !foodServiceCheckbox.checked);
-    });
-
-    eventServiceCheckbox.addEventListener("change", () => {
-        eventServiceForm.classList.toggle("hidden", !eventServiceCheckbox.checked);
-    });
-
-    // Update menu price based on selected menu
-    menuName.addEventListener("change", function() {
-        const [name, price] = this.value.split("|");
-        menuPrice.value = price || "";
-    });
-</script>
 </body>
 </html>
