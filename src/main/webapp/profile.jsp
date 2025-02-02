@@ -473,7 +473,7 @@ th {
 	</section>
 
 	<!-- Logout Button -->
-	<form action="Login.jsp?logout=true" method="post">
+	<form action="login.jsp?logout=true" method="post">
 		<button type="submit" class="btn-logout">LOG OUT</button>
 		<%
 		if ("true".equals(request.getParameter("logout"))) {
