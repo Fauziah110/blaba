@@ -26,7 +26,7 @@ Map<String, Integer> monthlyBookings = new HashMap<>();
 List<HashMap<String, String>> reservations = new ArrayList<>();
 
 try {
-	con = AzureConnection.getConnection();
+	con = ConnectionManager.getConnection();
 
 	// Total customers
 	psTotalCustomers = con.prepareStatement("SELECT COUNT(*) AS total_customers FROM Customer");
@@ -85,12 +85,12 @@ try {
 	e.printStackTrace();
 	out.println("<p>Error occurred while fetching data: " + e.getMessage() + "</p>");
 } finally {
-	AzureConnection.closeResources(rsTotalCustomers, psTotalCustomers, con);
-	AzureConnection.closeResources(rsTotalRooms, psTotalRooms, null);
-	AzureConnection.closeResources(rsTotalCheckIns, psTotalCheckIns, null);
-	AzureConnection.closeResources(rsTotalCheckOuts, psTotalCheckOuts, null);
-	AzureConnection.closeResources(rsReservations, psReservations, null);
-	AzureConnection.closeResources(rsMonthlyBookings, psMonthlyBookings, null);
+	ConnectionManager.closeResources(rsTotalCustomers, psTotalCustomers, con);
+	ConnectionManager.closeResources(rsTotalRooms, psTotalRooms, null);
+	ConnectionManager.closeResources(rsTotalCheckIns, psTotalCheckIns, null);
+	ConnectionManager.closeResources(rsTotalCheckOuts, psTotalCheckOuts, null);
+	ConnectionManager.closeResources(rsReservations, psReservations, null);
+	ConnectionManager.closeResources(rsMonthlyBookings, psMonthlyBookings, null);
 }
 %>
 
