@@ -19,83 +19,89 @@ public class ConfirmBookingServlet extends HttpServlet {
         try {
             HttpSession session = request.getSession();
 
-            // Retrieve customer details from session
+            // ✅ Retrieve customer details from session
             String customerName = (String) session.getAttribute("customerName");
             String customerEmail = (String) session.getAttribute("customerEmail");
             String customerPhoneNo = (String) session.getAttribute("customerPhoneNo");
 
-            // Retrieve stay details from session and fix String to Integer conversion
+            // ✅ Retrieve stay details from session
             String checkInDate = (String) session.getAttribute("checkInDate");
             String checkOutDate = (String) session.getAttribute("checkOutDate");
-            
-            String adultsStr = (String) session.getAttribute("adults");
-            String kidsStr = (String) session.getAttribute("kids");
+            int adults = parseIntOrDefault(session.getAttribute("adults"), 1);
+            int kids = parseIntOrDefault(session.getAttribute("kids"), 0);
 
-            int adults = (adultsStr != null) ? Integer.parseInt(adultsStr) : 1;
-            int kids = (kidsStr != null) ? Integer.parseInt(kidsStr) : 0;
-
-            // Retrieve booking list from session (or initialize if null)
-            @SuppressWarnings("unchecked")
-            List<RoomBooking> bookingList = (List<RoomBooking>) session.getAttribute("bookingList");
-
-            // Debugging: Log retrieved values
-            System.out.println("✅ DEBUG: Customer Name: " + customerName);
-            System.out.println("✅ DEBUG: Customer Email: " + customerEmail);
-            System.out.println("✅ DEBUG: Customer Phone Number: " + customerPhoneNo);
-            System.out.println("✅ DEBUG: Check-In Date: " + checkInDate);
-            System.out.println("✅ DEBUG: Check-Out Date: " + checkOutDate);
-            System.out.println("✅ DEBUG: Adults: " + adults);
-            System.out.println("✅ DEBUG: Kids: " + kids);
-
-            // Ensure required fields are not null
+            // ✅ Ensure required fields are not null
             if (customerName == null || customerEmail == null || customerPhoneNo == null ||
                 checkInDate == null || checkOutDate == null) {
-                System.out.println("❌ DEBUG: Missing customer or stay details!");
+                System.out.println("❌ ERROR: Missing customer or stay details!");
                 response.getWriter().println("❌ ERROR: Missing customer details or stay information. Please log in again.");
                 return;
             }
 
-            // Ensure the booking list is not null
+            // ✅ Retrieve or initialize booking list
+            @SuppressWarnings("unchecked")
+            List<RoomBooking> bookingList = (List<RoomBooking>) session.getAttribute("bookingList");
             if (bookingList == null) {
                 bookingList = new ArrayList<>();
             }
 
-            // Retrieve room details from request parameters
+            // ✅ Retrieve room details from request parameters
             String roomIDStr = request.getParameter("roomID");
             String roomType = request.getParameter("roomType");
             String priceStr = request.getParameter("price");
             String quantityStr = request.getParameter("quantity");
 
-            // Validate room details
+            // ✅ Validate room details
             if (roomIDStr == null || roomType == null || priceStr == null || quantityStr == null) {
-                System.out.println("❌ DEBUG: Missing room details from request.");
+                System.out.println("❌ ERROR: Missing room details from request.");
                 response.getWriter().println("❌ ERROR: Room details are missing. Please select a room before confirming.");
                 return;
             }
 
-            // Convert values to correct data types
+            // ✅ Convert values to correct data types
             int roomID = Integer.parseInt(roomIDStr);
             double price = Double.parseDouble(priceStr);
             int quantity = Integer.parseInt(quantityStr);
 
-            // Add the selected room to the booking list
-            bookingList.add(new RoomBooking(roomID, roomType, price, quantity));
+            // ✅ Check if the room already exists in the booking list (to prevent duplicates)
+            boolean roomExists = false;
+            for (RoomBooking existingBooking : bookingList) {
+                if (existingBooking.getRoomID() == roomID) {
+                    existingBooking.setQuantity(existingBooking.getQuantity() + quantity);
+                    roomExists = true;
+                    break;
+                }
+            }
 
-            // Store the updated booking list in session
+            // ✅ If room is new, add it to the list
+            if (!roomExists) {
+                bookingList.add(new RoomBooking(roomID, roomType, price, quantity));
+            }
+
+            // ✅ Store the updated booking list in session
             session.setAttribute("bookingList", bookingList);
+            session.setAttribute("roomID", roomID);
+            session.setAttribute("roomType", roomType);
+            session.setAttribute("roomPrice", price);
+            session.setAttribute("quantity", quantity);
 
-            // Debugging: Log updated booking list
-            System.out.println("✅ DEBUG: Room added to booking list.");
+            // ✅ Debugging: Log updated booking list
+            System.out.println("✅ DEBUG: Room stored in session.");
+            System.out.println("    ➤ Room ID: " + roomID);
+            System.out.println("    ➤ Room Type: " + roomType);
+            System.out.println("    ➤ Price: RM" + price);
+            System.out.println("    ➤ Quantity: " + quantity);
+            System.out.println("    ➤ Total Booked Rooms: " + bookingList.size());
+
             for (RoomBooking booking : bookingList) {
-                System.out.println("✅ DEBUG: Room ID: " + booking.getRoomID() + 
+                System.out.println("✅ DEBUG: [List] Room ID: " + booking.getRoomID() + 
                                    ", Type: " + booking.getRoomType() + 
                                    ", Price: RM" + booking.getPrice() + 
                                    ", Quantity: " + booking.getQuantity());
             }
 
-            // Forward to the booking summary page
-            request.setAttribute("bookingList", bookingList);
-            request.getRequestDispatcher("bookingSummary.jsp").forward(request, response);
+            // ✅ Redirect to booking summary page
+            response.sendRedirect("bookingSummary.jsp");
 
         } catch (Exception e) {
             e.printStackTrace(); // Print full error details in console
@@ -107,5 +113,14 @@ public class ConfirmBookingServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request, response);
+    }
+
+    // ✅ Helper method to safely parse integers
+    private int parseIntOrDefault(Object value, int defaultValue) {
+        try {
+            return (value != null) ? Integer.parseInt(value.toString()) : defaultValue;
+        } catch (NumberFormatException ignored) {
+            return defaultValue;
+        }
     }
 }

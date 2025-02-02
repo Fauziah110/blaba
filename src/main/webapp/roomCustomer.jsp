@@ -307,9 +307,9 @@ footer {
 					<div class="profile-icon">
 						<img src="images/profile-icon.png" alt="Profile"> <span><%=customerName%></span>
 						<div class="dropdown-menu">
-							<a href="ProfileCustomer.jsp">Profile</a> <a
+							<a href="profileCustomer.jsp">Profile</a> <a
 								href="BookingServlet">Booking</a> <a
-								href="LogoutCustomerServlet">Logout</a>
+								href="LogoutController">Logout</a>
 						</div>
 					</div>
 				</li>

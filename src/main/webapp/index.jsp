@@ -287,8 +287,8 @@ footer {
 						<img src="images/profile-icon.png" alt="Profile"> <span><%=customerName%></span>
 						<div class="dropdown-menu">
 							<a href="profileCustomer.jsp">Profile</a> <a
-								href="bookingServlet">Booking</a> <a
-								href="logoutCustomerServlet">Logout</a>
+								href="CustomerReservationController">Booking</a> <a
+								href="LogoutController">Logout</a>
 						</div>
 					</div>
 				</li>
@@ -320,7 +320,7 @@ footer {
 					yourself</p>
 			</div>
 			<div class="feature">
-				<img src="images/adventure.png" alt="Adventure">
+				<img src="images/adventure1.png" alt="Adventure">
 				<h3>Adventure and Activities</h3>
 				<p>Explore the natural beauty of Pantai with our guided tours</p>
 			</div>

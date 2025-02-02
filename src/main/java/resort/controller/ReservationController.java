@@ -76,15 +76,10 @@ public class ReservationController extends HttpServlet {
                 return;
             }
 
-            // ✅ Ensure room details exist in session (Retrieve as correct data types)
-            Integer roomIDObj = (Integer) session.getAttribute("roomID");
-            Double roomPriceObj = (Double) session.getAttribute("roomPrice");
-            Integer quantityObj = (Integer) session.getAttribute("quantity");
-
-            // ✅ Assign default values to prevent null issues
-            int roomID = (roomIDObj != null) ? roomIDObj : -1;
-            double roomPrice = (roomPriceObj != null) ? roomPriceObj : 0.0;
-            int quantity = (quantityObj != null) ? quantityObj : 1;
+            // ✅ Ensure room details exist in session
+            int roomID = parseIntOrDefault(session.getAttribute("roomID"), -1);
+            double roomPrice = parseDoubleOrDefault(session.getAttribute("roomPrice"), 0.0);
+            int quantity = parseIntOrDefault(session.getAttribute("quantity"), 1);
 
             // ✅ Check for missing room details
             if (roomID == -1 || roomPrice == 0.0 || quantity == 0) {
@@ -137,10 +132,24 @@ public class ReservationController extends HttpServlet {
         }
     }
 
-    // ✅ Helper method to parse Integers safely
-    private int parseIntOrDefault(Object sessionValue, int defaultValue) {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    // ✅ Helper method to safely parse integers
+    private int parseIntOrDefault(Object value, int defaultValue) {
         try {
-            return sessionValue != null ? Integer.parseInt(sessionValue.toString()) : defaultValue;
+            return (value != null) ? Integer.parseInt(value.toString()) : defaultValue;
+        } catch (NumberFormatException ignored) {
+            return defaultValue;
+        }
+    }
+
+    // ✅ Helper method to safely parse doubles
+    private double parseDoubleOrDefault(Object value, double defaultValue) {
+        try {
+            return (value != null) ? Double.parseDouble(value.toString()) : defaultValue;
         } catch (NumberFormatException ignored) {
             return defaultValue;
         }

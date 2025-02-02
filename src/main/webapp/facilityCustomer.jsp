@@ -346,7 +346,7 @@ footer {
 						<div class="dropdown-menu">
 							<a href="profileCustomer.jsp">Profile</a> <a
 								href="bookingServlet">Booking</a> <a
-								href="logoutCustomerServlet">Logout</a>
+								href="LogoutController">Logout</a>
 						</div>
 					</div>
 				</li>
