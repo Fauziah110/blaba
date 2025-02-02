@@ -174,7 +174,7 @@ header nav ul li a:hover {
 }
 
 .reservation-form button {
-	background-color: #007BFF;
+	background-color: #728687;
 	color: white;
 	border: none;
 	padding: 10px 20px;

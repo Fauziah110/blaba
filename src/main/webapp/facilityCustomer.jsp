@@ -327,7 +327,7 @@ footer {
 	<!-- Top header -->
 	<header>
 		<div class="logo">
-			<a href="index.jsp"> <img src="Images/MDResort.PNG" alt="Logo">
+			<a href="index.jsp"> <img src="images/MDResort.png" alt="Logo">
 			</a> <a href="index.jsp">MD Resort Pantai Siring Melaka</a>
 		</div>
 		<nav>
@@ -342,11 +342,11 @@ footer {
 				<!-- Display the profile icon and dropdown for logged-in users -->
 				<li>
 					<div class="profile-icon">
-						<img src="Images/profile-icon.png" alt="Profile"> <span><%=customerName%></span>
+						<img src="images/profile-icon.png" alt="Profile"> <span><%=customerName%></span>
 						<div class="dropdown-menu">
-							<a href="ProfileCustomer.jsp">Profile</a> <a
-								href="BookingServlet">Booking</a> <a
-								href="LogoutCustomerServlet">Logout</a>
+							<a href="profileCustomer.jsp">Profile</a> <a
+								href="bookingServlet">Booking</a> <a
+								href="logoutCustomerServlet">Logout</a>
 						</div>
 					</div>
 				</li>
@@ -354,7 +354,7 @@ footer {
 				} else {
 				%>
 				<!-- Show login/signup buttons for guests -->
-				<li><a href="SignupCustomer.jsp">Sign Up</a></li>
+				<li><a href="signupCustomer.jsp">Sign Up</a></li>
 				<%
 				}
 				%>
@@ -362,40 +362,40 @@ footer {
 		</nav>
 	</header>
 
-	<img src="Images/facilities_front.png" style="width: 100%">
+	<img src="images/facilities_front.png" style="width: 100%">
 	<div class="facilities-container">
 		<h1 style="color: black;">Our Facilities</h1>
 		<div class="facilities-grid">
 			<div class="facility-item">
-				<img src="Images/wifi-icon.jpg" alt="Free Wi-Fi">
+				<img src="images/wifi-icon.png" alt="Free Wi-Fi">
 				<h3>Free high-speed Wi-Fi</h3>
 				<p>All rooms have good high-speed Wi-Fi connectivity</p>
 			</div>
 			<div class="facility-item">
-				<img src="Images/kitchen-icon.jpg" alt="Kitchen">
+				<img src="images/kitchen-icon.jpg" alt="Kitchen">
 				<h3>Well-equipped kitchen</h3>
 				<p>Enjoy cooking in our spacious, modern open kitchen</p>
 			</div>
 			<div class="facility-item">
-				<img src="Images/bbq-icon.jpg" alt="BBQ">
+				<img src="images/bbq-icon.jpg" alt="BBQ">
 				<h3>Outdoor BBQ area</h3>
 				<p>Experience outdoor dining at our beautifully designed BBQ
 					area</p>
 			</div>
 			<div class="facility-item">
-				<img src="Images/room-icon.jpg" alt="Furnished Rooms">
+				<img src="images/room-icon.jpg" alt="Furnished Rooms">
 				<h3>Furnished rooms</h3>
 				<p>Each room is thoughtfully decorated and equipped with modern
 					amenities</p>
 			</div>
 			<div class="facility-item">
-				<img src="Images/parking-icon.jpg" alt="Parking">
+				<img src="images/parking-icon.jpg" alt="Parking">
 				<h3>Free parking</h3>
 				<p>Enjoy our urban oasis with green lawns, tree-lined paths,
 					athletic</p>
 			</div>
 			<div class="facility-item">
-				<img src="Images/security-icon.jpg" alt="Security">
+				<img src="images/security-icon.jpg" alt="Security">
 				<h3>24/7 Security</h3>
 				<p>We take safety seriously through our dedicated team</p>
 			</div>
@@ -404,7 +404,7 @@ footer {
 		<div class="other-facilities">
 			<h1 style="color: black;">Other Facilities</h1>
 			<div class="facility-card">
-				<img src="Images/BBQ-place.jpg" alt="BBQ Place">
+				<img src="images/BBQ-place.jpg" alt="BBQ Place">
 				<div>
 					<h3>BBQ Place</h3>
 					<p>Description: Outdoor BBQ Area</p>
@@ -413,7 +413,7 @@ footer {
 				</div>
 			</div>
 			<div class="facility-card">
-				<img src="Images/open-kitchen.jpg" alt="Open Kitchen">
+				<img src="images/open-kitchen.jpg" alt="Open Kitchen">
 				<div>
 					<h3>Open Kitchen</h3>
 					<p>Description: Public Kitchen and Dining Area</p>
@@ -426,16 +426,16 @@ footer {
 	<footer>
 		<div class="footer-container">
 			<div class="footer-logo">
-				<a href="index.jsp"> <img src="Images/MdResort_logo.png"
+				<a href="index.jsp"> <img src="images/MDResort.png"
 					alt="Logo">
 				</a>
 			</div>
 			<div class="social-icons">
 				<a href="https://facebook.com"><img
-					src="Images/facebook_icon.png" alt="Facebook"></a> <a
-					href="https://instagram.com"><img src="Images/insta_icon.png"
+					src="images/facebook_icon.png" alt="Facebook"></a> <a
+					href="https://instagram.com"><img src="images/insta_icon.png"
 					alt="Instagram"></a> <a href="https://whatsapp.com"><img
-					src="Images/whatsapp_icon.png" alt="WhatsApp"></a>
+					src="images/whatsapp_icon.png" alt="WhatsApp"></a>
 			</div>
 			<ul class="footer-links">
 				<li><a href="index.jsp">Home</a></li>

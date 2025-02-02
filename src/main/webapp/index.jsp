@@ -284,11 +284,11 @@ footer {
 				<!-- Display the profile icon and dropdown for logged-in users -->
 				<li>
 					<div class="profile-icon">
-						<img src="Images/profile-icon.png" alt="Profile"> <span><%=customerName%></span>
+						<img src="images/profile-icon.png" alt="Profile"> <span><%=customerName%></span>
 						<div class="dropdown-menu">
-							<a href="ProfileCustomer.jsp">Profile</a> <a
-								href="BookingServlet">Booking</a> <a
-								href="LogoutCustomerServlet">Logout</a>
+							<a href="profileCustomer.jsp">Profile</a> <a
+								href="bookingServlet">Booking</a> <a
+								href="logoutCustomerServlet">Logout</a>
 						</div>
 					</div>
 				</li>

@@ -16,7 +16,7 @@
             padding: 0;
         }
         header, footer {
-            background: #003580;
+            background: #728687;
             color: white;
             text-align: center;
             padding: 20px;
@@ -37,7 +37,7 @@
         }
         .section h3 {
             margin-top: 0;
-            color: #003580;
+            color: black;
         }
         label {
             font-weight: bold;
@@ -54,17 +54,17 @@
         .total-price {
             font-size: 18px;
             font-weight: bold;
-            color: #003580;
+            color:#728687;
             text-align: center;
             padding: 10px;
-            background: #e0f7ff;
+            background: #f4f4f4;
             border-radius: 5px;
             margin-top: 10px;
         }
         .btn {
             display: block;
             width: 100%;
-            background: #007BFF;
+            background: #728687;
             color: white;
             padding: 12px;
             border: none;
@@ -74,7 +74,7 @@
             margin-top: 10px;
         }
         .btn:hover {
-            background: #0056b3;
+            background: #728687;
         }
     </style>
 </head>

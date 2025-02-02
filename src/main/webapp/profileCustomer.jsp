@@ -233,7 +233,7 @@
 <body>
     <header>
 		<div class="logo">
-			<a href="index.jsp"> <img src="Images/MDResort.PNG" alt="Logo">
+			<a href="index.jsp"> <img src="images/MDResort.png" alt="Logo">
 			</a> <a href="index.jsp">MD Resort Pantai Siring Melaka</a>
 		</div>
 		<nav>
@@ -248,7 +248,7 @@
 				<!-- Display the profile icon and dropdown for logged-in users -->
 				<li>
 					<div class="profile-icon">
-						<img src="Images/profile-icon.png" alt="Profile"> <span><%=customerName%></span>
+						<img src="images/profile-icon.png" alt="Profile"> <span><%=customerName%></span>
 						<div class="dropdown-menu">
 							<a href="ProfileCustomer.jsp">Profile</a> <a
 								href="BookingServlet">Booking</a> <a
@@ -268,7 +268,7 @@
 		</nav>
 	</header>
     
-    <img src="Images/profile_front.png" alt="profile-background">
+    <img src="images/profile_front.png" alt="profile-background">
    
    <div class="profile-container">
         <h2>Personal Details</h2>
@@ -310,17 +310,17 @@
 <footer>
     <div class="footer-container">
       <div class="footer-logo">
-        <img src="MdResort_logo.png" alt="Logo">
+        <img src="images/MDResort.png" alt="Logo">
       </div>
       <div class="social-icons">
-        <a href="https://facebook.com"><img src="facebook_icon.png" alt="Facebook"></a>
-        <a href="https://instagram.com"><img src="insta_icon.png" alt="Instagram"></a>
-        <a href="https://whatsapp.com"><img src="whatsapp_icon.png" alt="WhatsApp"></a>
+        <a href="https://facebook.com"><img src="images/facebook_icon.png" alt="Facebook"></a>
+        <a href="https://instagram.com"><img src="images/insta_icon.png" alt="Instagram"></a>
+        <a href="https://whatsapp.com"><img src="images/whatsapp_icon.png" alt="WhatsApp"></a>
       </div>
       <ul class="footer-links">
-        <li><a href="MdResort_HOMEPAGE.jsp">Home</a></li>
-        <li><a href="MdResort_ROOM.jsp">Room</a></li>
-        <li><a href="MdResort_FACILITIES.html">Facilities</a></li>
+        <li><a href="index.jsp">Home</a></li>
+        <li><a href="roomCustomer.jsp">Room</a></li>
+        <li><a href="facilityCustomer.jsp">Facilities</a></li>
       </ul>
     </div>
   </footer>

@@ -15,7 +15,7 @@
             background-color: white;
         }
         header, footer {
-            background: #003580;
+            background: #728687;
             color: white;
             text-align: center;
             padding: 20px 0;
@@ -26,7 +26,7 @@
             padding: 15px;
         }
         .stay-details {
-            background: #e9f4ff;
+            background: #f4f4f4;
             border-radius: 10px;
             margin-bottom: 20px;
             padding: 20px;
@@ -36,6 +36,8 @@
             font-size: 16px;
         }
         .room-card {
+            display: flex; /* Enables Flexbox */
+            align-items: center;
             border: 1px solid #ddd;
             padding: 20px;
             margin-bottom: 20px;
@@ -43,10 +45,14 @@
             background: #f4f4f4;
         }
         .room-card img {
-            width: 100%;
-            max-height: 200px;
+            width: 200px;
+            height: 200px;
             object-fit: cover;
             border-radius: 8px;
+            margin-right: 20px; /* Adds spacing between image and text */
+        }
+        .room-details {
+            flex: 1; /* Allows details section to take remaining space */
         }
         .room-card h3 {
             margin: 10px 0;
@@ -55,7 +61,7 @@
             margin: 5px 0;
         }
         button {
-            background: #007BFF;
+            background: #728687;
             color: white;
             padding: 10px 15px;
             border: none;
@@ -83,33 +89,34 @@
                 for (Room room : availableRooms) {
                     String roomImage = "default.jpg"; // Default image fallback
                     switch (room.getRoomID()) { // Using roomID to determine image
-                        case 1:
-                            roomImage = "family_room.jpg";
+                        case 101:
+                            roomImage = "images/family_room.jpeg";
                             break;
-                        case 2:
-                            roomImage = "cabin_room.jpg";
+                        case 102:
+                            roomImage = "images/cabin_room.jpg";
                             break;
-                        case 3:
-                            roomImage = "wood_room.jpg";
+                        case 103:
+                            roomImage = "images/wood_room.jpg";
                             break;
-                        // Add more cases as needed for other room IDs
                     }
         %>
         <div class="room-card">
-            <img src="Images/family-room.jpg<%= roomImage %>" alt="Room Image">
-            <h3><%= room.getRoomType() %></h3>
-            <p>Price: RM<%= room.getRoomPrice() %> per night</p>
-            <form action="ConfirmBookingServlet" method="POST">
-                <input type="hidden" name="roomID" value="<%= room.getRoomID() %>">
-                <input type="hidden" name="roomType" value="<%= room.getRoomType() %>">
-                <input type="hidden" name="price" value="<%= room.getRoomPrice() %>">
-                <label for="quantity">Quantity:</label>
-                <select name="quantity" id="quantity">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                </select>
-                <button type="submit">Add to Booking</button>
-            </form>
+            <img src="<%= roomImage %>" alt="Room Image">
+            <div class="room-details">
+                <h3><%= room.getRoomType() %></h3>
+                <p><strong>Price:</strong> RM<%= room.getRoomPrice() %> per night</p>
+                <form action="ConfirmBookingServlet" method="POST">
+                    <input type="hidden" name="roomID" value="<%= room.getRoomID() %>">
+                    <input type="hidden" name="roomType" value="<%= room.getRoomType() %>">
+                    <input type="hidden" name="price" value="<%= room.getRoomPrice() %>">
+                    <label for="quantity">Quantity:</label>
+                    <select name="quantity" id="quantity">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                    </select>
+                    <button type="submit">Add to Booking</button>
+                </form>
+            </div>
         </div>
         <%
                 }
