@@ -11,38 +11,49 @@ import jakarta.servlet.http.HttpServletResponse;
 import resort.connection.ConnectionManager;
 
 public class EditServiceController extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
 
-        try {
-            String serviceId = request.getParameter("serviceId");
-            String serviceType = request.getParameter("serviceType");
-            String serviceCharge = request.getParameter("serviceCharge");
+		try {
+			String serviceId = request.getParameter("serviceId");
+			String serviceType = request.getParameter("serviceType");
+			String serviceCharge = request.getParameter("serviceCharge");
+			String serviceDate = request.getParameter("serviceDate"); // Get service date
 
-            conn = ConnectionManager.getConnection();
+			conn = ConnectionManager.getConnection();
 
-            // Update existing service
-            String updateQuery = "UPDATE service SET serviceType = ?, serviceCharge = ? WHERE serviceId = ?";
-            pstmt = conn.prepareStatement(updateQuery);
-            pstmt.setString(1, serviceType);
-            pstmt.setString(2, serviceCharge);
-            pstmt.setString(3, serviceId);
+			// Update existing service
+			String updateQuery = "UPDATE service SET serviceType = ?, serviceCharge = ?, serviceDate = ? WHERE serviceId = ?";
+			pstmt = conn.prepareStatement(updateQuery);
+			pstmt.setString(1, serviceType);
+			pstmt.setString(2, serviceCharge);
+			pstmt.setString(3, serviceDate); // Set service date
+			pstmt.setString(4, serviceId);
 
-            int result = pstmt.executeUpdate();
-            if (result > 0) {
-                response.sendRedirect("Service.jsp"); // Redirect to refresh page
-            } else {
-                response.getWriter().println("Failed to update service details.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            response.getWriter().println("Error: " + e.getMessage());
-        } finally {
-        	ConnectionManager.closeResources(null, pstmt, conn);
-        }
-    }
+			int result = pstmt.executeUpdate();
+			if (result > 0) {
+				response.sendRedirect("service.jsp"); // Redirect to refresh page
+			} else {
+				response.getWriter().println("Failed to update service details.");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			response.getWriter().println("Error: " + e.getMessage());
+		} finally {
+			ConnectionManager.closeResources(null, pstmt, conn);
+		}
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// Handle GET requests
+		response.sendRedirect("service.jsp");
+	}
+
 }

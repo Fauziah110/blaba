@@ -40,7 +40,7 @@ public class DeleteServiceController extends HttpServlet {
 
                 int result = pstmt.executeUpdate();
                 if (result > 0) {
-                    response.sendRedirect("Service.jsp"); // Redirect to refresh page
+                    response.sendRedirect("service.jsp"); // Redirect to refresh page
                 } else {
                     response.getWriter().println("Failed to delete service.");
                 }

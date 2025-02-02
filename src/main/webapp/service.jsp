@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
 <%@ page import="java.sql.Connection"%>
 <%@ page import="java.sql.DriverManager"%>
 <%@ page import="java.sql.PreparedStatement"%>
@@ -260,20 +260,20 @@ th {
 </style>
 <body>
 	<nav>
-		<a href="Dashboard.jsp" class="logo-link"> <img
+		<a href="dashboard.jsp" class="logo-link"> <img
 			src="Images/MDResort.PNG" alt="Resort Logo" class="logo-image">
 			<span class="logo-text">MD Resort Pantai Siring Melaka</span>
 		</a>
 		<div class="spacer"></div>
 		<ul>
-			<li><a href="Booking.jsp">Booking</a></li>
+			<li><a href="booking.jsp">Booking</a></li>
 			<li><a href="Room.jsp">Room</a></li>
-			<li><a href="Service.jsp">Service</a>
+			<li><a href="service.jsp">Service</a>
 				<ul class="submenu">
-					<li><a href="FoodService.jsp">Food Service</a></li>
-					<li><a href="EventService.jsp">Event Service</a></li>
+					<li><a href="foodService.jsp">Food Service</a></li>
+					<li><a href="eventService.jsp">Event Service</a></li>
 				</ul></li>
-			<li><a href="Profile.jsp">Profile</a></li>
+			<li><a href="profile.jsp">Profile</a></li>
 		</ul>
 
 	</nav>
@@ -287,6 +287,8 @@ th {
 				<th>No Service</th>
 				<th>Service Type</th>
 				<th>Service Charge</th>
+				<th>Service Date</th>
+				<!-- Add Service Date column -->
 				<th>Actions</th>
 			</tr>
 		</thead>
@@ -306,12 +308,15 @@ th {
 				<td><%=rs.getInt("SERVICEID")%></td>
 				<td><%=rs.getString("SERVICETYPE")%></td>
 				<td><%=rs.getBigDecimal("SERVICECHARGE")%></td>
+				<td><%=rs.getDate("SERVICEDATE")%></td>
+				<!-- Display Service Date -->
 				<td class="action-buttons">
 					<!-- Edit Button -->
 					<button class="btn btn-sm btn-secondary"
 						onclick="showEditModal('<%=rs.getInt("SERVICEID")%>', 
-                                   '<%=rs.getString("SERVICETYPE")%>', 
-                                   '<%=rs.getBigDecimal("SERVICECHARGE")%>')">
+                                           '<%=rs.getString("SERVICETYPE")%>', 
+                                           '<%=rs.getBigDecimal("SERVICECHARGE")%>', 
+                                           '<%=rs.getDate("SERVICEDATE")%>')">
 						Edit</button> <!-- Delete Button -->
 					<button class="btn btn-sm btn-danger"
 						onclick="showDeleteModal('<%=rs.getInt("SERVICEID")%>')">
@@ -327,42 +332,35 @@ th {
 			DatabaseUtility.closeResources(rs, pstmt, conn);
 			}
 			%>
-
 		</tbody>
 	</table>
+
 	<!-- Add Service Modal -->
 	<div id="addServiceModal" class="modal">
 		<div class="modal-content">
 			<span class="close" onclick="closeModal()">&times;</span>
 			<h2>Add Service</h2>
-			<form action="Service.jsp" method="post">
-				<!-- Change action to Room.jsp -->
-				<label for="serviceId">No Service:</label> <input type="text"
-					id="serviceId" name="serviceId" required><br> <label
-					for="serviceType">Type Service:</label> <input type="text"
+			<form action="service.jsp" method="post">
+				<label for="serviceType">Type Service:</label> <input type="text"
 					id="serviceType" name="serviceType" required><br> <label
 					for="serviceCharge">Service Charge:</label> <input type="text"
 					id="serviceCharge" name="serviceCharge" required><br>
+				<label for="serviceDate">Service Date:</label> <input type="date"
+					id="serviceDate" name="serviceDate" required><br>
 
 				<button type="submit">Add Service</button>
 			</form>
+
+
+
 		</div>
 	</div>
 	<%
 	if ("POST".equalsIgnoreCase(request.getMethod())) {
 		// Get form data
-		int serviceId = Integer.parseInt(request.getParameter("serviceId"));
 		String serviceType = request.getParameter("serviceType");
 		double serviceCharge = Double.parseDouble(request.getParameter("serviceCharge"));
-
-		// Declare roomId variable as Integer (to allow null values)
-		String roomIdParam = request.getParameter("roomId");
-		Integer roomId = null; // Allow roomId to be null
-
-		// Check if roomIdParam is provided
-		if (roomIdParam != null && !roomIdParam.isEmpty()) {
-			roomId = Integer.parseInt(roomIdParam); // Parse the roomId if it's not null
-		}
+		String serviceDate = request.getParameter("serviceDate"); // Get service date
 
 		Connection conn2 = null;
 		PreparedStatement ps2 = null;
@@ -371,21 +369,14 @@ th {
 			conn2 = DatabaseUtility.getConnection();
 			conn2.setAutoCommit(false); // Disable auto-commit for transaction control
 
-			// SQL query (with 4 placeholders)
-			String insertServiceSql = "INSERT INTO service (serviceid, servicetype, servicecharge, roomid) VALUES (?, ?, ?, ?)";
+			// SQL query (without serviceid)
+			String insertServiceSql = "INSERT INTO service (servicetype, servicecharge, servicedate) VALUES (?, ?, ?)";
 			ps2 = conn2.prepareStatement(insertServiceSql);
 
 			// Set the values for the prepared statement
-			ps2.setInt(1, serviceId); // Set serviceId
-			ps2.setString(2, serviceType); // Set serviceType
-			ps2.setDouble(3, serviceCharge); // Set serviceCharge
-
-			// Set roomId, either as a number or NULL
-			if (roomId != null) {
-		ps2.setInt(4, roomId); // Set roomId if it's not null
-			} else {
-		ps2.setNull(4, java.sql.Types.INTEGER); // Set roomId as NULL if it's null
-			}
+			ps2.setString(1, serviceType); // Set serviceType
+			ps2.setDouble(2, serviceCharge); // Set serviceCharge
+			ps2.setString(3, serviceDate); // Set serviceDate
 
 			// Execute the insert statement
 			ps2.executeUpdate();
@@ -417,26 +408,28 @@ th {
 	}
 	%>
 
+
+
 	<!-- Edit Service Modal -->
 	<div id="editServiceModal" class="modal">
 		<div class="modal-content">
 			<span class="close" onclick="closeModal()">&times;</span>
 			<h2>Edit Service</h2>
 			<form action="EditServiceController" method="post">
-				<!-- Change action to Room.jsp -->
-				<label for="serviceId">No Service:</label> <input type="text"
-					id="serviceId" name="serviceId" required><br> <label
-					for="serviceType">Type Service:</label> <input type="text"
+				<input type="hidden" id="serviceId" name="serviceId">
+				<!-- Hidden field for service ID -->
+				<label for="serviceType">Type Service:</label> <input type="text"
 					id="serviceType" name="serviceType" required><br> <label
 					for="serviceCharge">Service Charge:</label> <input type="text"
 					id="serviceCharge" name="serviceCharge" required><br>
+				<label for="serviceDate">Service Date:</label> <input type="date"
+					id="serviceDate" name="serviceDate" required><br>
 
 				<button type="submit">Save Service</button>
-
-
 			</form>
 		</div>
 	</div>
+
 	<!-- Delete Service Modal -->
 	<div id="deleteServiceModal" class="modal">
 		<div class="modal-content">
@@ -466,6 +459,7 @@ th {
 			document.getElementById('serviceId').value = serviceId;
 			document.getElementById('serviceType').value = serviceType;
 			document.getElementById('serviceCharge').value = serviceCharge;
+			document.getElementById('serviceDate').value = serviceDate;
 
 			// Show the modal using the correct ID
 			document.getElementById('editServiceModal').style.display = 'block';

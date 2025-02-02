@@ -140,7 +140,7 @@
         <div class="spacer"></div>
         <ul>
             <li><a href="booking.jsp">Booking</a></li>
-            <li><a href="room.jsp">Room</a></li>
+            <li><a href="Room.jsp">Room</a></li>
             <li><a href="service.jsp">Service</a>
                 <ul class="submenu">
                     <li><a href="foodService.jsp">Food Service</a></li>
