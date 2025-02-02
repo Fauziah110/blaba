@@ -5,7 +5,7 @@
 <%@ page import="java.sql.PreparedStatement"%>
 <%@ page import="java.sql.ResultSet"%>
 <%@ page import="java.sql.SQLException"%>
-<%@ page import="resort.utils.DatabaseUtility"%>
+<%@ page import="resort.connection.ConnectionManager"%>
 <%@ page import="java.sql.*, java.io.*"%>
 
 <!DOCTYPE html>
@@ -296,14 +296,14 @@ th {
 		</a>
 		<div class="spacer"></div>
 		<ul>
-			<li><a href="Booking.jsp">Booking</a></li>
-			<li><a href="Room.jsp">Room</a></li>
-			<li><a href="Service.jsp">Service</a>
+			<li><a href="booking.jsp">Booking</a></li>
+			<li><a href="room.jsp">Room</a></li>
+			<li><a href="service.jsp">Service</a>
 				<ul class="submenu">
-					<li><a href="FoodService.jsp">Food Service</a></li>
-					<li><a href="EventService.jsp">Event Service</a></li>
+					<li><a href="foodService.jsp">Food Service</a></li>
+					<li><a href="eventService.jsp">Event Service</a></li>
 				</ul></li>
-			<li><a href="Profile.jsp">Profile</a></li>
+			<li><a href="profile.jsp">Profile</a></li>
 		</ul>
 
 	</nav>
@@ -328,7 +328,7 @@ th {
 			PreparedStatement pstmt = null;
 			ResultSet rs = null;
 			try {
-				conn = DatabaseUtility.getConnection();
+				conn = ConnectionManager.getConnection();
 				String sql = "SELECT R.ROOMID, R.ROOMTYPE, R.ROOMSTATUS, R.ROOMPRICE, S.STAFFNAME "
 				+ "FROM ROOM R JOIN STAFF S ON R.STAFFID = S.STAFFID";
 
@@ -359,7 +359,7 @@ th {
 			} catch (Exception e) {
 			e.printStackTrace();
 			} finally {
-			DatabaseUtility.closeResources(rs, pstmt, conn);
+			ConnectionManager.closeResources(rs, pstmt, conn);
 			}
 			%>
 		</tbody>
@@ -389,7 +389,7 @@ th {
 					<label for="staffInCharge">Staff In Charge:</label> <select
 						id="staffInCharge" name="staffInCharge">
 						<%
-						conn = DatabaseUtility.getConnection();
+						conn = ConnectionManager.getConnection();
 						String sql2 = "SELECT staffid, staffname FROM staff";
 						pstmt = conn.prepareStatement(sql2);
 						rs = pstmt.executeQuery();
@@ -398,7 +398,7 @@ th {
 						<option value="<%=rs.getInt("staffid")%>"><%=rs.getString("staffname")%></option>
 						<%
 						}
-						DatabaseUtility.closeResources(rs, pstmt, conn);
+						ConnectionManager.closeResources(rs, pstmt, conn);
 						%>
 					</select><br>
 					<button type="submit">Add Room</button>
@@ -418,7 +418,7 @@ th {
 			PreparedStatement ps2 = null;
 			try {
 				// Database connection
-				conn2 = DatabaseUtility.getConnection();
+				conn2 = ConnectionManager.getConnection();
 				conn2.setAutoCommit(false); // Disable auto-commit for transaction control
 
 				// Insert SQL query (use staffid instead of staffName)
@@ -450,7 +450,7 @@ th {
 			se.printStackTrace();
 				}
 			} finally {
-				DatabaseUtility.closeResources(null, ps2, conn2); // Close resources
+				ConnectionManager.closeResources(null, ps2, conn2); // Close resources
 			}
 		}
 		%>
@@ -468,7 +468,7 @@ th {
 
 					<!-- Room fields -->
 					<label for="roomId">No Room:</label> <input type="text" id="roomId"
-						name="roomId" required><br> <label for="roomType">Room
+						name="roomId" readonly><br> <label for="roomType">Room
 						Type:</label> <select id="roomType" name="roomType">
 						<option value="Family">Family</option>
 						<option value="Cabin">Cabin</option>
@@ -490,7 +490,7 @@ th {
 						PreparedStatement pstmt3 = null;
 						ResultSet rs3 = null;
 						try {
-							conn3 = DatabaseUtility.getConnection();
+							conn3 = ConnectionManager.getConnection();
 							String staffQuery = "SELECT staffid, staffname FROM staff";
 							pstmt3 = conn3.prepareStatement(staffQuery);
 							rs3 = pstmt3.executeQuery();
@@ -504,7 +504,7 @@ th {
 						} catch (SQLException e) {
 						e.printStackTrace();
 						} finally {
-						DatabaseUtility.closeResources(rs3, pstmt3, conn3);
+						ConnectionManager.closeResources(rs3, pstmt3, conn3);
 						}
 						%>
 					</select><br>
