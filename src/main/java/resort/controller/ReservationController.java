@@ -96,10 +96,12 @@ public class ReservationController extends HttpServlet {
             int totalAdults = parseIntOrDefault(session.getAttribute("adults"), 1);
             int totalKids = parseIntOrDefault(session.getAttribute("kids"), 0);
             double totalPayment = roomPrice * quantity; // Calculate based on room price & quantity
-
+            
             System.out.println("✅ DEBUG: Total Adults: " + totalAdults);
             System.out.println("✅ DEBUG: Total Kids: " + totalKids);
             System.out.println("✅ DEBUG: Total Payment: RM" + totalPayment);
+         // ✅ Save total payment in session
+            session.setAttribute("totalPayment", totalPayment);
 
             // ✅ Insert Reservation Data into DB
             String reservationSQL = "INSERT INTO Reservation (reservationDate, checkInDate, checkOutDate, totalAdult, totalKids, roomID, customerID, totalPayment) VALUES (CURRENT_DATE, ?, ?, ?, ?, ?, ?, ?)";

@@ -2,9 +2,16 @@
 <%@ page import="java.util.*" %>
 
 <%
-    String customerName = (String) session.getAttribute("customerName");
+
+	if (session.getAttribute("customerID") == null) {
+	    response.sendRedirect("login.jsp");
+	    return;
+	}
+
+	String customerID = (String) session.getAttribute("customerID");
+	String customerName = (String) session.getAttribute("customerName");
     String customerEmail = (String) session.getAttribute("customerEmail");
-    String customerPhone = (String) session.getAttribute("customerPhone");
+    String customerPhoneNo = (String) session.getAttribute("customerPhoneNo");
     boolean isLoggedIn = (customerName != null);
 %>
 
@@ -251,8 +258,8 @@
 						<img src="images/profile-icon.png" alt="Profile"> <span><%=customerName%></span>
 						<div class="dropdown-menu">
 							<a href="ProfileCustomer.jsp">Profile</a> <a
-								href="BookingServlet">Booking</a> <a
-								href="LogoutCustomerServlet">Logout</a>
+								href="CustomerReservationController">Booking</a> <a
+								href="LogoutController">Logout</a>
 						</div>
 					</div>
 				</li>
@@ -299,11 +306,11 @@
         <!-- Phone Section -->
         <div class="section">
             <span class="label">Phone Number:</span>
-            <span class="value" id="phone-value"><%= customerPhone %></span>
+            <span class="value" id="phone-value"><%= customerPhoneNo %></span>
             <a href="#" class="edit" onclick="enableEdit(event, 'phone-form')">Edit</a>
         </div>
         <form id="phone-form" class="edit-form" style="display: none;" method="post" action="ProfileController">
-            <input type="text" name="customerPhone" value="<%= customerPhone %>" required />
+            <input type="text" name="customerPhoneNo" value="<%= customerPhoneNo %>" required />
             <button type="submit">Save</button>
         </form>
     </div>

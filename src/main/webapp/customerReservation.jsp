@@ -1,147 +1,173 @@
 <%@ page session="true" %>
 <%@ page import="java.util.*" %>
-<%@ page import="resort.model.Reservation" %>
+<%@ page import="resort.model.RoomBooking" %>
+<%
+String customerName = (String) session.getAttribute("customerName");
+boolean isLoggedIn = (customerName != null);
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Booking Details</title>
+    <title>Booking Receipt</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: white;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
+            color: black;
         }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
+        header {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 25px;
+            font-size: 18px;
+            
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .header {
-            text-align: center;
-            color: #003580;
-            font-size: 22px;
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        .logo a {
+            font-size: 18px;
+            color: #728687;
+            text-decoration: none;
             font-weight: bold;
-            margin-bottom: 20px;
+        }
+        .receipt-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
         .section {
+            margin-top: 20px;
             padding: 15px;
-            border-bottom: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f4f4f4;
         }
         .section h3 {
-            margin: 0;
-            color: #003580;
-            font-size: 18px;
-        }
-        .details p {
-            margin: 5px 0;
-            font-size: 16px;
+            color: black;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
         }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
         th, td {
             padding: 12px;
-            text-align: left;
+            border: 1px solid #ddd;
+            text-align: center;
         }
         th {
-            background: #003580;
+            background-color: #728687;
+            color: white;
+            font-size: 16px;
+        }
+        footer {
+            background: #728687;
             color: white;
             text-align: center;
+            padding: 10px 0;
+            margin-top: 30px;
         }
-        .total {
-            font-size: 18px;
-            font-weight: bold;
-            text-align: right;
-            margin-top: 15px;
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .no-reservation {
-            text-align: center;
-            color: red;
-            font-size: 18px;
-            margin-top: 20px;
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding-top: 10px;
+            border-top: 1px solid white;
+        }
+        .footer-links a {
+            color: black;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .footer-links a:hover {
+            color: white;
         }
     </style>
+    <script>
+        function printReceipt() {
+            window.print();
+        }
+    </script>
 </head>
 <body>
-
-<div class="container">
-    <div class="header">Your Booking Details</div>
-
-    <div class="section">
-        <h3>Customer Information</h3>
-        <%
-            List<Reservation> userReservations = (List<Reservation>) request.getAttribute("userReservations");
-            if (userReservations != null && !userReservations.isEmpty()) {
-                Reservation res = userReservations.get(0); // Take first reservation to show customer details
-        %>
-        <div class="details">
-            <p><strong>Customer ID:</strong> <%= res.getCustomerID() %></p>
-            <p><strong>Customer Name:</strong> <%= res.getCustomerName() %></p>
-        </div>
+<header>
+    <div class="logo">
+        <a href="index.jsp">
+            <img src="images/MDResort.png" alt="Logo">
+        </a>
+        <a href="index.jsp">MD Resort Pantai Siring Melaka</a>
     </div>
-
+</header>
+<div class="receipt-container">
+    <header>
+        <h1>Your Booking</h1>
+        <p>Thank you for booking with <strong>MD Resort</strong></p>
+    </header>
     <div class="section">
-        <h3>Booking Information</h3>
-        <div class="details">
-            <p><strong>Reservation ID:</strong> <%= res.getReservationID() %></p>
-            <p><strong>Reservation Date:</strong> <%= res.getReservationDate() %></p>
-            <p><strong>Check-In Date:</strong> <%= res.getCheckInDate() %></p>
-            <p><strong>Check-Out Date:</strong> <%= res.getCheckOutDate() %></p>
-        </div>
+        <h3>Customer Details</h3>
+        <p><strong>Name:</strong> <%= session.getAttribute("customerName") %></p>
+        <p><strong>Email:</strong> <%= session.getAttribute("customerEmail") %></p>
+        <p><strong>Phone:</strong> <%= session.getAttribute("customerPhoneNo") %></p>
     </div>
-
     <div class="section">
-        <h3>Room Details</h3>
+        <h3>Stay Details</h3>
+        <p><strong>Check-In:</strong> <%= session.getAttribute("checkInDate") %></p>
+        <p><strong>Check-Out:</strong> <%= session.getAttribute("checkOutDate") %></p>
+        <p><strong>Adults:</strong> <%= session.getAttribute("totalAdult") %></p>
+        <p><strong>Kids:</strong> <%= session.getAttribute("totalKids") %></p>
+    </div>
+    <div class="section">
+        <h3>Booking Details</h3>
         <table>
-            <thead>
-                <tr>
-                    <th>Room Type</th>
-                    <th>Adults</th>
-                    <th>Kids</th>
-                    <th>Service ID</th>
-                    <th>Total Payment (RM)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <%
-                    for (Reservation reservation : userReservations) {
-                %>
-                <tr>
-                    <td><%= reservation.getRoomType() %></td>
-                    <td style="text-align: center;"><%= reservation.getTotalAdult() %></td>
-                    <td style="text-align: center;"><%= reservation.getTotalKids() %></td>
-                    <td style="text-align: center;"><%= (reservation.getServiceID() != 0) ? reservation.getServiceID() : "N/A" %></td>
-                    <td style="text-align: right;">RM <%= reservation.getTotalPayment() %></td>
-                </tr>
-                <%
-                    }
-                %>
-            </tbody>
+            <tr>
+                <th>Reservation ID</th>
+                <th>Room ID</th>
+                <th>Room Type</th>
+                <th>Room Price (RM/night)</th>
+                <th>Total Payment (RM)</th>
+            </tr>
+            <tr>
+                <td><%= session.getAttribute("reservationID") %></td>
+                <td><%= session.getAttribute("roomID") %></td>
+                <td><%= session.getAttribute("roomType") %></td>
+                <td>RM <%= session.getAttribute("roomPrice") %></td>
+                <td>RM <%= session.getAttribute("totalPayment") %></td>
+            </tr>
         </table>
     </div>
-
-    <div class="section total">
-        <p><strong>Total Payment:</strong> RM <%= res.getTotalPayment() %></p>
-    </div>
-    <%
-        } else {
-    %>
-    <p class="no-reservation">No reservations found.</p>
-    <%
-        }
-    %>
 </div>
-
+<footer>
+    <div class="footer-container">
+        <ul class="footer-links">
+            <li><a href="index.jsp">Home</a></li>
+            <li><a href="roomCustomer.jsp">Room</a></li>
+            <li><a href="facilityCustomer.jsp">Facilities</a></li>
+        </ul>
+        <p>&copy; 2025 MD Resort. All rights reserved.</p>
+    </div>
+</footer>
 </body>
 </html>

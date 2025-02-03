@@ -105,7 +105,7 @@
             <div class="room-details">
                 <h3><%= room.getRoomType() %></h3>
                 <p><strong>Price:</strong> RM<%= room.getRoomPrice() %> per night</p>
-                <form action="ConfirmBookingServlet" method="POST">
+                <form action="ConfirmBookingController" method="POST">
                     <input type="hidden" name="roomID" value="<%= room.getRoomID() %>">
                     <input type="hidden" name="roomType" value="<%= room.getRoomType() %>">
                     <input type="hidden" name="price" value="<%= room.getRoomPrice() %>">

@@ -45,9 +45,8 @@ public class CustomerLoginController extends HttpServlet {
         email = email.trim().toLowerCase(); // Normalize email to lowercase
         password = password.trim();
 
-        // Debugging: Log email but hide password
+        // Debugging logs
         System.out.println("✅ DEBUG: Checking login for email: [" + email + "]");
-        System.out.println("✅ DEBUG: Password is hidden for security");
 
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -59,38 +58,32 @@ public class CustomerLoginController extends HttpServlet {
             System.out.println("✅ DEBUG: Database connected successfully.");
             System.out.println("✅ DEBUG: Connected to database: " + conn.getCatalog());
 
-            // Check if email exists first
-            String emailCheckQuery = "SELECT customerPassword FROM Customer WHERE LOWER(customerEmail) = LOWER(?)";
-            pstmt = conn.prepareStatement(emailCheckQuery);
+            // Single query to fetch user details and password hash
+            String query = "SELECT customerID, customerName, customerEmail, customerPhoneNo, customerPassword FROM Customer WHERE LOWER(customerEmail) = LOWER(?)";
+            pstmt = conn.prepareStatement(query);
             pstmt.setString(1, email);
             rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                // Email exists, now check password
                 String storedHashedPassword = rs.getString("customerPassword");
-
-                // Hash the input password before comparing
                 String hashedInputPassword = hashPassword(password);
-                
+
                 if (hashedInputPassword.equals(storedHashedPassword)) {
-                    // Password matches, now retrieve user details
-                    String userDetailsQuery = "SELECT customerName, customerEmail, customerPhoneNo FROM Customer WHERE LOWER(customerEmail) = LOWER(?)";
-                    pstmt = conn.prepareStatement(userDetailsQuery);
-                    pstmt.setString(1, email);
-                    rs = pstmt.executeQuery();
+                    // Successful login
+                    System.out.println("✅ DEBUG: Login successful for email: " + email);
 
-                    if (rs.next()) {
-                        // Successful login: Create session and redirect
-                        System.out.println("✅ DEBUG: Login successful for email: " + email);
+                    // Store customer details in session
+                    HttpSession session = request.getSession();
+                    session.setAttribute("customerID", rs.getString("customerID")); // FIX: Now storing customerID
+                    session.setAttribute("customerName", rs.getString("customerName"));
+                    session.setAttribute("customerEmail", rs.getString("customerEmail"));
+                    session.setAttribute("customerPhoneNo", rs.getString("customerPhoneNo"));
 
-                        HttpSession session = request.getSession();
-                        session.setAttribute("customerName", rs.getString("customerName"));
-                        session.setAttribute("customerEmail", rs.getString("customerEmail"));
-                        session.setAttribute("customerPhoneNo", rs.getString("customerPhoneNo"));
-
-                        response.sendRedirect("index.jsp");
-                        return;
-                    }
+                    System.out.println("✅ DEBUG: Session attributes set successfully.");
+                    
+                    // Redirect to profile page
+                    response.sendRedirect("index.jsp");
+                    return;
                 } else {
                     System.out.println("❌ DEBUG: Incorrect password for email: " + email);
                     request.setAttribute("errorMessage", "Invalid email or password. Please try again.");

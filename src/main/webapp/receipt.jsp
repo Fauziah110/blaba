@@ -85,6 +85,11 @@
             color: #555;
         }
     </style>
+    <script>
+        function printReceipt() {
+            window.print();
+        }
+    </script>
 </head>
 <body>
 
@@ -96,9 +101,9 @@
 
     <div class="section">
         <h3>Customer Details</h3>
-        <p><strong>Name:</strong> <%= session.getAttribute("customer_name") %></p>
-        <p><strong>Email:</strong> <%= session.getAttribute("customer_email") %></p>
-        <p><strong>Phone:</strong> <%= session.getAttribute("customer_phoneno") %></p>
+        <p><strong>Name:</strong> <%= session.getAttribute("customerName") %></p>
+        <p><strong>Email:</strong> <%= session.getAttribute("customerEmail") %></p>
+        <p><strong>Phone:</strong> <%= session.getAttribute("customerPhoneNo") %></p>
     </div>
 
     <div class="section">
@@ -116,8 +121,8 @@
                 <tr>
                     <th>Room Type</th>
                     <th>Quantity</th>
-                    <th>Price/Night</th>
-                    <th>Total Price</th>
+                    <th>Price/Night (RM)</th>
+                    <th>Total Price (RM)</th>
                 </tr>
             </thead>
             <tbody>
@@ -132,15 +137,15 @@
                 <tr>
                     <td><%= booking.getRoomType() %></td>
                     <td><%= booking.getQuantity() %></td>
-                    <td>RM<%= booking.getPrice() %></td>
-                    <td>RM<%= roomTotal %></td>
+                    <td>RM <%= booking.getPrice() %></td>
+                    <td>RM <%= roomTotal %></td>
                 </tr>
                 <%
                         }
                 %>
                 <tr>
-                    <th colspan="3">Room Grand Total</th>
-                    <th>RM<%= totalRoomPrice %></th>
+                    <th colspan="3">Total Room Charges</th>
+                    <th>RM <%= totalRoomPrice %></th>
                 </tr>
                 <%
                     } else {
@@ -156,15 +161,13 @@
     </div>
 
     <div class="total-price">
-        <p>Total Amount Paid: <strong>RM<%= totalRoomPrice %></strong></p>
+        <p>Total Amount Paid: <strong>RM <%= session.getAttribute("totalPayment") != null ? session.getAttribute("totalPayment") : "0.00" %></strong></p>
     </div>
 
     <div class="buttons">
+        <button onclick="printReceipt()" class="btn">Print Receipt</button>
         <form action="index.jsp">
-            <button type="submit" class="btn">Home</button>
-        </form>
-        <form action="printReceipt.jsp" method="POST">
-            <button type="submit" class="btn">Print Receipt</button>
+            <button type="submit" class="btn">Back to Homepage</button>
         </form>
     </div>
 

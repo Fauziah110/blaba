@@ -33,7 +33,8 @@ public class CustomerReservationController extends HttpServlet {
 
         try {
             conn = ConnectionManager.getConnection();
-            String sql = "SELECT r.reservationID, r.reservationDate, r.checkInDate, r.checkOutDate, r.totalAdult, r.totalKids, r.roomID, rm.roomType, r.customerID, c.customerName, r.totalPayment, r.serviceID " +
+            String sql = "SELECT r.reservationID, r.reservationDate, r.checkInDate, r.checkOutDate, r.totalAdult, r.totalKids, " +
+                         "r.roomID, rm.roomType, rm.roomPrice, r.customerID, c.customerName, r.totalPayment, r.serviceID " +
                          "FROM Reservation r " +
                          "JOIN Customer c ON r.customerID = c.customerID " +
                          "JOIN Room rm ON r.roomID = rm.roomID " +
@@ -43,7 +44,7 @@ public class CustomerReservationController extends HttpServlet {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                userReservations.add(new Reservation(
+                Reservation reservation = new Reservation(
                     rs.getInt("reservationID"),
                     rs.getDate("reservationDate"),
                     rs.getDate("checkInDate"),
@@ -56,7 +57,22 @@ public class CustomerReservationController extends HttpServlet {
                     rs.getString("customerName"),
                     rs.getDouble("totalPayment"),
                     rs.getInt("serviceID")
-                ));
+                );
+
+                userReservations.add(reservation);
+
+                // ✅ Store **room & stay details** in session
+                session.setAttribute("reservationID", rs.getInt("reservationID"));
+                session.setAttribute("roomID", rs.getInt("roomID"));
+                session.setAttribute("roomType", rs.getString("roomType"));
+                session.setAttribute("roomPrice", rs.getDouble("roomPrice"));
+                session.setAttribute("totalPayment", rs.getDouble("totalPayment"));
+
+                // ✅ **Fix Stay Details**
+                session.setAttribute("checkInDate", rs.getDate("checkInDate").toString());
+                session.setAttribute("checkOutDate", rs.getDate("checkOutDate").toString());
+                session.setAttribute("totalAdult", rs.getInt("totalAdult"));
+                session.setAttribute("totalKids", rs.getInt("totalKids"));
             }
 
             request.setAttribute("userReservations", userReservations);

@@ -330,7 +330,7 @@ footer {
 
 	<!-- Reservation Form -->
 	<div class="reservation-form">
-		<form action="CheckAvailabilityServlet" method="post">
+		<form action="CheckAvailabilityController" method="post">
 			<input type="date" name="checkInDate" required> <input
 				type="date" name="checkOutDate" required> <select
 				name="adults">
