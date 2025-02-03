@@ -290,20 +290,20 @@ th {
 </head>
 <body>
 	<nav>
-		<a href="dashboard.jsp" class="logo-link"> <img
+		<a href="Dashboard.jsp" class="logo-link"> <img
 			src="Images/MDResort.PNG" alt="Resort Logo" class="logo-image">
 			<span class="logo-text">MD Resort Pantai Siring Melaka</span>
 		</a>
 		<div class="spacer"></div>
 		<ul>
-			<li><a href="booking.jsp">Booking</a></li>
+			<li><a href="Booking.jsp">Booking</a></li>
 			<li><a href="Room.jsp">Room</a></li>
-			<li><a href="service.jsp">Service</a>
+			<li><a href="Service.jsp">Service</a>
 				<ul class="submenu">
-					<li><a href="foodService.jsp">Food Service</a></li>
-					<li><a href="eventService.jsp">Event Service</a></li>
+					<li><a href="FoodService.jsp">Food Service</a></li>
+					<li><a href="EventService.jsp">Event Service</a></li>
 				</ul></li>
-			<li><a href="profile.jsp">Profile</a></li>
+			<li><a href="Profile.jsp">Profile</a></li>
 		</ul>
 
 	</nav>

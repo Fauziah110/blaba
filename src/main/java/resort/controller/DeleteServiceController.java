@@ -33,16 +33,16 @@ public class DeleteServiceController extends HttpServlet {
             rs.next();
 
             if (rs.getInt(1) == 1) {
-                // Password verified, proceed to delete service
-                String deleteQuery = "DELETE FROM service WHERE serviceid = ?";
+                // Password verified, proceed to delete room
+                String deleteQuery = "DELETE FROM service WHERE serviceId = ?";
                 pstmt = conn.prepareStatement(deleteQuery);
                 pstmt.setString(1, serviceId);
 
                 int result = pstmt.executeUpdate();
                 if (result > 0) {
-                    response.sendRedirect("service.jsp"); // Redirect to refresh page
+                    response.sendRedirect("Service.jsp"); // Redirect to refresh page
                 } else {
-                    response.getWriter().println("Failed to delete service.");
+                    response.getWriter().println("Failed to delete room.");
                 }
             } else {
                 response.getWriter().println("Invalid staff password.");

@@ -10,7 +10,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import resort.connection.ConnectionManager;
+
+import resort.utils.DatabaseUtility;
 
 
 public class DeleteEventController extends HttpServlet {
@@ -28,7 +29,7 @@ public class DeleteEventController extends HttpServlet {
             System.out.println("Received serviceID: " + serviceId);
             System.out.println("Received staffPassword: " + staffPassword);
 
-            conn = ConnectionManager.getConnection();
+            conn = DatabaseUtility.getConnection();
 
             // Verify staff password
             String verifyPasswordQuery = "SELECT COUNT(*) FROM staff WHERE staffpassword = ?";
@@ -61,7 +62,7 @@ public class DeleteEventController extends HttpServlet {
             e.printStackTrace();
             response.getWriter().println("Error: " + e.getMessage());
         } finally {
-        	ConnectionManager.closeResources(rs, pstmt, conn);
+            DatabaseUtility.closeResources(rs, pstmt, conn);
         }
     }
 

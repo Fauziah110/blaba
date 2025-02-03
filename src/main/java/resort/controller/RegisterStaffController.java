@@ -9,7 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import resort.connection.ConnectionManager;
+import resort.utils.DatabaseUtility;
 
 public class RegisterStaffController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -27,7 +27,7 @@ public class RegisterStaffController extends HttpServlet {
 		ResultSet rs = null;
 
 		try {
-			conn = ConnectionManager.getConnection();
+			conn = DatabaseUtility.getConnection();
 
 			// Check if staffEmail already exists
 			String checkEmailQuery = "SELECT COUNT(*) FROM staff WHERE staffemail = ?";
@@ -70,7 +70,7 @@ public class RegisterStaffController extends HttpServlet {
 			request.setAttribute("errorMessage", "General Exception: " + e.getMessage());
 			request.getRequestDispatcher("Error.jsp").forward(request, response);
 		} finally {
-			ConnectionManager.closeResources(rs, pstmt, conn);
+			DatabaseUtility.closeResources(rs, pstmt, conn);
 		}
 	}
 
