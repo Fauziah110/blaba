@@ -1,129 +1,29 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <%
-String customerName = (String) session.getAttribute("customerName");
-boolean isLoggedIn = (customerName != null);
+    if (session.getAttribute("customerID") == null) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+
+    String customerID = (String) session.getAttribute("customerID");
+    String customerName = (String) session.getAttribute("customerName");
+    String customerEmail = (String) session.getAttribute("customerEmail");
+    String customerPhoneNo = (String) session.getAttribute("customerPhoneNo");
+    boolean isLoggedIn = (customerName != null);
 %>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Reserve Services</title>
     <style>
-        /* Reset and basic styling */
+        /* Basic Styling */
         body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
             font-family: Arial, sans-serif;
-            background-color: white;
-            color: #728687;
-        }
-
-        /* Header Styling */
-        header {
-            background: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 25px;
-            font-size: 18px;
-            color: #728687;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-
-        .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .logo a {
-            font-size: 18px;
-            color: #728687;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
             margin: 0;
-            padding: 0;
+            background-color: white;
         }
 
-        nav ul li {
-            margin-left: 20px;
-            position: relative;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-            color: #728687;
-            font-weight: bold;
-            padding: 5px 20px;
-        }
-
-        /* Profile Dropdown */
-        .profile-menu {
-            position: relative;
-        }
-
-        .profile-icon {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .profile-icon img {
-            height: 30px;
-            width: 30px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-
-        .profile-icon span {
-            color: black;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 40px;
-            right: 0;
-            background: #728687;
-            padding: 10px 0;
-            border-radius: 5px;
-            width: 150px;
-            text-align: left;
-        }
-
-        .dropdown-menu a {
-            display: block;
-            padding: 10px 20px;
-            color: white;
-            text-decoration: none;
-        }
-
-        .dropdown-menu a:hover {
-            background-color: #04aa6d;
-        }
-
-        /* Show dropdown on hover */
-        .profile-menu:hover .dropdown-menu {
-            display: block;
-        }
-
-        /* Page Content */
         .container {
             width: 50%;
             margin: auto;
@@ -132,22 +32,17 @@ boolean isLoggedIn = (customerName != null);
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-top: 40px;
-        }
-
-        h1, h2 {
-            color: black;
             text-align: center;
         }
 
         .form-group {
             margin-bottom: 15px;
+            text-align: left;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
             font-weight: bold;
-            color: black;
         }
 
         .form-group input, .form-group select {
@@ -159,102 +54,103 @@ boolean isLoggedIn = (customerName != null);
         }
 
         .form-group button {
-            padding: 10px 20px;
+            width: 100%;
+            padding: 10px;
             background-color: black;
             color: white;
             border: none;
-            cursor: pointer;
-            width: 100%;
             border-radius: 5px;
+            cursor: pointer;
             font-size: 16px;
         }
 
-        /* Footer Styling */
-        footer {
-            background: #728687;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            margin-top: auto;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .footer-links {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding-top: 10px;
-        }
-
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .footer-links a:hover {
-            color: black;
+        .hidden {
+            display: none;
         }
     </style>
+
+    <script>
+        function showServiceForm() {
+            let serviceType = document.getElementById("serviceType").value;
+            document.getElementById("foodServiceForm").classList.add("hidden");
+            document.getElementById("eventServiceForm").classList.add("hidden");
+
+            if (serviceType === "FoodService") {
+                document.getElementById("foodServiceForm").classList.remove("hidden");
+            } else if (serviceType === "EventService") {
+                document.getElementById("eventServiceForm").classList.remove("hidden");
+            }
+        }
+
+        function updateServiceCharge(serviceType) {
+            if (serviceType === "FoodService") {
+                let quantity = document.getElementById("foodQuantity").value;
+                let menuPrice = 40.00; // Example fixed price per menu
+                let totalCharge = menuPrice * quantity;
+                document.getElementById("foodServiceChargeDisplay").innerHTML = "Total Charge: RM " + totalCharge.toFixed(2);
+                document.getElementById("foodServiceCharge").value = totalCharge;
+            } 
+            else if (serviceType === "EventService") {
+                let duration = document.getElementById("eventDuration").value;
+                let basePrice = 100.00; // Example price per hour
+                let totalCharge = basePrice * duration;
+                document.getElementById("eventServiceChargeDisplay").innerHTML = "Total Charge: RM " + totalCharge.toFixed(2);
+                document.getElementById("eventServiceCharge").value = totalCharge;
+            }
+        }
+
+        function validateForm(serviceType) {
+            if (serviceType === "FoodService") {
+                updateServiceCharge('FoodService');
+            } else if (serviceType === "EventService") {
+                updateServiceCharge('EventService');
+            }
+            return true; // Ensures form submits
+        }
+    </script>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <a href="index.jsp">
-                <img src="images/MDResort.png" alt="Logo">
-            </a>
-            <a href="index.jsp">MD Resort Pantai Siring Melaka</a>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="roomCustomer.jsp">Room</a></li>
-                <li><a href="facilityCustomer.jsp">Facilities</a></li>
-                <li><a href="serviceCustomer.jsp">Service</a></li>
-
-                <% if (isLoggedIn) { %>
-                <li class="profile-menu">
-                    <div class="profile-icon">
-                        <img src="images/profile-icon.png" alt="Profile">
-                        <span><%= customerName %></span>
-                        <div class="dropdown-menu">
-                            <a href="profileCustomer.jsp">Profile</a>
-                            <a href="CustomerReservationController">Booking</a>
-                            <a href="LogoutController">Logout</a>
-                        </div>
-                    </div>
-                </li>
-                <% } else { %>
-                <li><a href="signupCustomer.jsp">Sign Up</a></li>
-                <% } %>
-            </ul>
-        </nav>
-    </header>
 
     <div class="container">
         <h1>Reserve Services</h1>
-        
-        <!-- Room Service Form -->
-        <h2>Reserve Room Service</h2>
-        <form action="addService.jsp" method="post">
+
+        <!-- Service Selection -->
+        <div class="form-group">
+            <label for="serviceType">Select Service Type</label>
+            <select id="serviceType" name="serviceType" onchange="showServiceForm()">
+                <option value="">-- Select --</option>
+                <option value="FoodService">Food Service</option>
+                <option value="EventService">Event Service</option>
+            </select>
+        </div>
+
+        <!-- 📌 Food Service Form -->
+        <form action="ServiceReservationController" method="post" id="foodServiceForm" class="hidden" onsubmit="return validateForm('FoodService')">
+            <h2>Food Service</h2>
+            <input type="hidden" name="serviceType" value="FoodService">
             <div class="form-group">
-                <label for="checkInDate">Check-In Date</label>
-                <input type="date" id="checkInDate" name="checkInDate" required>
+                <label for="menuName">Select Food Set</label>
+                <select id="menuName" name="menuName" onchange="updateServiceCharge('FoodService')">
+                    <option value="SET A">SET A</option>
+                    <option value="SET B">SET B</option>
+                    <option value="SET C">SET C</option>
+                </select>
             </div>
             <div class="form-group">
-                <label for="checkOutDate">Check-Out Date</label>
-                <input type="date" id="checkOutDate" name="checkOutDate" required>
+                <label for="foodQuantity">Quantity</label>
+                <input type="number" id="foodQuantity" name="quantityMenu" min="1" value="1" required onchange="updateServiceCharge('FoodService')">
             </div>
-            
+            <p id="foodServiceChargeDisplay">Total Charge: RM 0.00</p>
+            <input type="hidden" id="foodServiceCharge" name="serviceCharge">
+            <div class="form-group">
+                <button type="submit">Reserve Food</button>
+            </div>
         </form>
 
-        <!-- Event Service Form -->
-        <h2>Reserve Event Service</h2>
-        <form action="reserveEvent.jsp" method="post">
+        <!-- 📌 Event Service Form -->
+        <form action="ServiceReservationController" method="post" id="eventServiceForm" class="hidden" onsubmit="return validateForm('EventService')">
+            <h2>Event Service</h2>
+            <input type="hidden" name="serviceType" value="EventService">
             <div class="form-group">
                 <label for="venue">Select Venue</label>
                 <select id="venue" name="venue">
@@ -263,29 +159,20 @@ boolean isLoggedIn = (customerName != null);
                 </select>
             </div>
             <div class="form-group">
+                <label for="eventType">Event Type</label>
+                <input type="text" id="eventType" name="eventType" required>
+            </div>
+            <div class="form-group">
+                <label for="eventDuration">Duration (Hours)</label>
+                <input type="number" id="eventDuration" name="duration" min="1" value="1" required onchange="updateServiceCharge('EventService')">
+            </div>
+            <p id="eventServiceChargeDisplay">Total Charge: RM 0.00</p>
+            <input type="hidden" id="eventServiceCharge" name="serviceCharge">
+            <div class="form-group">
                 <button type="submit">Reserve Event</button>
             </div>
         </form>
-
-        <!-- Food Service Form -->
-        <h2>Reserve Food Service</h2>
-        <form action="reserveFood.jsp" method="post">
-            <div class="form-group">
-                <label for="foodSet">Select Food Set</label>
-                <select id="foodSet" name="foodSet">
-                    <option value="SET A">SET A</option>
-                    <option value="SET B">SET B</option>
-                    <option value="SET C">SET C</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="quantity">Quantity</label>
-                <input type="number" id="quantity" name="quantity" min="1" value="1" required>
-            </div>
-            <div class="form-group">
-                <button type="submit">Reserve Food</button>
-            </div>
-        </form>
     </div>
+
 </body>
 </html>
