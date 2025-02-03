@@ -10,8 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import resort.connection.ConnectionManager;
+import resort.utils.DatabaseUtility;
 
 public class AdminLoginController extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -42,8 +41,8 @@ public class AdminLoginController extends HttpServlet {
 
         try {
             // Establish database connection
-            conn = ConnectionManager.getConnection();
-            System.out.println("Database connection established successfully.");
+            conn = DatabaseUtility.getConnection();
+            System.out.println("Azure database connection established successfully.");
 
             // Use parameterized query to prevent SQL injection
             String sql = "SELECT staffName, staffEmail, staffPhoneNo, adminId FROM staff WHERE staffEmail = ? AND staffPassword = ?";
@@ -65,7 +64,7 @@ public class AdminLoginController extends HttpServlet {
                 session.setAttribute("staffPhoneNo", rs.getString("staffPhoneNo"));
                 session.setAttribute("adminId", rs.getInt("adminId"));
 
-                response.sendRedirect("dashboard.jsp");
+                response.sendRedirect("Dashboard.jsp");
             } else {
                 // Login failed: Show error message
                 System.out.println("Login failed. Invalid email or password.");
@@ -79,7 +78,7 @@ public class AdminLoginController extends HttpServlet {
             request.getRequestDispatcher("Login.jsp").forward(request, response);
         } finally {
             // Close resources
-        	ConnectionManager.closeResources(rs, pstmt, conn);
+            DatabaseUtility.closeResources(rs, pstmt, conn);
             System.out.println("Database resources closed.");
         }
     }

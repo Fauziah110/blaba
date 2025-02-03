@@ -1,23 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ page import="resort.utils.DatabaseUtility"%>
-<%@ page import="java.sql.Connection"%>
-<%@ page import="java.sql.PreparedStatement"%>
-<%@ page import="java.sql.ResultSet"%>
-<%@ page import="java.sql.SQLException"%>
-<%@ page import="java.util.ArrayList"%>
-<%@ page import="java.util.HashMap"%>
-<%@ page import="java.util.Map"%>
-<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page
+	import="java.sql.*, java.util.*, jakarta.servlet.*, jakarta.servlet.http.*, resort.connection.ConnectionManager"%>
 
 <%
-int totalCustomer = 0;
-int totalRoom = 0;
-int totalCheckIn = 0;
-int totalCheckOut = 0;
-ArrayList<HashMap<String, String>> reservations = new ArrayList<>();
-Map<String, Integer> monthlyBookings = new HashMap<>();
-
 Connection con = null;
 PreparedStatement psTotalCustomers = null;
 PreparedStatement psTotalRooms = null;
@@ -32,10 +18,15 @@ ResultSet rsTotalCheckOuts = null;
 ResultSet rsReservations = null;
 ResultSet rsMonthlyBookings = null;
 
-try {
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+int totalCustomer = 0;
+int totalRoom = 0;
+int totalCheckIn = 0;
+int totalCheckOut = 0;
+Map<String, Integer> monthlyBookings = new HashMap<>();
+List<HashMap<String, String>> reservations = new ArrayList<>();
 
-	con = DatabaseUtility.getConnection();
+try {
+	con = ConnectionManager.getConnection();
 
 	// Total customers
 	psTotalCustomers = con.prepareStatement("SELECT COUNT(*) AS total_customers FROM Customer");
@@ -53,7 +44,7 @@ try {
 
 	// Total check-ins
 	psTotalCheckIns = con
-	.prepareStatement("SELECT COUNT(*) AS total_checkins FROM Reservation WHERE checkinDate <= SYSDATE");
+	.prepareStatement("SELECT COUNT(*) AS total_checkins FROM Reservation WHERE checkInDate <= GETDATE()");
 	rsTotalCheckIns = psTotalCheckIns.executeQuery();
 	if (rsTotalCheckIns.next()) {
 		totalCheckIn = rsTotalCheckIns.getInt("total_checkins");
@@ -61,43 +52,45 @@ try {
 
 	// Total check-outs
 	psTotalCheckOuts = con
-	.prepareStatement("SELECT COUNT(*) AS total_checkouts FROM Reservation WHERE checkoutDate <= SYSDATE");
+	.prepareStatement("SELECT COUNT(*) AS total_checkouts FROM Reservation WHERE checkOutDate <= GETDATE()");
 	rsTotalCheckOuts = psTotalCheckOuts.executeQuery();
 	if (rsTotalCheckOuts.next()) {
 		totalCheckOut = rsTotalCheckOuts.getInt("total_checkouts");
 	}
 
-	// Reservations
+	// Monthly bookings
+	psMonthlyBookings = con.prepareStatement(
+	"SELECT MONTH(reservationDate) AS month, COUNT(*) AS bookings FROM Reservation GROUP BY MONTH(reservationDate)");
+	rsMonthlyBookings = psMonthlyBookings.executeQuery();
+	while (rsMonthlyBookings.next()) {
+		monthlyBookings.put(String.valueOf(rsMonthlyBookings.getInt("month")), rsMonthlyBookings.getInt("bookings"));
+	}
+
+	// Reservations for calendar
 	psReservations = con.prepareStatement(
-	"SELECT c.customerName, r.checkinDate, r.checkoutDate, r.totalAdult, r.totalKids FROM Reservation r JOIN Customer c ON r.customerID = c.customerID");
+	"SELECT r.customerID, c.customerName, r.totalAdult, r.totalKids, r.checkInDate, r.checkOutDate "
+			+ "FROM Reservation r " + "JOIN Customer c ON r.customerID = c.customerID");
 	rsReservations = psReservations.executeQuery();
 	while (rsReservations.next()) {
 		HashMap<String, String> reservation = new HashMap<>();
 		reservation.put("customerName", rsReservations.getString("customerName"));
-		reservation.put("checkinDate", sdf.format(rsReservations.getDate("checkinDate")));
-		reservation.put("checkoutDate", sdf.format(rsReservations.getDate("checkoutDate")));
 		reservation.put("totalAdult", rsReservations.getString("totalAdult"));
 		reservation.put("totalKids", rsReservations.getString("totalKids"));
+		reservation.put("checkinDate", rsReservations.getString("checkInDate"));
+		reservation.put("checkoutDate", rsReservations.getString("checkOutDate"));
 		reservations.add(reservation);
 	}
 
-	// Monthly bookings
-	psMonthlyBookings = con.prepareStatement(
-	"SELECT TO_CHAR(reservationDate, 'MONTH') AS month, COUNT(*) AS bookings FROM Reservation GROUP BY TO_CHAR(reservationDate, 'MONTH')");
-	rsMonthlyBookings = psMonthlyBookings.executeQuery();
-	while (rsMonthlyBookings.next()) {
-		monthlyBookings.put(rsMonthlyBookings.getString("month"), rsMonthlyBookings.getInt("bookings"));
-	}
-} catch (SQLException | ClassNotFoundException e) {
+} catch (SQLException e) {
 	e.printStackTrace();
 	out.println("<p>Error occurred while fetching data: " + e.getMessage() + "</p>");
 } finally {
-	DatabaseUtility.closeResources(rsTotalCustomers, psTotalCustomers, con);
-	DatabaseUtility.closeResources(rsTotalRooms, psTotalRooms, null);
-	DatabaseUtility.closeResources(rsTotalCheckIns, psTotalCheckIns, null);
-	DatabaseUtility.closeResources(rsTotalCheckOuts, psTotalCheckOuts, null);
-	DatabaseUtility.closeResources(rsReservations, psReservations, null);
-	DatabaseUtility.closeResources(rsMonthlyBookings, psMonthlyBookings, null);
+	ConnectionManager.closeResources(rsTotalCustomers, psTotalCustomers, con);
+	ConnectionManager.closeResources(rsTotalRooms, psTotalRooms, null);
+	ConnectionManager.closeResources(rsTotalCheckIns, psTotalCheckIns, null);
+	ConnectionManager.closeResources(rsTotalCheckOuts, psTotalCheckOuts, null);
+	ConnectionManager.closeResources(rsReservations, psReservations, null);
+	ConnectionManager.closeResources(rsMonthlyBookings, psMonthlyBookings, null);
 }
 %>
 
@@ -109,9 +102,9 @@ try {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard MD Resort</title>
 <link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css">
+	href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css">
 <script
-    src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
+	src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
 <style>
 body {
 	margin: 0;
@@ -217,129 +210,129 @@ nav ul li:hover>.submenu {
 }
 
 .main-content {
-    padding: 20px;
+	padding: 20px;
 }
 
 .stats {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 30px;
+	display: flex;
+	justify-content: space-around;
+	margin-bottom: 30px;
 }
 
 .stat-card {
-    background: #f9f9f9;
-    padding: 20px;
-    border: 1px solid #ddd;
-    text-align: center;
-    width: 20%;
+	background: #f9f9f9;
+	padding: 20px;
+	border: 1px solid #ddd;
+	text-align: center;
+	width: 20%;
 }
 
 .flex-container {
-    display: flex;
-    justify-content: space-between;
+	display: flex;
+	justify-content: space-between;
 }
 
 #calendar, .table-container {
-    width: 48%; /* Adjust as needed */
-    box-sizing: border-box;
+	width: 48%; /* Adjust as needed */
+	box-sizing: border-box;
 }
 
 #calendar {
-    height: auto;
+	height: auto;
 }
 
 .fc-daygrid-day-frame {
-    height: auto !important;
-    padding-bottom: 10px;
+	height: auto !important;
+	padding-bottom: 10px;
 }
 
 .fc-daygrid-day-number {
-    margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
 }
 
 table, th, td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
+	border: 1px solid #ddd;
+	padding: 10px;
+	text-align: left;
 }
 
 th {
-    background: #f4f4f4;
+	background: #f4f4f4;
 }
 </style>
 </head>
 
 <body>
-    <nav>
-        <a href="Dashboard.jsp" class="logo-link"> <img
-            src="images/MDResort.png" alt="Resort Logo" class="logo-image">
-            <span class="logo-text">MD Resort Pantai Siring Melaka</span>
-        </a>
-        <div class="spacer"></div>
-        <ul>
-            <li><a href="booking.jsp">Booking</a></li>
-            <li><a href="room.jsp">Room</a></li>
-            <li><a href="service.jsp">Service</a>
-                <ul class="submenu">
-                    <li><a href="foodService.jsp">Food Service</a></li>
-                    <li><a href="eventService.jsp">Event Service</a></li>
-                </ul></li>
-            <li><a href="Profile.jsp">Profile</a></li>
-        </ul>
-    </nav>
+	<nav>
+		<a href="Dashboard.jsp" class="logo-link"> <img
+			src="Images/MDResort.PNG" alt="Resort Logo" class="logo-image">
+			<span class="logo-text">MD Resort Pantai Siring Melaka</span>
+		</a>
+		<div class="spacer"></div>
+		<ul>
+			<li><a href="booking.jsp">Booking</a></li>
+			<li><a href="room.jsp">Room</a></li>
+			<li><a href="service.jsp">Service</a>
+				<ul class="submenu">
+					<li><a href="foodService.jsp">Food Service</a></li>
+					<li><a href="eventService.jsp">Event Service</a></li>
+				</ul></li>
+			<li><a href="profile.jsp">Profile</a></li>
+		</ul>
+	</nav>
 
-    <div class="main-content">
-        <section class="stats">
-            <div class="stat-card">
-                <h4>Total Customers</h4>
-                <p><%=totalCustomer%></p>
-            </div>
-            <div class="stat-card">
-                <h4>Total Rooms</h4>
-                <p><%=totalRoom%></p>
-            </div>
-            <div class="stat-card">
-                <h4>Total Check-Ins</h4>
-                <p><%=totalCheckIn%></p>
-            </div>
-            <div class="stat-card">
-                <h4>Total Check-Outs</h4>
-                <p><%=totalCheckOut%></p>
-            </div>
-        </section>
+	<div class="main-content">
+		<section class="stats">
+			<div class="stat-card">
+				<h4>Total Customers</h4>
+				<p><%=totalCustomer%></p>
+			</div>
+			<div class="stat-card">
+				<h4>Total Rooms</h4>
+				<p><%=totalRoom%></p>
+			</div>
+			<div class="stat-card">
+				<h4>Total Check-Ins</h4>
+				<p><%=totalCheckIn%></p>
+			</div>
+			<div class="stat-card">
+				<h4>Total Check-Outs</h4>
+				<p><%=totalCheckOut%></p>
+			</div>
+		</section>
 
-        <section class="flex-container">
-            <div id="calendar"></div>
+		<section class="flex-container">
+			<div id="calendar"></div>
 
-            <div class="table-container">
-                <h3>Monthly Booking</h3>
-                <table>
-                    <tr>
-                        <th>Month</th>
-                        <th>Bookings</th>
-                    </tr>
-                    <%
-                    for (Map.Entry<String, Integer> entry : monthlyBookings.entrySet()) {
-                    %>
-                    <tr>
-                        <td><%=entry.getKey()%></td>
-                        <td><%=entry.getValue()%></td>
-                    </tr>
-                    <%
-                    }
-                    %>
-                </table>
-            </div>
-        </section>
-    </div>
+			<div class="table-container">
+				<h3>Monthly Booking</h3>
+				<table>
+					<tr>
+						<th>Month</th>
+						<th>Bookings</th>
+					</tr>
+					<%
+					for (Map.Entry<String, Integer> entry : monthlyBookings.entrySet()) {
+					%>
+					<tr>
+						<td><%=entry.getKey()%></td>
+						<td><%=entry.getValue()%></td>
+					</tr>
+					<%
+					}
+					%>
+				</table>
+			</div>
+		</section>
+	</div>
 
-    <script>
+	<script>
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
