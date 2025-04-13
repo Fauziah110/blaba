@@ -415,8 +415,8 @@ th {
 		<div class="spacer"></div>
 		<ul>
 			<li><a href="Booking.jsp">Booking</a></li>
-			<li><a href="Room.jsp">Room</a></li>
-			<li><a href="Service.jsp">Service</a>
+			<li><a href="roomCustomer.jsp">Room</a></li>
+			<li><a href="serviceCustomer.jsp">Service</a>
 				<ul class="submenu">
 					<li><a href="FoodService.jsp">Food Service</a></li>
 					<li><a href="EventService.jsp">Event Service</a></li>

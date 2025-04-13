@@ -264,6 +264,41 @@ footer {
 .content h1 {
 	margin-top: 0;
 }
+
+/* Dropdown Styles */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content li {
+    list-style: none;
+}
+
+.dropdown-content li a {
+    display: block;
+    color: #333;
+    padding: 12px 16px;
+    text-decoration: none;
+}
+
+.dropdown-content li a:hover {
+    background-color: #f1f1f1;
+}
+
+/* Show dropdown on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
 </style>
 </head>
 <body>
@@ -273,35 +308,45 @@ footer {
 			</a> <a href="index.jsp">MD Resort Pantai Siring Melaka</a>
 		</div>
 		<nav>
-			<ul>
-				<li><a href="roomCustomer.jsp">Room</a></li>
-				<li><a href="facilityCustomer.jsp">Facilities</a></li>
-				<li><a href="serviceCustomer.jsp">Service</a></li>
-
-				<%
-				if (isLoggedIn) {
-				%>
-				<!-- Display the profile icon and dropdown for logged-in users -->
-				<li>
-					<div class="profile-icon">
-						<img src="images/profile-icon.png" alt="Profile"> <span><%=customerName%></span>
-						<div class="dropdown-menu">
-							<a href="profileCustomer.jsp">Profile</a> <a
-								href="CustomerReservationController">Booking</a> <a
-								href="LogoutController">Logout</a>
-						</div>
-					</div>
-				</li>
-				<%
-				} else {
-				%>
-				<!-- Show login/signup buttons for guests -->
-				<li><a href="signupCustomer.jsp">Sign Up</a></li>
-				<%
-				}
-				%>
-			</ul>
+			    <ul>
+			        <li><a href="roomCustomer.jsp">Room</a></li>
+			        <li><a href="viewFacility.jsp">Facilities</a></li>
+			
+			        <!-- Dropdown for Service -->
+			        <li class="dropdown">
+			            <a href="#">Service</a>
+			            <ul class="dropdown-content">
+			                <li><a href="serviceCustomer.jsp">View Service</a></li>
+			                <li><a href="serviceCustomer.jsp">Book Service</a></li>
+			            </ul>
+			        </li>
+			
+			        <%
+			        if (isLoggedIn) {
+			        %>
+			        <!-- Display the profile icon and dropdown for logged-in users -->
+			        <li>
+			            <div class="profile-icon">
+			                <img src="images/profile-icon.png" alt="Profile">
+			                <span><%=customerName%></span>
+			                <div class="dropdown-menu">
+			                    <a href="profileCustomer.jsp">Profile</a>
+			                    <a href="CustomerReservationController">Booking</a>
+			                    <a href="LogoutController">Logout</a>
+			                </div>
+			            </div>
+			        </li>
+			        <%
+			        } else {
+			        %>
+			        <!-- Show login/signup buttons for guests -->
+			        <li><a href="signupCustomer.jsp">Sign Up</a></li>
+			        <%
+			        }
+			        %>
+			    </ul>
 		</nav>
+
 	</header>
 
 	<img src="images/home_front.jpg" alt="Homepage-background">

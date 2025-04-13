@@ -8,10 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import resort.connection.ConnectionManager;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class ServiceReservationController extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -109,6 +106,21 @@ public class ServiceReservationController extends HttpServlet {
             stmt.executeUpdate();
 
             System.out.println("✅ Service Charge Updated: RM " + serviceCharge);
+
+            // Insert into Reservation Table with default values
+            System.out.println("📌 Inserting into Reservation table...");
+            String insertReservationSQL = "INSERT INTO Reservation (reservationDate, checkInDate, checkOutDate, totalAdult, totalKids, roomID, customerID, totalPayment, serviceID) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?)";
+            stmt = conn.prepareStatement(insertReservationSQL);
+            stmt.setInt(1, 0); // No Adults
+            stmt.setInt(2, 0); // No Kids
+            stmt.setInt(3, 0); // No Room ID
+            stmt.setInt(4, customerID);
+            stmt.setDouble(5, serviceCharge);
+            stmt.setInt(6, newServiceID);
+            stmt.executeUpdate();
+
+            System.out.println("✅ Service Reservation stored in Reservation table.");
+
             response.sendRedirect("serviceCustomer.jsp?success=true");
 
         } catch (SQLException e) {
