@@ -305,7 +305,7 @@ footer {
 	<header>
 		<div class="logo">
 			<a href="index.jsp"> <img src="images/MDResort.png" alt="Logo">
-			</a> <a href="index.jsp">MD Resort Pantai Siring Melaka</a>
+			</a> <a href="index.jsp">MD Rsort Pantai Siring Melaka</a>
 		</div>
 		<nav>
 			    <ul>
