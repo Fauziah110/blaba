@@ -316,7 +316,7 @@ footer {
 			        <li class="dropdown">
 			            <a href="#">Service</a>
 			            <ul class="dropdown-content">
-			                <li><a href="viewService.jsp">View Service</a></li>
+			                <li><a href="ViewService.jsp">View Service</a></li>
 			                <li><a href="serviceCustomer.jsp">Book Service</a></li>
 			            </ul>
 			        </li>
