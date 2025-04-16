@@ -76,7 +76,7 @@ public class AdminLoginController extends HttpServlet {
             // Log error and show generic error message
             e.printStackTrace();
             request.setAttribute("errorMessage", "An error occurred. Please try again later.");
-            request.getRequestDispatcher("Login.jsp").forward(request, response);
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         } finally {
             // Close resources
             DatabaseUtility.closeResources(rs, pstmt, conn);
@@ -87,6 +87,6 @@ public class AdminLoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect("Login.jsp");
+        response.sendRedirect("login.jsp");
     }
 }

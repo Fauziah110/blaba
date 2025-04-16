@@ -287,7 +287,7 @@
         </nav>
     </header>
 
-<img src="service_front.png" style="width: 100%;">
+<img src="images/service_front.png" style="width: 100%;">
 
 <!-- Reservation Form -->
 
@@ -295,17 +295,17 @@
 <main class="main-content">
     <div class="content3">
         <h2>Hall 1</h2>
-        <img src="hall1.jpg" alt="Family Room" class="room-image">
+        <img src="images/hall1.jpg" alt="Family Room" class="room-image">
         <p>From RM1500</p>
     </div>
     <div class="content3">
         <h2>Hall 2</h2>
-        <img src="hall2.jpg" alt="Cabin Room" class="room-image">
+        <img src="images/hall2.jpg" alt="Cabin Room" class="room-image">
         <p>From RM500</p>
     </div>
     <div class="content3">
         <h2>Court</h2>
-        <img src="court.jpg" alt="Wood Room" class="room-image">
+        <img src="images/court.jpg" alt="Wood Room" class="room-image">
         <p>From RM250</p>
     </div>
 </main>
@@ -314,7 +314,7 @@
 	    <div class="footer-container">
 	        <div class="footer-logo">
 	            <a href="MdResort_HOMEPAGE.jsp">
-	    <img src="MdResort_logo.png" alt="Logo">
+	    <img src="images/MdResort_logo.png" alt="Logo">
 	</a>
 	</div>
         <div class="social-icons">

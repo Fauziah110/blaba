@@ -29,7 +29,7 @@ try {
         response.sendRedirect("Profile.jsp");
     } else {
         // Invalid login, redirect back to login page with an error message
-        response.sendRedirect("AdminLogin.jsp?error=invalid");
+        response.sendRedirect("login.jsp?error=invalid");
     }
 } catch (SQLException e) {
     e.printStackTrace();
