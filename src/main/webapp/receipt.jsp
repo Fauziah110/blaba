@@ -1,6 +1,14 @@
 <%@ page session="true" %>
 <%@ page import="java.util.*" %>
 <%@ page import="resort.model.RoomBooking" %>
+<%
+    String customerName = (String) session.getAttribute("customerName");
+    boolean isLoggedIn = (customerName != null);
+
+    // Retrieve room booking list from session
+    List<RoomBooking> bookingList = (List<RoomBooking>) session.getAttribute("roomBookingList");
+    double totalRoomPrice = 0;
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,8 +118,8 @@
         <h3>Stay Details</h3>
         <p><strong>Check-In:</strong> <%= session.getAttribute("checkInDate") %></p>
         <p><strong>Check-Out:</strong> <%= session.getAttribute("checkOutDate") %></p>
-        <p><strong>Adults:</strong> <%= session.getAttribute("adults") %></p>
-        <p><strong>Kids:</strong> <%= session.getAttribute("kids") %></p>
+        <p><strong>Adults:</strong> <%= session.getAttribute("totalAdult") %></p>
+        <p><strong>Kids:</strong> <%= session.getAttribute("totalKids") %></p>
     </div>
 
     <div class="section">
@@ -127,8 +135,6 @@
             </thead>
             <tbody>
                 <%
-                    List<RoomBooking> bookingList = (List<RoomBooking>) session.getAttribute("bookingList");
-                    double totalRoomPrice = 0;
                     if (bookingList != null && !bookingList.isEmpty()) {
                         for (RoomBooking booking : bookingList) {
                             double roomTotal = booking.getQuantity() * booking.getPrice();
@@ -142,12 +148,6 @@
                 </tr>
                 <%
                         }
-                %>
-                <tr>
-                    <th colspan="3">Total Room Charges</th>
-                    <th>RM <%= totalRoomPrice %></th>
-                </tr>
-                <%
                     } else {
                 %>
                 <tr>

@@ -26,7 +26,6 @@ boolean isLoggedIn = (customerName != null);
             align-items: center;
             padding: 10px 25px;
             font-size: 18px;
-            
             top: 0;
             z-index: 1000;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -105,6 +104,22 @@ boolean isLoggedIn = (customerName != null);
         .footer-links a:hover {
             color: white;
         }
+
+        /* Update Dates Button Style */
+        .update-button {
+            padding: 10px 20px;
+            background-color: #728687;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .update-button:hover {
+            background-color: #5a6b61;  /* Slightly darker shade */
+        }
     </style>
     <script>
         function printReceipt() {
@@ -139,6 +154,23 @@ boolean isLoggedIn = (customerName != null);
         <p><strong>Adults:</strong> <%= session.getAttribute("totalAdult") %></p>
         <p><strong>Kids:</strong> <%= session.getAttribute("totalKids") %></p>
     </div>
+
+    <!-- Change Stay Dates Form -->
+    <div class="section">
+        <h3>Change Stay Dates</h3>
+        <form action="UpdateBookingController" method="post">
+            <div class="form-group">
+                <label for="newCheckInDate">New Check-In Date:</label>
+                <input type="date" id="newCheckInDate" name="newCheckInDate" value="<%= session.getAttribute("checkInDate") %>" required>
+            </div>
+            <div class="form-group">
+                <label for="newCheckOutDate">New Check-Out Date:</label>
+                <input type="date" id="newCheckOutDate" name="newCheckOutDate" value="<%= session.getAttribute("checkOutDate") %>" required>
+            </div>
+            <button type="submit" class="update-button">Update Booking</button>
+        </form>
+    </div>
+
     <div class="section">
         <h3>Booking Details</h3>
         <table>

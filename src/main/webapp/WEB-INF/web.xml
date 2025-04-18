@@ -205,4 +205,14 @@
     <servlet-name>ServiceReservationController</servlet-name>
     <url-pattern>/ServiceReservationController</url-pattern>
   </servlet-mapping>
+ <servlet>
+    <description></description>
+    <display-name>UpdateBookingController</display-name>
+    <servlet-name>UpdateBookingController</servlet-name>
+    <servlet-class>resort.controller.UpdateBookingController</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>UpdateBookingController</servlet-name>
+    <url-pattern>/UpdateBookingController</url-pattern>
+</servlet-mapping>
 </web-app>

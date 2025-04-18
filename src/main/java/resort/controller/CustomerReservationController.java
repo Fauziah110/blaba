@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import resort.connection.ConnectionManager;
 import resort.model.Reservation;
+import resort.model.RoomBooking;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -28,6 +29,7 @@ public class CustomerReservationController extends HttpServlet {
         }
 
         List<Reservation> userReservations = new ArrayList<>();
+        List<RoomBooking> roomBookingList = new ArrayList<>();
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -43,7 +45,9 @@ public class CustomerReservationController extends HttpServlet {
             stmt.setString(1, customerName);
             ResultSet rs = stmt.executeQuery();
 
+            // Iterate over the result set and retrieve the necessary details
             while (rs.next()) {
+                // Create a new reservation object
                 Reservation reservation = new Reservation(
                     rs.getInt("reservationID"),
                     rs.getDate("reservationDate"),
@@ -59,29 +63,47 @@ public class CustomerReservationController extends HttpServlet {
                     rs.getInt("serviceID")
                 );
 
+                // Add the reservation to the list of user reservations
                 userReservations.add(reservation);
 
-                // ✅ Store **room & stay details** in session
+                // Create a RoomBooking object and add it to the list
+                RoomBooking roomBooking = new RoomBooking(
+                    rs.getInt("roomID"),       // roomID
+                    rs.getString("roomType"),  // roomType
+                    rs.getDouble("roomPrice"), // price
+                    1                          // assuming 1 room booked for now
+                );
+                roomBookingList.add(roomBooking);
+
+                // Store all the session attributes related to reservation and room booking
                 session.setAttribute("reservationID", rs.getInt("reservationID"));
                 session.setAttribute("roomID", rs.getInt("roomID"));
                 session.setAttribute("roomType", rs.getString("roomType"));
                 session.setAttribute("roomPrice", rs.getDouble("roomPrice"));
                 session.setAttribute("totalPayment", rs.getDouble("totalPayment"));
-
-                // ✅ **Fix Stay Details**
                 session.setAttribute("checkInDate", rs.getDate("checkInDate").toString());
                 session.setAttribute("checkOutDate", rs.getDate("checkOutDate").toString());
                 session.setAttribute("totalAdult", rs.getInt("totalAdult"));
                 session.setAttribute("totalKids", rs.getInt("totalKids"));
             }
 
+            // Set the room booking list to the session so that it can be used in the receipt page
+            session.setAttribute("roomBookingList", roomBookingList);
+
+            // Set the user reservations list as a request attribute to be used in the JSP page
             request.setAttribute("userReservations", userReservations);
+
+            // Forward the request to the JSP page to display the data
             request.getRequestDispatcher("customerReservation.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
+            response.sendRedirect("error.jsp"); // Handle errors and redirect to an error page
         } finally {
-            try { if (stmt != null) stmt.close(); if (conn != null) conn.close(); } catch (Exception ignored) {}
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception ignored) {}
         }
     }
 }
