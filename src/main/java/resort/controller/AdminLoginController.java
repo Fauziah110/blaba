@@ -46,12 +46,12 @@ public class AdminLoginController extends HttpServlet {
             System.out.println("Azure database connection established successfully.");
 
             // Use parameterized query to prevent SQL injection
-            String sql = "SELECT staffName, staffEmail, staffPhoneNo, adminId FROM staff WHERE staffEmail = ? AND staffPassword = ?";
+            String sql = "SELECT staffName, staffEmail, staffPhoneNo, adminId FROM dbo.staff WHERE staffEmail = ? AND staffPassword = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, email);
             pstmt.setString(2, password);
 
-            System.out.println("Executing query: SELECT ... FROM staff WHERE staffEmail = ? AND staffPassword = ?");
+            System.out.println("Executing query: SELECT ... FROM dbo.staff WHERE staffEmail = ? AND staffPassword = ?");
 
             rs = pstmt.executeQuery();
 
@@ -70,7 +70,7 @@ public class AdminLoginController extends HttpServlet {
                 // Login failed: Show error message
                 System.out.println("Login failed. Invalid email or password.");
                 request.setAttribute("errorMessage", "Invalid email or password. Please try again.");
-                request.getRequestDispatcher("Login.jsp").forward(request, response);
+                request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         } catch (SQLException e) {
             // Log error and show generic error message
