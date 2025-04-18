@@ -250,39 +250,87 @@
         .footer-links a:hover {
             color: white;
         }
+        
+        /* Dropdown Styles */
+		.dropdown {
+		    position: relative;
+		}
+		
+		.dropdown-content {
+		    display: none;
+		    position: absolute;
+		    background-color: #ffffff;
+		    min-width: 160px;
+		    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+		    z-index: 1;
+		}
+		
+		.dropdown-content li {
+		    list-style: none;
+		}
+		
+		.dropdown-content li a {
+		    display: block;
+		    color: #333;
+		    padding: 12px 16px;
+		    text-decoration: none;
+		}
+		
+		.dropdown-content li a:hover {
+		    background-color: #f1f1f1;
+		}
+		
+		/* Show dropdown on hover */
+		.dropdown:hover .dropdown-content {
+		    display: block;
+		}
+        
     </style>
 </head>
 <body>
 <header>
         <div class="logo">
 <a href="MdResort_HOMEPAGE.jsp">
-    <img src="MdResort_logo.png" alt="Logo">
-</a>            <a href="MdResort_HOMEPAGE.jsp">MD Resort</a>
+    <img src="images/MDResort.png" alt="Logo">
+</a>            <a href="index.jsp">MD Resort</a>
         </div>
         <nav>
             <ul>
-                <li><a href="MdResort_HOMEPAGE.jsp">HOME</a></li>
-                <li><a href="MdResort_ROOM.jsp">ROOM</a></li>
-                <li><a href="MdResort_FACILITIES.jsp">FACILITIES</a></li>
-                <li><a href="MdResort_SERVICE.jsp">SERVICES</a></li>
-                <% if (isLoggedIn) { %>
-                    <!-- Display the profile icon and dropdown for logged-in users -->
-                    <li>
-                        <div class="profile-icon">
-                            <img src="profile-icon.png" alt="Profile">
-                            <span><%= customerName %></span>
-                            <div class="dropdown-menu">
-                                <a href="MdResort_PROFILE.jsp">Profile</a>
-                                <a href="BookingServlet">Booking</a>
-                                <a href="LogoutCustomerServlet">Logout</a>
-                            </div>
-                        </div>
-                    </li>
-                <% } else { %>
-                    <!-- Show login/signup buttons for guests -->
-                    <li><a href="MdResort_LOGIN.html" class="btn">Log In</a></li>
-                    <li><a href="MdResort_SIGNUP.html" class="btn">Sign Up</a></li>
-                <% } %>
+                <li><a href="roomCustomer.jsp">Room</a></li>
+			        <li><a href="facilityCustomer.jsp">Facilities</a></li>
+			
+			        <!-- Dropdown for Service -->
+			        <li class="dropdown">
+			            <a href="#">Service</a>
+			            <ul class="dropdown-content">
+			                <li><a href="ViewService.jsp">View Service</a></li>
+			                <li><a href="serviceCustomer.jsp">Book Service</a></li>
+			            </ul>
+			        </li>
+			
+			        <%
+			        if (isLoggedIn) {
+			        %>
+			        <!-- Display the profile icon and dropdown for logged-in users -->
+			        <li>
+			            <div class="profile-icon">
+			                <img src="images/profile-icon.png" alt="Profile">
+			                <span><%=customerName%></span>
+			                <div class="dropdown-menu">
+			                    <a href="profileCustomer.jsp">Profile</a>
+			                    <a href="CustomerReservationController">Booking</a>
+			                    <a href="LogoutController">Logout</a>
+			                </div>
+			            </div>
+			        </li>
+			        <%
+			        } else {
+			        %>
+			        <!-- Show login/signup buttons for guests -->
+			        <li><a href="signupCustomer.jsp">Sign Up</a></li>
+			        <%
+			        }
+			        %>
             </ul>
         </nav>
     </header>
@@ -314,13 +362,13 @@
 	    <div class="footer-container">
 	        <div class="footer-logo">
 	            <a href="MdResort_HOMEPAGE.jsp">
-	    <img src="images/MdResort_logo.png" alt="Logo">
+	    <img src="images/MDResort.png" alt="Logo">
 	</a>
 	</div>
         <div class="social-icons">
-            <a href="https://facebook.com"><img src="facebook_icon.png" alt="Facebook"></a>
-            <a href="https://instagram.com"><img src="insta_icon.png" alt="Instagram"></a>
-            <a href="https://whatsapp.com"><img src="whatsapp_icon.png" alt="WhatsApp"></a>
+            <a href="https://facebook.com"><img src="images/facebook_icon.png" alt="Facebook"></a>
+            <a href="https://instagram.com"><img src="images/insta_icon.png" alt="Instagram"></a>
+            <a href="https://whatsapp.com"><img src="images/whatsapp_icon.png" alt="WhatsApp"></a>
         </div>
         <ul class="footer-links">
             <li><a href="MdResort_HOMEPAGE.jsp">Home</a></li>
