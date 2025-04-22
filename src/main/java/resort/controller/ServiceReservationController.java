@@ -42,72 +42,26 @@ public class ServiceReservationController extends HttpServlet {
                 return;
             }
 
-            System.out.println("📌 Inserting into Service table...");
-            String insertServiceSQL = "INSERT INTO Service (serviceCharge, serviceDate, serviceType) VALUES (?, CURRENT_TIMESTAMP, ?)";
-            stmt = conn.prepareStatement(insertServiceSQL, PreparedStatement.RETURN_GENERATED_KEYS);
-            stmt.setDouble(1, serviceCharge);  // Default 0.00, will update later
-            stmt.setString(2, serviceType);
-            stmt.executeUpdate();
+            // If no new service insertion is needed, skip this section
+            // Remove the logic for inserting into the Service table entirely
 
-            rs = stmt.getGeneratedKeys();
-            if (rs.next()) {
-                newServiceID = rs.getInt(1);
-                System.out.println("✅ New Service ID: " + newServiceID);
-            } else {
-                System.out.println("❌ ERROR: Failed to retrieve new service ID.");
-                response.sendRedirect("serviceCustomer.jsp?error=serviceInsertFail");
-                return;
-            }
-
-            // Handle Food Service
+            // Only calculate the service charge based on the service type
             if ("FoodService".equals(serviceType)) {
                 String menuName = request.getParameter("menuName");
                 int quantity = Integer.parseInt(request.getParameter("quantityMenu"));
                 double menuPrice = 40.00; // Example fixed menu price
                 serviceCharge = menuPrice * quantity;
-
-                System.out.println("📌 Inserting into FoodService table...");
-                String insertFoodSQL = "INSERT INTO FoodService (serviceID, menuName, menuPrice, quantityMenu) VALUES (?, ?, ?, ?)";
-                stmt = conn.prepareStatement(insertFoodSQL);
-                stmt.setInt(1, newServiceID);
-                stmt.setString(2, menuName);
-                stmt.setDouble(3, menuPrice);
-                stmt.setInt(4, quantity);
-                stmt.executeUpdate();
-                
-                System.out.println("✅ FoodService reservation stored successfully.");
-            }
-            // Handle Event Service
-            else if ("EventService".equals(serviceType)) {
+                System.out.println("📌 FoodService - Service Charge: RM " + serviceCharge);
+            } else if ("EventService".equals(serviceType)) {
                 String venue = request.getParameter("venue");
                 String eventType = request.getParameter("eventType");
                 int duration = Integer.parseInt(request.getParameter("duration"));
                 double basePrice = 100.00;
                 serviceCharge = basePrice * duration;
-
-                System.out.println("📌 Inserting into EventService table...");
-                String insertEventSQL = "INSERT INTO EventService (serviceID, venue, eventType, duration) VALUES (?, ?, ?, ?)";
-                stmt = conn.prepareStatement(insertEventSQL);
-                stmt.setInt(1, newServiceID);
-                stmt.setString(2, venue);
-                stmt.setString(3, eventType);
-                stmt.setInt(4, duration);
-                stmt.executeUpdate();
-                
-                System.out.println("✅ EventService reservation stored successfully.");
+                System.out.println("📌 EventService - Service Charge: RM " + serviceCharge);
             }
 
-            // Update service charge in Service table
-            System.out.println("📌 Updating Service Charge in Service table...");
-            String updateServiceChargeSQL = "UPDATE Service SET serviceCharge = ? WHERE serviceID = ?";
-            stmt = conn.prepareStatement(updateServiceChargeSQL);
-            stmt.setDouble(1, serviceCharge);
-            stmt.setInt(2, newServiceID);
-            stmt.executeUpdate();
-
-            System.out.println("✅ Service Charge Updated: RM " + serviceCharge);
-
-            // Insert into Reservation Table with default values
+            // Insert into Reservation Table with default values (skip service table insert)
             System.out.println("📌 Inserting into Reservation table...");
             String insertReservationSQL = "INSERT INTO Reservation (reservationDate, checkInDate, checkOutDate, totalAdult, totalKids, roomID, customerID, totalPayment, serviceID) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?)";
             stmt = conn.prepareStatement(insertReservationSQL);
@@ -116,11 +70,12 @@ public class ServiceReservationController extends HttpServlet {
             stmt.setInt(3, 0); // No Room ID
             stmt.setInt(4, customerID);
             stmt.setDouble(5, serviceCharge);
-            stmt.setInt(6, newServiceID);
+            stmt.setNull(6, Types.INTEGER);  // No serviceID is associated, so it remains NULL
             stmt.executeUpdate();
 
             System.out.println("✅ Service Reservation stored in Reservation table.");
 
+            // Redirect to confirmation page or success page
             response.sendRedirect("serviceCustomer.jsp?success=true");
 
         } catch (SQLException e) {

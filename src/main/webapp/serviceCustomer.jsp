@@ -1,6 +1,53 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="resort.connection.ConnectionManager" %>
+<%@ page import="java.sql.*, java.util.*" %>
+
 <!DOCTYPE html>
 <%
+    // Assuming you already have a connection manager, use it to get the connection
+    Connection connection = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+
+    // Lists to hold venues and food sets
+    List<String> venues = new ArrayList<>();
+    List<String> foodSets = new ArrayList<>();
+
+    try {
+        // Use your existing connection manager here to get the connection
+        connection = ConnectionManager.getConnection();  // Replace with your connection manager method
+
+        // Query to get the venues from the eventService table
+        String queryVenues = "SELECT venue FROM dbo.EventService";  // Replace with your actual query for venues
+        stmt = connection.createStatement();
+        rs = stmt.executeQuery(queryVenues);
+
+        // Fetch the venue names and add them to the list
+        while (rs.next()) {
+            venues.add(rs.getString("venue"));
+        }
+
+        // Query to get the food sets from the foodService table
+        String queryFoodSets = "SELECT menuName FROM dbo.FoodService";  // Replace with your actual query for food sets
+        rs = stmt.executeQuery(queryFoodSets);
+
+        // Fetch the food sets and add them to the list
+        while (rs.next()) {
+            foodSets.add(rs.getString("menuName"));
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (stmt != null) stmt.close();
+            if (connection != null) connection.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+    }
+
     if (session.getAttribute("customerID") == null) {
         response.sendRedirect("login.jsp");
         return;
@@ -131,9 +178,10 @@
             <div class="form-group">
                 <label for="menuName">Select Food Set</label>
                 <select id="menuName" name="menuName" onchange="updateServiceCharge('FoodService')">
-                    <option value="SET A">SET A</option>
-                    <option value="SET B">SET B</option>
-                    <option value="SET C">SET C</option>
+                    <option value="">-- Select Food Set --</option>
+                    <% for (String foodSet : foodSets) { %>
+                        <option value="<%= foodSet %>"><%= foodSet %></option>
+                    <% } %>
                 </select>
             </div>
             <div class="form-group">
@@ -154,8 +202,10 @@
             <div class="form-group">
                 <label for="venue">Select Venue</label>
                 <select id="venue" name="venue">
-                    <option value="Beachfront">Beachfront</option>
-                    <option value="Garden">Garden</option>
+                    <option value="">-- Select Venue --</option>
+                    <% for (String venue : venues) { %>
+                        <option value="<%= venue %>"><%= venue %></option>
+                    <% } %>
                 </select>
             </div>
             <div class="form-group">

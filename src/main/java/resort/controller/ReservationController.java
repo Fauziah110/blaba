@@ -14,146 +14,88 @@ public class ReservationController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Debugging: Check if session exists and if customerID is available
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("customerID") == null) {
+            System.out.println("❌ ERROR: Session expired or customerID is missing.");
+            response.sendRedirect("serviceCustomer.jsp");
+            return;
+        }
+
+        // Retrieve customerID from the session
+        int customerID = Integer.parseInt(session.getAttribute("customerID").toString());
+        System.out.println("✅ Retrieved customerID: " + customerID);
+
+        String serviceType = request.getParameter("serviceType");
+        double serviceCharge = 0.00;
+
+        // Get the room booking details from the request
+        String roomIDStr = request.getParameter("roomID");
+        int roomID = roomIDStr != null && !roomIDStr.isEmpty() ? Integer.parseInt(roomIDStr) : 0; // Default to 0 if no room booked
+        int totalAdults = Integer.parseInt(request.getParameter("totalAdults"));
+        int totalKids = Integer.parseInt(request.getParameter("totalKids"));
+        double totalPayment = Double.parseDouble(request.getParameter("totalPayment"));
+
+        System.out.println("✅ Service Type: " + serviceType);
+
         Connection conn = null;
-        PreparedStatement reservationStmt = null;
-        PreparedStatement customerQueryStmt = null;
-        int customerID = 0;
+        PreparedStatement stmt = null;
 
         try {
             conn = ConnectionManager.getConnection();
-            conn.setAutoCommit(false); // Start transaction
-
-            // ✅ Retrieve session
-            HttpSession session = request.getSession();
-
-            // ✅ Retrieve customer details from session
-            String customerName = (String) session.getAttribute("customerName");
-            String customerEmail = (String) session.getAttribute("customerEmail");
-            String customerPhoneNo = (String) session.getAttribute("customerPhoneNo");
-
-            System.out.println("✅ DEBUG: Session Customer Name: " + customerName);
-            System.out.println("✅ DEBUG: Session Customer Email: " + customerEmail);
-            System.out.println("✅ DEBUG: Session Customer Phone: " + customerPhoneNo);
-
-            // ✅ Ensure customer name exists
-            if (customerName == null || customerName.trim().isEmpty()) {
-                response.getWriter().println("<h3>Error: Customer details are missing. Please log in again.</h3>");
+            if (conn == null) {
+                System.out.println("❌ ERROR: Database connection failed.");
+                response.sendRedirect("serviceCustomer.jsp?error=dbConnection");
                 return;
             }
 
-            // ✅ Retrieve customerID from DB if session exists
-            String customerQuery = "SELECT customerID FROM Customer WHERE customerName = ?";
-            customerQueryStmt = conn.prepareStatement(customerQuery);
-            customerQueryStmt.setString(1, customerName);
-            ResultSet rs = customerQueryStmt.executeQuery();
+            // Service Charge Calculation based on service type
+            if ("FoodService".equals(serviceType)) {
+                String menuName = request.getParameter("menuName");
+                int quantity = Integer.parseInt(request.getParameter("quantityMenu"));
+                double menuPrice = 40.00; // Example fixed menu price
+                serviceCharge = menuPrice * quantity;
 
-            if (rs.next()) {
-                customerID = rs.getInt("customerID");
-                System.out.println("✅ DEBUG: Retrieved Customer ID: " + customerID);
-            } else {
-                System.out.println("❌ ERROR: No customer found for name: " + customerName);
-                response.getWriter().println("<h3>Error: Customer not found in database. Please check your account.</h3>");
-                return;
+                System.out.println("📌 FoodService - Service Charge: RM " + serviceCharge);
             }
-            rs.close();
+            else if ("EventService".equals(serviceType)) {
+                String venue = request.getParameter("venue");
+                String eventType = request.getParameter("eventType");
+                int duration = Integer.parseInt(request.getParameter("duration"));
+                double basePrice = 100.00;
+                serviceCharge = basePrice * duration;
 
-            // ✅ Ensure stay details exist in session
-            String checkInDateStr = (String) session.getAttribute("checkInDate");
-            String checkOutDateStr = (String) session.getAttribute("checkOutDate");
-
-            if (checkInDateStr == null || checkOutDateStr == null) {
-                response.getWriter().println("<h3>Error: Check-in and check-out dates cannot be null.</h3>");
-                return;
+                System.out.println("📌 EventService - Service Charge: RM " + serviceCharge);
             }
 
-            // ✅ Convert to SQL Date safely
-            Date checkInDate, checkOutDate;
-            try {
-                checkInDate = Date.valueOf(checkInDateStr);
-                checkOutDate = Date.valueOf(checkOutDateStr);
-            } catch (IllegalArgumentException e) {
-                response.getWriter().println("<h3>Error: Invalid check-in or check-out date format.</h3>");
-                return;
-            }
+            // Insert into Reservation table
+            System.out.println("📌 Inserting into Reservation table...");
+            String insertReservationSQL = "INSERT INTO Reservation (reservationDate, checkInDate, checkOutDate, totalAdult, totalKids, roomID, customerID, totalPayment, serviceType) " +
+                    "VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?)";
+            stmt = conn.prepareStatement(insertReservationSQL);
+            stmt.setInt(1, totalAdults);
+            stmt.setInt(2, totalKids);
+            stmt.setInt(3, roomID);  // If no room booked, roomID will be set to 0
+            stmt.setInt(4, customerID); // Ensure customerID is inserted correctly
+            stmt.setDouble(5, totalPayment);
+            stmt.setString(6, serviceType); // Store the service type in the reservation
+            stmt.executeUpdate();
 
-            // ✅ Ensure room details exist in session
-            int roomID = parseIntOrDefault(session.getAttribute("roomID"), -1);
-            double roomPrice = parseDoubleOrDefault(session.getAttribute("roomPrice"), 0.0);
-            int quantity = parseIntOrDefault(session.getAttribute("quantity"), 1);
+            System.out.println("✅ Service Reservation stored in Reservation table.");
 
-            // ✅ Check for missing room details
-            if (roomID == -1 || roomPrice == 0.0 || quantity == 0) {
-                System.out.println("❌ ERROR: Room details are missing in session.");
-                response.getWriter().println("<h3>Error: Room details are missing. Please select a room before proceeding.</h3>");
-                return;
-            }
+            // Redirect to confirmation page or success page
+            response.sendRedirect("serviceCustomer.jsp?success=true");
 
-            System.out.println("✅ DEBUG: Room ID: " + roomID);
-            System.out.println("✅ DEBUG: Room Price: RM" + roomPrice);
-            System.out.println("✅ DEBUG: Room Quantity: " + quantity);
-
-            // ✅ Retrieve and validate total adults & kids
-            int totalAdults = parseIntOrDefault(session.getAttribute("adults"), 1);
-            int totalKids = parseIntOrDefault(session.getAttribute("kids"), 0);
-            double totalPayment = roomPrice * quantity; // Calculate based on room price & quantity
-            
-            System.out.println("✅ DEBUG: Total Adults: " + totalAdults);
-            System.out.println("✅ DEBUG: Total Kids: " + totalKids);
-            System.out.println("✅ DEBUG: Total Payment: RM" + totalPayment);
-         // ✅ Save total payment in session
-            session.setAttribute("totalPayment", totalPayment);
-
-            // ✅ Insert Reservation Data into DB
-            String reservationSQL = "INSERT INTO Reservation (reservationDate, checkInDate, checkOutDate, totalAdult, totalKids, roomID, customerID, totalPayment) VALUES (CURRENT_DATE, ?, ?, ?, ?, ?, ?, ?)";
-            reservationStmt = conn.prepareStatement(reservationSQL);
-            reservationStmt.setDate(1, checkInDate);
-            reservationStmt.setDate(2, checkOutDate);
-            reservationStmt.setInt(3, totalAdults);
-            reservationStmt.setInt(4, totalKids);
-            reservationStmt.setInt(5, roomID);
-            reservationStmt.setInt(6, customerID);
-            reservationStmt.setDouble(7, totalPayment);
-            reservationStmt.executeUpdate();
-
-            // ✅ Commit Transaction
-            conn.commit();
-            System.out.println("✅ DEBUG: Reservation successfully saved!");
-
-            // ✅ Redirect to confirmation page
-            response.sendRedirect("receipt.jsp");
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-            response.getWriter().println("<h3>Error: " + e.getMessage() + "</h3>");
+            System.out.println("❌ ERROR: SQL Exception - " + e.getMessage());
+            response.sendRedirect("serviceCustomer.jsp?error=sqlException");
         } finally {
             try {
-                if (customerQueryStmt != null) customerQueryStmt.close();
-                if (reservationStmt != null) reservationStmt.close();
+                if (stmt != null) stmt.close();
                 if (conn != null) conn.close();
             } catch (SQLException ignored) {}
-        }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    // ✅ Helper method to safely parse integers
-    private int parseIntOrDefault(Object value, int defaultValue) {
-        try {
-            return (value != null) ? Integer.parseInt(value.toString()) : defaultValue;
-        } catch (NumberFormatException ignored) {
-            return defaultValue;
-        }
-    }
-
-    // ✅ Helper method to safely parse doubles
-    private double parseDoubleOrDefault(Object value, double defaultValue) {
-        try {
-            return (value != null) ? Double.parseDouble(value.toString()) : defaultValue;
-        } catch (NumberFormatException ignored) {
-            return defaultValue;
         }
     }
 }
