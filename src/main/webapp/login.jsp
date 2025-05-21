@@ -53,7 +53,7 @@
             
 
             <p class="account-link" id="signupLink">
-                Don't have an account? <a href="#">Sign Up</a>
+                Don't have an account? <a href="signupCustomer.jsp">Sign Up</a>
             </p>
 
             <footer>

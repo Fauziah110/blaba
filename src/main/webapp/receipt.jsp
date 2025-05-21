@@ -1,14 +1,25 @@
 <%@ page session="true" %>
 <%@ page import="java.util.*" %>
 <%@ page import="resort.model.RoomBooking" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%
+    // Retrieve session attributes
     String customerName = (String) session.getAttribute("customerName");
-    boolean isLoggedIn = (customerName != null);
-
-    // Retrieve room booking list from session
+    java.sql.Date checkInDate = (java.sql.Date) session.getAttribute("checkInDate");
+    java.sql.Date checkOutDate = (java.sql.Date) session.getAttribute("checkOutDate");
+    int totalAdults = (Integer) session.getAttribute("totalAdult");
+    int totalKids = (Integer) session.getAttribute("totalKids");
+    double totalPayment = (Double) session.getAttribute("totalPayment");
     List<RoomBooking> bookingList = (List<RoomBooking>) session.getAttribute("roomBookingList");
+
+    // Format the java.sql.Date to a string (YYYY-MM-DD)
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    String formattedCheckInDate = checkInDate != null ? dateFormat.format(checkInDate) : "Not Set";
+    String formattedCheckOutDate = checkOutDate != null ? dateFormat.format(checkOutDate) : "Not Set";
+
     double totalRoomPrice = 0;
 %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -116,10 +127,10 @@
 
     <div class="section">
         <h3>Stay Details</h3>
-        <p><strong>Check-In:</strong> <%= session.getAttribute("checkInDate") %></p>
-        <p><strong>Check-Out:</strong> <%= session.getAttribute("checkOutDate") %></p>
-        <p><strong>Adults:</strong> <%= session.getAttribute("totalAdult") %></p>
-        <p><strong>Kids:</strong> <%= session.getAttribute("totalKids") %></p>
+        <p><strong>Check-In:</strong> <%= formattedCheckInDate %></p>
+        <p><strong>Check-Out:</strong> <%= formattedCheckOutDate %></p>
+        <p><strong>Adults:</strong> <%= totalAdults %></p>
+        <p><strong>Kids:</strong> <%= totalKids %></p>
     </div>
 
     <div class="section">
@@ -161,7 +172,7 @@
     </div>
 
     <div class="total-price">
-        <p>Total Amount Paid: <strong>RM <%= session.getAttribute("totalPayment") != null ? session.getAttribute("totalPayment") : "0.00" %></strong></p>
+        <p>Total Amount Paid: <strong>RM <%= totalPayment %></strong></p>
     </div>
 
     <div class="buttons">
