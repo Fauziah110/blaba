@@ -6,7 +6,7 @@ public class RoomBooking {
     private double price;
     private int quantity;
 
-    // ✅ Add a constructor that matches (int, String, double, int)
+    // Constructor to initialize RoomBooking
     public RoomBooking(int roomID, String roomType, double price, int quantity) {
         this.roomID = roomID;
         this.roomType = roomType;

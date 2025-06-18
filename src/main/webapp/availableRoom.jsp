@@ -85,20 +85,16 @@
     <div class="room-container">
         <%
             List<Room> availableRooms = (List<Room>) request.getAttribute("availableRooms");
+            
+            // Mapping roomID to image path
+            Map<Integer, String> roomImages = new HashMap<>();
+            roomImages.put(101, "images/family_room.jpeg");
+            roomImages.put(102, "images/cabin_room.jpg");
+            roomImages.put(103, "images/wood_room.jpg");
+
             if (availableRooms != null && !availableRooms.isEmpty()) {
                 for (Room room : availableRooms) {
-                    String roomImage = "default.jpg"; // Default image fallback
-                    switch (room.getRoomID()) { // Using roomID to determine image
-                        case 101:
-                            roomImage = "images/family_room.jpeg";
-                            break;
-                        case 102:
-                            roomImage = "images/cabin_room.jpg";
-                            break;
-                        case 103:
-                            roomImage = "images/wood_room.jpg";
-                            break;
-                    }
+                    String roomImage = roomImages.getOrDefault(room.getRoomID(), "images/default.jpg"); // Default image fallback
         %>
         <div class="room-card">
             <img src="<%= roomImage %>" alt="Room Image">
