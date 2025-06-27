@@ -134,7 +134,7 @@
 <body>
     <nav>
         <a href="Dashboard.jsp" class="logo-link">
-            <img src="Images/MDResort.PNG" alt="Resort Logo" class="logo-image">
+            <img src="images/MDResort.png" alt="Resort Logo" class="logo-image">
             <span class="logo-text">MD Resort Pantai Siring Melaka</span>
         </a>
         <div class="spacer"></div>
