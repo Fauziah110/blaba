@@ -192,8 +192,10 @@
                 <td><%= rs.getString("customerName") %></td>
                 <td><%= rs.getInt("roomID") %></td>
                 <td><%= rs.getBigDecimal("roomPrice") %></td>
-                <td><%= rs.getInt("serviceID") %></td>
-                <td><%= rs.getBigDecimal("serviceCharge") %></td>
+                <td>
+                    <%= rs.getInt("serviceID") == 0 ? "No service booked" : rs.getInt("serviceID") %>
+                </td>
+                <td><%= rs.getBigDecimal("serviceCharge") != null ? rs.getBigDecimal("serviceCharge") : "No service booked" %></td>
                 <td><%= rs.getBigDecimal("totalPayment") %></td>
                 <td><%= rs.getDate("checkinDate") %></td>
                 <td><%= rs.getDate("checkoutDate") %></td>
