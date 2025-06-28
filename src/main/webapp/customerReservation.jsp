@@ -1,10 +1,13 @@
 <%@ page session="true" %>
 <%@ page import="java.util.*" %>
 <%@ page import="resort.model.RoomBooking" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%
 String customerName = (String) session.getAttribute("customerName");
 boolean isLoggedIn = (customerName != null);
 %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -189,6 +192,35 @@ boolean isLoggedIn = (customerName != null);
                 <td>RM <%= session.getAttribute("totalPayment") %></td>
             </tr>
         </table>
+
+        <!-- Display Service Details in a Table -->
+        <c:if test="${not empty serviceType}">
+            <h4>Service Details</h4>
+            <table>
+                <tr>
+                    <th>Reservation ID</th>
+                    <th>Service Type</th>
+                    <th>Service Charge (RM)</th>
+                    <th>Food Menu</th>
+                    <th>Food Menu Price (RM)</th>
+                    <th>Quantity</th>
+                    <th>Event Venue</th>
+                    <th>Event Type</th>
+                    <th>Event Duration (hours)</th>
+                </tr>
+                <tr>
+                    <td><%= session.getAttribute("reservationID") %></td>
+                    <td>${serviceType}</td>
+                    <td>RM ${serviceCharge}</td>
+                    <td>${foodMenuName}</td>
+                    <td>RM ${foodMenuPrice}</td>
+                    <td>${foodQuantityMenu}</td>
+                    <td>${eventVenue}</td>
+                    <td>${eventType}</td>
+                    <td>${eventDuration}</td>
+                </tr>
+            </table>
+        </c:if>
     </div>
 </div>
 <footer>

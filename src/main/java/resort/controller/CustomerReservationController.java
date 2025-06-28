@@ -36,10 +36,14 @@ public class CustomerReservationController extends HttpServlet {
         try {
             conn = ConnectionManager.getConnection();
             String sql = "SELECT r.reservationID, r.reservationDate, r.checkInDate, r.checkOutDate, r.totalAdult, r.totalKids, " +
-                         "r.roomID, rm.roomType, rm.roomPrice, r.customerID, c.customerName, r.totalPayment, r.serviceID " +
+                         "r.roomID, rm.roomType, rm.roomPrice, r.customerID, c.customerName, r.totalPayment, r.serviceID, " +
+                         "s.serviceType, s.serviceCharge, fs.menuName, fs.menuPrice, fs.quantityMenu, es.venue, es.eventType, es.duration " +
                          "FROM Reservation r " +
                          "JOIN Customer c ON r.customerID = c.customerID " +
                          "JOIN Room rm ON r.roomID = rm.roomID " +
+                         "LEFT JOIN Service s ON r.serviceID = s.serviceID " +
+                         "LEFT JOIN FoodService fs ON s.serviceID = fs.serviceID " +
+                         "LEFT JOIN EventService es ON s.serviceID = es.serviceID " +
                          "WHERE c.customerName = ?";
             stmt = conn.prepareStatement(sql);
             stmt.setString(1, customerName);
@@ -74,6 +78,27 @@ public class CustomerReservationController extends HttpServlet {
                     1                          // assuming 1 room booked for now
                 );
                 roomBookingList.add(roomBooking);
+
+                // Store service-related data in the session
+                String serviceType = rs.getString("serviceType");
+                if (serviceType != null) {
+                    session.setAttribute("serviceType", serviceType);
+                    session.setAttribute("serviceCharge", rs.getDouble("serviceCharge"));
+
+                    // If it's food service
+                    if (rs.getString("menuName") != null) {
+                        session.setAttribute("foodMenuName", rs.getString("menuName"));
+                        session.setAttribute("foodMenuPrice", rs.getDouble("menuPrice"));
+                        session.setAttribute("foodQuantityMenu", rs.getInt("quantityMenu"));
+                    }
+
+                    // If it's event service
+                    if (rs.getString("venue") != null) {
+                        session.setAttribute("eventVenue", rs.getString("venue"));
+                        session.setAttribute("eventType", rs.getString("eventType"));
+                        session.setAttribute("eventDuration", rs.getInt("duration"));
+                    }
+                }
 
                 // Store all the session attributes related to reservation and room booking
                 session.setAttribute("reservationID", rs.getInt("reservationID"));
