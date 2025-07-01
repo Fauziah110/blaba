@@ -409,7 +409,7 @@ th {
 <body>
 	<nav>
 		<a href="Dashboard.jsp" class="logo-link"> <img
-			src="Images/MDResort.PNG" alt="Resort Logo" class="logo-image">
+			src="images/MDResort.png" alt="Resort Logo" class="logo-image">
 			<span class="logo-text">MD Resort Pantai Siring Melaka</span>
 		</a>
 		<div class="spacer"></div>
@@ -427,7 +427,7 @@ th {
 
 	<!-- Profile Header -->
 	<section class="profile-header">
-		<img src="Images/profile.png" alt="Profile Logo"
+		<img src="images/profile-icon.png" alt="Profile Logo"
 			style="width: 60px; height: auto;">
 
 
@@ -473,12 +473,12 @@ th {
 	</section>
 
 	<!-- Logout Button -->
-	<form action="Login.jsp?logout=true" method="post">
+	<form action="index.jsp?logout=true" method="post">
 		<button type="submit" class="btn-logout">LOG OUT</button>
 		<%
 		if ("true".equals(request.getParameter("logout"))) {
 			session.invalidate();
-			response.sendRedirect("Login.jsp");
+			response.sendRedirect("index.jsp");
 		}
 		%>
 	</form>

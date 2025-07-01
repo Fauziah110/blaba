@@ -310,13 +310,13 @@ footer {
 		<nav>
 			    <ul>
 			        <li><a href="roomCustomer.jsp">Room</a></li>
-			        <li><a href="viewFacility.jsp">Facilities</a></li>
+			        <li><a href="facilityCustomer.jsp">Facilities</a></li>
 			
 			        <!-- Dropdown for Service -->
 			        <li class="dropdown">
 			            <a href="#">Service</a>
 			            <ul class="dropdown-content">
-			                <li><a href="ViewService.jsp">View Services</a></li>
+			                <li><a href="ViewService.jsp">View Service</a></li>
 			                <li><a href="serviceCustomer.jsp">Book Service</a></li>
 			            </ul>
 			        </li>
