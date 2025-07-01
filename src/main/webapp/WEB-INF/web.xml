@@ -223,5 +223,14 @@
   <servlet-name>DeleteServiceController</servlet-name>
   <url-pattern>/DeleteServiceController</url-pattern>
 </servlet-mapping>
+<servlet>
+    <servlet-name>RegisterStaffController</servlet-name>
+    <servlet-class>resort.controller.RegisterStaffController</servlet-class>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>RegisterStaffController</servlet-name>
+    <url-pattern>/RegisterStaffController</url-pattern>
+</servlet-mapping>
 
 </web-app>

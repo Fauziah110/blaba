@@ -25,7 +25,7 @@ public class DeleteServiceController extends HttpServlet {
 
             conn = ConnectionManager.getConnection();
 
-            // Verify staff password
+            // Step 1: Verify staff password
             String verifyPasswordQuery = "SELECT COUNT(*) FROM staff WHERE staffpassword = ?";
             pstmt = conn.prepareStatement(verifyPasswordQuery);
             pstmt.setString(1, staffPassword);
@@ -33,16 +33,22 @@ public class DeleteServiceController extends HttpServlet {
             rs.next();
 
             if (rs.getInt(1) == 1) {
-                // Password verified, proceed to delete room
-                String deleteQuery = "DELETE FROM service WHERE serviceId = ?";
-                pstmt = conn.prepareStatement(deleteQuery);
+                // Step 2: Delete dependent records from FoodService table first
+                String deleteFoodServiceQuery = "DELETE FROM FoodService WHERE serviceID = ?";
+                pstmt = conn.prepareStatement(deleteFoodServiceQuery);
+                pstmt.setString(1, serviceId);
+                pstmt.executeUpdate();  // Delete all related records from FoodService
+
+                // Step 3: Delete the service record from the Service table
+                String deleteServiceQuery = "DELETE FROM Service WHERE serviceID = ?";
+                pstmt = conn.prepareStatement(deleteServiceQuery);
                 pstmt.setString(1, serviceId);
 
-                int result = pstmt.executeUpdate();
-                if (result > 0) {
-                    response.sendRedirect("Service.jsp"); // Redirect to refresh page
+                int deletedRows = pstmt.executeUpdate();  // Delete the service
+                if (deletedRows > 0) {
+                    response.sendRedirect("Service.jsp"); // Redirect to refresh page after deletion
                 } else {
-                    response.getWriter().println("Failed to delete room.");
+                    response.getWriter().println("Error: Failed to delete service.");
                 }
             } else {
                 response.getWriter().println("Invalid staff password.");
@@ -51,7 +57,7 @@ public class DeleteServiceController extends HttpServlet {
             e.printStackTrace();
             response.getWriter().println("Error: " + e.getMessage());
         } finally {
-        	ConnectionManager.closeResources(rs, pstmt, conn);
+            ConnectionManager.closeResources(rs, pstmt, conn);
         }
     }
 

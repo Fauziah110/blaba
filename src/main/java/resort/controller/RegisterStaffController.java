@@ -53,7 +53,7 @@ public class RegisterStaffController extends HttpServlet {
 
 			int rowsInserted = pstmt.executeUpdate();
 			if (rowsInserted > 0) {
-				response.sendRedirect("Succes.jsp"); // Redirect to a success page
+				response.sendRedirect("Profile.jsp"); // Redirect to a success page
 			} else {
 				System.out.println("No rows inserted.");
 				request.setAttribute("errorMessage", "No rows inserted.");
