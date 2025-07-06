@@ -1,14 +1,9 @@
 package resort.controller;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.*;
 import resort.connection.ConnectionManager;
 
 public class DeleteRoomController extends HttpServlet {
@@ -25,7 +20,7 @@ public class DeleteRoomController extends HttpServlet {
 
             conn = ConnectionManager.getConnection();
 
-            // Verify staff password
+            // ✅ Check staff password
             String verifyPasswordQuery = "SELECT COUNT(*) FROM staff WHERE staffpassword = ?";
             pstmt = conn.prepareStatement(verifyPasswordQuery);
             pstmt.setString(1, staffPassword);
@@ -33,29 +28,35 @@ public class DeleteRoomController extends HttpServlet {
             rs.next();
 
             if (rs.getInt(1) == 1) {
-                // Password verified, proceed to delete room
+                // ✅ Valid password → delete room
+                pstmt.close(); // reuse pstmt
                 String deleteQuery = "DELETE FROM room WHERE roomId = ?";
                 pstmt = conn.prepareStatement(deleteQuery);
                 pstmt.setString(1, roomId);
-
                 int result = pstmt.executeUpdate();
+
                 if (result > 0) {
-                    response.sendRedirect("Room.jsp"); // Redirect to refresh page
+                    response.sendRedirect("Room.jsp");
                 } else {
-                    response.getWriter().println("Failed to delete room.");
+                    request.getSession().setAttribute("deleteError", "deleteFailed");
+                    response.sendRedirect("Room.jsp");
                 }
             } else {
-                response.getWriter().println("Invalid staff password.");
+                // ❌ Wrong password → set error
+                request.getSession().setAttribute("deleteError", "invalidPassword");
+                response.sendRedirect("Room.jsp");
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
-            response.getWriter().println("Error: " + e.getMessage());
+            request.getSession().setAttribute("deleteError", "sqlError");
+            response.sendRedirect("Room.jsp");
         } finally {
-        	ConnectionManager.closeResources(rs, pstmt, conn);
+            ConnectionManager.closeResources(rs, pstmt, conn);
         }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.getWriter().println("Delete operation requires a POST request.");
+        response.getWriter().println("Delete operation requires POST.");
     }
 }
