@@ -1,4 +1,4 @@
-<%@ page session="true" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" session="true" %>
 <%@ page import="java.util.*" %>
 <%@ page import="resort.model.RoomBooking" %>
 
@@ -74,7 +74,7 @@
             margin-top: 10px;
         }
         .btn:hover {
-            background: #728687;
+            background: #5a6b61;
         }
     </style>
 </head>
@@ -144,25 +144,25 @@
         <% } %>
     </div>
 
-		  <form action="ReservationController" method="POST">
-		    <input type="hidden" name="customerID" value="<%= session.getAttribute("customerID") %>">
-		    <input type="hidden" name="roomID" value="<%= session.getAttribute("roomID") != null ? session.getAttribute("roomID") : "" %>">
-		    <input type="hidden" name="roomType" value="<%= session.getAttribute("roomType") != null ? session.getAttribute("roomType") : "" %>">
-		    <input type="hidden" name="checkInDate" value="<%= session.getAttribute("checkInDate") != null ? session.getAttribute("checkInDate") : "" %>">
-		    <input type="hidden" name="checkOutDate" value="<%= session.getAttribute("checkOutDate") != null ? session.getAttribute("checkOutDate") : "" %>">
-		    <input type="hidden" id="baseTotalPrice" value="<%= totalRoomPrice %>">
-		    <input type="hidden" id="totalPayment" name="totalPrice" value="<%= totalRoomPrice %>">
-		
-		    <div class="total-price">
-		        Total Payment: <span id="displayTotalPayment">RM<%= totalRoomPrice %></span>
-		    </div>
-		
-		    <% if (bookingList != null && !bookingList.isEmpty()) { %>
-		        <button type="submit" class="btn">Confirm Booking</button>
-		    <% } else { %>
-		        <button type="button" class="btn" disabled>Please Select a Room First</button>
-		    <% } %>
-		</form>
+    <form action="ReservationController" method="POST">
+        <input type="hidden" name="customerID" value="<%= session.getAttribute("customerID") %>">
+        <input type="hidden" name="roomID" value="<%= session.getAttribute("roomID") != null ? session.getAttribute("roomID") : "" %>">
+        <input type="hidden" name="roomType" value="<%= session.getAttribute("roomType") != null ? session.getAttribute("roomType") : "" %>">
+        <input type="hidden" name="checkInDate" value="<%= session.getAttribute("checkInDate") != null ? session.getAttribute("checkInDate") : "" %>">
+        <input type="hidden" name="checkOutDate" value="<%= session.getAttribute("checkOutDate") != null ? session.getAttribute("checkOutDate") : "" %>">
+        <input type="hidden" id="baseTotalPrice" value="<%= totalRoomPrice %>">
+        <input type="hidden" id="totalPayment" name="totalPrice" value="<%= totalRoomPrice %>">
+
+        <div class="total-price">
+            Total Payment: <span id="displayTotalPayment">RM<%= totalRoomPrice %></span>
+        </div>
+
+        <% if (bookingList != null && !bookingList.isEmpty()) { %>
+            <button type="submit" class="btn">Confirm Booking</button>
+        <% } else { %>
+            <button type="button" class="btn" disabled>Please Select a Room First</button>
+        <% } %>
+    </form>
 </main>
 
 <footer>

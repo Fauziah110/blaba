@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - MD Resort</title>
     <style>
-        /* General styles */
+        /* [same CSS as before] */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -17,13 +17,7 @@
             align-items: center;
             height: 100vh;
         }
-
-        /* Container */
-        .container {
-            text-align: center;
-        }
-
-        /* Sign-Up Box */
+        .container { text-align: center; }
         .signup-box {
             width: 400px;
             background: white;
@@ -31,31 +25,10 @@
             padding: 40px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
-
-        /* Logo */
-        .logo img {
-            width: 80px;
-            height: auto;
-        }
-
-        .logo h1 {
-            font-size: 20px;
-            margin-top: 10px;
-            color: #5f7268;
-        }
-
-        /* Form Group */
-        .form-group {
-            text-align: left;
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
+        .logo img { width: 80px; height: auto; }
+        .logo h1 { font-size: 20px; margin-top: 10px; color: #5f7268; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; font-size: 14px; }
         .form-group input {
             width: 100%;
             padding: 12px;
@@ -64,8 +37,6 @@
             border-radius: 5px;
             font-size: 14px;
         }
-
-        /* Buttons */
         .signup-button, .google-button {
             width: 100%;
             padding: 12px;
@@ -75,57 +46,41 @@
             cursor: pointer;
             font-size: 16px;
         }
-
-        .signup-button {
-            background-color: #5f7268;
-            color: white;
-            font-weight: bold;
-        }
-
-        .google-button {
-            background-color: #4285f4;
-            color: white;
-            font-weight: bold;
-        }
-
-        /* Separator */
-        .separator {
-            margin: 15px 0;
-            font-size: 14px;
-            color: #999;
-            font-weight: bold;
-        }
-
-        /* Error Message */
-        .error-message {
-            color: red;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        /* Account Link */
-        .account-link {
-            margin-top: 10px;
-            font-size: 14px;
-        }
-
+        .signup-button { background-color: #5f7268; color: white; font-weight: bold; }
+        .google-button { background-color: #4285f4; color: white; font-weight: bold; }
+        .separator { margin: 15px 0; font-size: 14px; color: #999; font-weight: bold; }
+        .error-message { color: red; font-size: 14px; margin-bottom: 10px; }
+        .account-link { margin-top: 10px; font-size: 14px; }
         .account-link a {
             color: #007bff;
             text-decoration: none;
             font-weight: bold;
         }
-
-        .account-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* Footer */
+        .account-link a:hover { text-decoration: underline; }
         footer {
             margin-top: 20px;
             font-size: 12px;
             color: #5f7268;
         }
     </style>
+    <script>
+        function checkPasswordStrength(event) {
+            const passwordInput = document.getElementById('password');
+            const password = passwordInput.value;
+
+            // Password strength regex: at least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 symbol
+            const strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+            if (!strongPassword.test(password)) {
+                // Prevent form submission
+                event.preventDefault();
+                alert("⚠️ Weak Password!\nYour password must:\n- Be at least 8 characters\n- Include uppercase, lowercase, number, and symbol.");
+                passwordInput.focus();
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -142,7 +97,7 @@
             <% } %>
 
             <!-- Sign-Up Form -->
-            <form action="SignupCustomerController" method="POST">
+            <form action="SignupCustomerController" method="POST" onsubmit="return checkPasswordStrength(event);">
                 <div class="form-group">
                     <label for="customer-name">Full Name</label>
                     <input type="text" id="customer-name" name="customer-name" placeholder="Enter your full name" required>
@@ -165,8 +120,6 @@
 
                 <button type="submit" class="signup-button">Sign Up</button>
             </form>
-
-            
 
             <p class="account-link">
                 Already have an account? <a href="login.jsp">Log In</a>

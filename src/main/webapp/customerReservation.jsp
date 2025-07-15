@@ -11,8 +11,8 @@ boolean isLoggedIn = (customerName != null);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Booking Receipt</title>
     <style>
         body {
@@ -32,10 +32,6 @@ boolean isLoggedIn = (customerName != null);
             top: 0;
             z-index: 1000;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .logo {
-            display: flex;
-            align-items: center;
         }
         .logo img {
             height: 40px;
@@ -86,29 +82,6 @@ boolean isLoggedIn = (customerName != null);
             padding: 10px 0;
             margin-top: 30px;
         }
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .footer-links {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding-top: 10px;
-            border-top: 1px solid white;
-        }
-        .footer-links a {
-            color: black;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        .footer-links a:hover {
-            color: white;
-        }
-
-        /* Update Dates Button Style */
         .update-button {
             padding: 10px 20px;
             background-color: #728687;
@@ -119,26 +92,24 @@ boolean isLoggedIn = (customerName != null);
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         .update-button:hover {
-            background-color: #5a6b61;  /* Slightly darker shade */
+            background-color: #5a6b61;
         }
     </style>
-    <script>
-        function printReceipt() {
-            window.print();
-        }
-    </script>
+
+    <!-- SweetAlert2 Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <header>
     <div class="logo">
         <a href="index.jsp">
-            <img src="images/MDResort.png" alt="Logo">
+            <img src="images/MDResort.png" alt="Logo" />
         </a>
         <a href="index.jsp">MD Resort Pantai Siring Melaka</a>
     </div>
 </header>
+
 <div class="receipt-container">
     <header>
         <h1>Your Booking</h1>
@@ -161,21 +132,21 @@ boolean isLoggedIn = (customerName != null);
     <!-- Change Stay Dates Form -->
     <div class="section">
         <h3>Change Stay Dates</h3>
-        <form action="UpdateBookingController" method="post">
+        <form id="updateBookingForm" action="UpdateBookingController" method="post">
             <div class="form-group">
                 <label for="newCheckInDate">New Check-In Date:</label>
-                <input type="date" id="newCheckInDate" name="newCheckInDate" value="<%= session.getAttribute("checkInDate") %>" required>
+                <input type="date" id="newCheckInDate" name="newCheckInDate" value="<%= session.getAttribute("checkInDate") %>" required />
             </div>
             <div class="form-group">
                 <label for="newCheckOutDate">New Check-Out Date:</label>
-                <input type="date" id="newCheckOutDate" name="newCheckOutDate" value="<%= session.getAttribute("checkOutDate") %>" required>
+                <input type="date" id="newCheckOutDate" name="newCheckOutDate" value="<%= session.getAttribute("checkOutDate") %>" required />
             </div>
             <button type="submit" class="update-button">Update Booking</button>
         </form>
     </div>
 
     <div class="section">
-        <h3>Booking Details</h3>
+        <h3>Room Details</h3>
         <table>
             <tr>
                 <th>Reservation ID</th>
@@ -192,46 +163,42 @@ boolean isLoggedIn = (customerName != null);
                 <td>RM <%= session.getAttribute("totalPayment") %></td>
             </tr>
         </table>
-
-        <!-- Display Service Details in a Table -->
-        <c:if test="${not empty serviceType}">
-            <h4>Service Details</h4>
-            <table>
-                <tr>
-                    <th>Reservation ID</th>
-                    <th>Service Type</th>
-                    <th>Service Charge (RM)</th>
-                    <th>Food Menu</th>
-                    <th>Food Menu Price (RM)</th>
-                    <th>Quantity</th>
-                    <th>Event Venue</th>
-                    <th>Event Type</th>
-                    <th>Event Duration (hours)</th>
-                </tr>
-                <tr>
-                    <td><%= session.getAttribute("reservationID") %></td>
-                    <td>${serviceType}</td>
-                    <td>RM ${serviceCharge}</td>
-                    <td>${foodMenuName}</td>
-                    <td>RM ${foodMenuPrice}</td>
-                    <td>${foodQuantityMenu}</td>
-                    <td>${eventVenue}</td>
-                    <td>${eventType}</td>
-                    <td>${eventDuration}</td>
-                </tr>
-            </table>
-        </c:if>
     </div>
 </div>
+
 <footer>
-    <div class="footer-container">
-        <ul class="footer-links">
-            <li><a href="index.jsp">Home</a></li>
-            <li><a href="roomCustomer.jsp">Room</a></li>
-            <li><a href="facilityCustomer.jsp">Facilities</a></li>
-        </ul>
-        <p>&copy; 2025 MD Resort. All rights reserved.</p>
-    </div>
+    <p>&copy; 2025 MD Resort. All rights reserved.</p>
 </footer>
+
+<script>
+    document.getElementById("updateBookingForm").addEventListener("submit", function(event) {
+        const checkIn = new Date(document.getElementById("newCheckInDate").value);
+        const checkOut = new Date(document.getElementById("newCheckOutDate").value);
+        const today = new Date();
+        today.setHours(0,0,0,0); // Remove time for comparison
+
+        if (checkIn < today) {
+            event.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Date!',
+                text: 'Check-in date cannot be in the past.',
+                confirmButtonColor: '#728687'
+            });
+            return false;
+        }
+
+        if (checkOut <= checkIn) {
+            event.preventDefault();
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Date!',
+                text: 'Check-out date must be after check-in date.',
+                confirmButtonColor: '#728687'
+            });
+            return false;
+        }
+    });
+</script>
 </body>
 </html>
