@@ -585,7 +585,11 @@ th {
 	</table>
 
 
-
+<%
+    String deleteError = (String) session.getAttribute("deleteError");
+    if (deleteError != null) {
+        session.removeAttribute("deleteError");
+%>
 <script>
     window.onload = function () {
         <% if ("invalidPassword".equals(deleteError)) { %>
