@@ -1,35 +1,39 @@
 <%@ page session="true" %>
 <%@ page import="java.util.*" %>
 <%@ page import="resort.model.RoomBooking" %>
+<%@ page import="resort.model.Service" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+
 <%
     // Retrieve session attributes
     String customerName = (String) session.getAttribute("customerName");
+    String customerEmail = (String) session.getAttribute("customerEmail");
+    String customerPhoneNo = (String) session.getAttribute("customerPhoneNo");
+
     java.sql.Date checkInDate = (java.sql.Date) session.getAttribute("checkInDate");
     java.sql.Date checkOutDate = (java.sql.Date) session.getAttribute("checkOutDate");
     int totalAdults = (Integer) session.getAttribute("totalAdult");
     int totalKids = (Integer) session.getAttribute("totalKids");
     double totalPayment = (Double) session.getAttribute("totalPayment");
+
     List<RoomBooking> bookingList = (List<RoomBooking>) session.getAttribute("roomBookingList");
+    List<Service> serviceList = (List<Service>) session.getAttribute("serviceList");
 
     // Format the java.sql.Date to a string (YYYY-MM-DD)
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     String formattedCheckInDate = checkInDate != null ? dateFormat.format(checkInDate) : "Not Set";
     String formattedCheckOutDate = checkOutDate != null ? dateFormat.format(checkOutDate) : "Not Set";
-
-    double totalRoomPrice = 0;
 %>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Booking Receipt</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
             margin: 0;
             padding: 0;
         }
@@ -37,71 +41,60 @@
             max-width: 800px;
             margin: 40px auto;
             background: white;
-            border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         header {
             text-align: center;
-            padding-bottom: 20px;
             border-bottom: 2px solid #003580;
+            padding-bottom: 10px;
         }
         header h1 {
-            color: #003580;
             margin: 0;
+            color: #003580;
         }
         .section {
             margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            background: #f4f4f4;
         }
         .section h3 {
-            margin-top: 0;
+            margin-bottom: 10px;
             color: #003580;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 10px;
         }
         th, td {
-            padding: 10px;
             border: 1px solid #ddd;
+            padding: 10px;
             text-align: left;
         }
         th {
-            background-color: #003580;
+            background: #003580;
             color: white;
         }
-        .total-price {
-            font-size: 20px;
-            font-weight: bold;
-            color: #003580;
+        .total {
             text-align: right;
-            padding-top: 15px;
+            font-weight: bold;
+            margin-top: 15px;
         }
         .buttons {
+            margin-top: 20px;
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
         }
         .btn {
-            padding: 12px 20px;
             background: #007BFF;
             color: white;
+            padding: 10px 20px;
+            text-decoration: none;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
         }
         .btn:hover {
             background: #0056b3;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            color: #555;
         }
     </style>
     <script>
@@ -111,7 +104,6 @@
     </script>
 </head>
 <body>
-
 <div class="receipt-container">
     <header>
         <h1>Booking Receipt</h1>
@@ -120,20 +112,19 @@
 
     <div class="section">
         <h3>Customer Details</h3>
-        <p><strong>Name:</strong> <%= session.getAttribute("customerName") %></p>
-        <p><strong>Email:</strong> <%= session.getAttribute("customerEmail") %></p>
-        <p><strong>Phone:</strong> <%= session.getAttribute("customerPhoneNo") %></p>
+        <p><strong>Name:</strong> <%= customerName %></p>
+        <p><strong>Email:</strong> <%= customerEmail %></p>
+        <p><strong>Phone:</strong> <%= customerPhoneNo %></p>
     </div>
 
+    <% if (bookingList != null && !bookingList.isEmpty()) { %>
     <div class="section">
         <h3>Stay Details</h3>
         <p><strong>Check-In:</strong> <%= formattedCheckInDate %></p>
         <p><strong>Check-Out:</strong> <%= formattedCheckOutDate %></p>
         <p><strong>Adults:</strong> <%= totalAdults %></p>
         <p><strong>Kids:</strong> <%= totalKids %></p>
-    </div>
 
-    <div class="section">
         <h3>Rooms Booked</h3>
         <table>
             <thead>
@@ -145,11 +136,9 @@
                 </tr>
             </thead>
             <tbody>
-                <%
-                    if (bookingList != null && !bookingList.isEmpty()) {
-                        for (RoomBooking booking : bookingList) {
-                            double roomTotal = booking.getQuantity() * booking.getPrice();
-                            totalRoomPrice += roomTotal;
+                <% 
+                    for (RoomBooking booking : bookingList) {
+                        double roomTotal = booking.getQuantity() * booking.getPrice();
                 %>
                 <tr>
                     <td><%= booking.getRoomType() %></td>
@@ -157,35 +146,58 @@
                     <td>RM <%= booking.getPrice() %></td>
                     <td>RM <%= roomTotal %></td>
                 </tr>
-                <%
-                        }
-                    } else {
-                %>
-                <tr>
-                    <td colspan="4" style="text-align:center; color: red;">No rooms booked. Please select a room.</td>
-                </tr>
-                <%
-                    }
-                %>
+                <% } %>
             </tbody>
         </table>
     </div>
+    <% } else { %>
+    <div class="section">
+        <h3>Stay Details</h3>
+        <p style="color: red;">No rooms booked.</p>
+    </div>
+    <% } %>
 
-    <div class="total-price">
+    <% if (serviceList != null && !serviceList.isEmpty()) { %>
+    <div class="section">
+        <h3>Services Booked</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Service Type</th>
+                    <th>Service Charge (RM)</th>
+                    <th>Room ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% 
+                    for (Service service : serviceList) {
+                %>
+                <tr>
+                    <td><%= service.getServiceType() %></td>
+                    <td>RM <%= service.getServiceCharge() %></td>
+                    <td><%= service.getRoomId() %></td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+    <% } else { %>
+    <div class="section">
+        <h3>Services Booked</h3>
+        <p style="color: red;">No services booked.</p>
+    </div>
+    <% } %>
+
+    <div class="total">
         <p>Total Amount Paid: <strong>RM <%= totalPayment %></strong></p>
     </div>
 
     <div class="buttons">
-        <button onclick="printReceipt()" class="btn">Print Receipt</button>
-        <form action="index.jsp">
+        <button class="btn" onclick="printReceipt()">Print Receipt</button>
+        <form action="index.jsp" style="display:inline;">
             <button type="submit" class="btn">Back to Homepage</button>
         </form>
     </div>
-
-    <div class="footer">
-        <p>&copy; 2025 MD Resort. All rights reserved.</p>
-    </div>
 </div>
-
 </body>
 </html>
