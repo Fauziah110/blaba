@@ -24,15 +24,13 @@ public class ServiceReservationController extends HttpServlet {
 
         int customerID = Integer.parseInt(session.getAttribute("customerID").toString());
         String serviceType = request.getParameter("serviceType");
-        double serviceCharge = 0.00;
-        int newServiceID = -1;
+        double serviceCharge = 0.0;
 
-        System.out.println("✅ Retrieved customerID: " + customerID);
+        System.out.println("✅ Customer ID: " + customerID);
         System.out.println("✅ Service Type: " + serviceType);
 
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
 
         try {
             conn = ConnectionManager.getConnection();
@@ -42,49 +40,62 @@ public class ServiceReservationController extends HttpServlet {
                 return;
             }
 
-            // If no new service insertion is needed, skip this section
-            // Remove the logic for inserting into the Service table entirely
-
-            // Only calculate the service charge based on the service type
+            // Calculate service charge
             if ("FoodService".equals(serviceType)) {
-                String menuName = request.getParameter("menuName");
                 int quantity = Integer.parseInt(request.getParameter("quantityMenu"));
-                double menuPrice = 40.00; // Example fixed menu price
+                double menuPrice = 40.00; // Fixed price example
                 serviceCharge = menuPrice * quantity;
-                System.out.println("📌 FoodService - Service Charge: RM " + serviceCharge);
+
+                // Optional: store some info in session to display after redirect
+                session.setAttribute("serviceType", "Food Service");
+                session.setAttribute("menuName", request.getParameter("menuName"));
+                session.setAttribute("quantityMenu", quantity);
+
             } else if ("EventService".equals(serviceType)) {
-                String venue = request.getParameter("venue");
-                String eventType = request.getParameter("eventType");
                 int duration = Integer.parseInt(request.getParameter("duration"));
-                double basePrice = 100.00;
+                double basePrice = 100.00; // Fixed price example
                 serviceCharge = basePrice * duration;
-                System.out.println("📌 EventService - Service Charge: RM " + serviceCharge);
+
+                session.setAttribute("serviceType", "Event Service");
+                session.setAttribute("venue", request.getParameter("venue"));
+                session.setAttribute("eventType", request.getParameter("eventType"));
+                session.setAttribute("duration", duration);
+            } else {
+                // If serviceType invalid or not selected
+                response.sendRedirect("serviceCustomer.jsp?error=invalidService");
+                return;
             }
 
-            // Insert into Reservation Table with default values (skip service table insert)
-            System.out.println("📌 Inserting into Reservation table...");
+            // Store serviceCharge in session for display
+            session.setAttribute("serviceCharge", serviceCharge);
+
+            // Insert reservation record (adjust if you have your own columns)
             String insertReservationSQL = "INSERT INTO Reservation (reservationDate, checkInDate, checkOutDate, totalAdult, totalKids, roomID, customerID, totalPayment, serviceID) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?)";
+
             stmt = conn.prepareStatement(insertReservationSQL);
-            stmt.setInt(1, 0); // No Adults
-            stmt.setInt(2, 0); // No Kids
-            stmt.setInt(3, 0); // No Room ID
+            stmt.setInt(1, 0); // totalAdult (example)
+            stmt.setInt(2, 0); // totalKids (example)
+            stmt.setInt(3, 0); // roomID (example)
             stmt.setInt(4, customerID);
             stmt.setDouble(5, serviceCharge);
-            stmt.setNull(6, Types.INTEGER);  // No serviceID is associated, so it remains NULL
-            stmt.executeUpdate();
+            stmt.setNull(6, Types.INTEGER); // no serviceID associated
 
-            System.out.println("✅ Service Reservation stored in Reservation table.");
+            int rowsInserted = stmt.executeUpdate();
 
-            // Redirect to confirmation page or success page
-            response.sendRedirect("serviceCustomer.jsp?success=true");
+            if (rowsInserted > 0) {
+                System.out.println("✅ Service reservation inserted successfully.");
+                // Redirect back to serviceCustomer.jsp with success message
+                response.sendRedirect("serviceCustomer.jsp?success=true");
+            } else {
+                System.out.println("❌ ERROR: Failed to insert reservation.");
+                response.sendRedirect("serviceCustomer.jsp?error=insertFail");
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("❌ ERROR: SQL Exception - " + e.getMessage());
             response.sendRedirect("serviceCustomer.jsp?error=sqlException");
         } finally {
             try {
-                if (rs != null) rs.close();
                 if (stmt != null) stmt.close();
                 if (conn != null) conn.close();
             } catch (SQLException ignored) {}

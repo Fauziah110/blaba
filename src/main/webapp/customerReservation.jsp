@@ -6,32 +6,35 @@
 <%
 String customerName = (String) session.getAttribute("customerName");
 boolean isLoggedIn = (customerName != null);
+String serviceType = (String) session.getAttribute("serviceType");
+Double roomPrice = (Double) session.getAttribute("roomPrice");
+Double serviceCharge = (Double) session.getAttribute("serviceCharge");
+Double grandTotal = (Double) session.getAttribute("grandTotal");
+
+if (roomPrice == null) roomPrice = 0.0;
+if (serviceCharge == null) serviceCharge = 0.0;
+if (grandTotal == null) grandTotal = roomPrice + serviceCharge;
 %>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Booking Receipt</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: white;
-            margin: 0;
-            padding: 0;
-            color: black;
+            margin: 0; padding: 0; color: black;
         }
         header {
             background: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
             padding: 10px 25px;
             font-size: 18px;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 1000;
         }
         .logo img {
             height: 40px;
@@ -49,7 +52,7 @@ boolean isLoggedIn = (customerName != null);
             background: white;
             border-radius: 10px;
             padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         .section {
             margin-top: 20px;
@@ -59,6 +62,7 @@ boolean isLoggedIn = (customerName != null);
         }
         .section h3 {
             color: black;
+            margin-bottom: 10px;
         }
         table {
             width: 100%;
@@ -82,25 +86,10 @@ boolean isLoggedIn = (customerName != null);
             padding: 10px 0;
             margin-top: 30px;
         }
-        .update-button {
-            padding: 10px 20px;
-            background-color: #728687;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .update-button:hover {
-            background-color: #5a6b61;
-        }
     </style>
-
-    <!-- SweetAlert2 Library -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+
 <header>
     <div class="logo">
         <a href="index.jsp">
@@ -111,16 +100,16 @@ boolean isLoggedIn = (customerName != null);
 </header>
 
 <div class="receipt-container">
-    <header>
-        <h1>Your Booking</h1>
-        <p>Thank you for booking with <strong>MD Resort</strong></p>
-    </header>
+    <h1>Your Booking Receipt</h1>
+    <p>Thank you for booking with <strong>MD Resort</strong></p>
+
     <div class="section">
         <h3>Customer Details</h3>
         <p><strong>Name:</strong> <%= session.getAttribute("customerName") %></p>
         <p><strong>Email:</strong> <%= session.getAttribute("customerEmail") %></p>
         <p><strong>Phone:</strong> <%= session.getAttribute("customerPhoneNo") %></p>
     </div>
+
     <div class="section">
         <h3>Stay Details</h3>
         <p><strong>Check-In:</strong> <%= session.getAttribute("checkInDate") %></p>
@@ -129,40 +118,80 @@ boolean isLoggedIn = (customerName != null);
         <p><strong>Kids:</strong> <%= session.getAttribute("totalKids") %></p>
     </div>
 
-    <!-- Change Stay Dates Form -->
-    <div class="section">
-        <h3>Change Stay Dates</h3>
-        <form id="updateBookingForm" action="UpdateBookingController" method="post">
-            <div class="form-group">
-                <label for="newCheckInDate">New Check-In Date:</label>
-                <input type="date" id="newCheckInDate" name="newCheckInDate" value="<%= session.getAttribute("checkInDate") %>" required />
-            </div>
-            <div class="form-group">
-                <label for="newCheckOutDate">New Check-Out Date:</label>
-                <input type="date" id="newCheckOutDate" name="newCheckOutDate" value="<%= session.getAttribute("checkOutDate") %>" required />
-            </div>
-            <button type="submit" class="update-button">Update Booking</button>
-        </form>
-    </div>
-
     <div class="section">
         <h3>Room Details</h3>
         <table>
             <tr>
-                <th>Reservation ID</th>
                 <th>Room ID</th>
                 <th>Room Type</th>
                 <th>Room Price (RM/night)</th>
-                <th>Total Payment (RM)</th>
             </tr>
             <tr>
-                <td><%= session.getAttribute("reservationID") %></td>
-                <td><%= session.getAttribute("roomID") %></td>
-                <td><%= session.getAttribute("roomType") %></td>
-                <td>RM <%= session.getAttribute("roomPrice") %></td>
-                <td>RM <%= session.getAttribute("totalPayment") %></td>
+                <td><%= session.getAttribute("roomID") != null ? session.getAttribute("roomID") : "-" %></td>
+                <td><%= session.getAttribute("roomType") != null ? session.getAttribute("roomType") : "-" %></td>
+                <td>RM <%= String.format("%.2f", roomPrice) %></td>
             </tr>
         </table>
+    </div>
+
+    <div class="section">
+        <h3>Service Details</h3>
+
+        <%
+            if (serviceType == null) {
+        %>
+            <p>No additional services booked.</p>
+        <%
+            } else if ("Food Service".equals(serviceType)) {
+                String menuName = (String) session.getAttribute("menuName");
+                Integer quantityMenu = (Integer) session.getAttribute("quantityMenu");
+        %>
+            <table>
+                <tr>
+                    <th>Service Type</th>
+                    <th>Menu Name</th>
+                    <th>Quantity</th>
+                    <th>Service Charge (RM)</th>
+                </tr>
+                <tr>
+                    <td><%= serviceType %></td>
+                    <td><%= menuName != null ? menuName : "-" %></td>
+                    <td><%= quantityMenu != null ? quantityMenu : "-" %></td>
+                    <td>RM <%= String.format("%.2f", serviceCharge) %></td>
+                </tr>
+            </table>
+        <%
+            } else if ("Event Service".equals(serviceType)) {
+                String venue = (String) session.getAttribute("venue");
+                String eventType = (String) session.getAttribute("eventType");
+                Integer duration = (Integer) session.getAttribute("duration");
+        %>
+            <table>
+                <tr>
+                    <th>Service Type</th>
+                    <th>Venue</th>
+                    <th>Event Type</th>
+                    <th>Duration (Hours)</th>
+                    <th>Service Charge (RM)</th>
+                </tr>
+                <tr>
+                    <td><%= serviceType %></td>
+                    <td><%= venue != null ? venue : "-" %></td>
+                    <td><%= eventType != null ? eventType : "-" %></td>
+                    <td><%= duration != null ? duration : "-" %></td>
+                    <td>RM <%= String.format("%.2f", serviceCharge) %></td>
+                </tr>
+            </table>
+        <%
+            }
+        %>
+    </div>
+
+    <div class="section">
+        <h3>Total Payment</h3>
+        <p style="font-size: 20px; font-weight: bold;">
+            RM <%= String.format("%.2f", grandTotal) %>
+        </p>
     </div>
 </div>
 
@@ -170,35 +199,5 @@ boolean isLoggedIn = (customerName != null);
     <p>&copy; 2025 MD Resort. All rights reserved.</p>
 </footer>
 
-<script>
-    document.getElementById("updateBookingForm").addEventListener("submit", function(event) {
-        const checkIn = new Date(document.getElementById("newCheckInDate").value);
-        const checkOut = new Date(document.getElementById("newCheckOutDate").value);
-        const today = new Date();
-        today.setHours(0,0,0,0); // Remove time for comparison
-
-        if (checkIn < today) {
-            event.preventDefault();
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Date!',
-                text: 'Check-in date cannot be in the past.',
-                confirmButtonColor: '#728687'
-            });
-            return false;
-        }
-
-        if (checkOut <= checkIn) {
-            event.preventDefault();
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Date!',
-                text: 'Check-out date must be after check-in date.',
-                confirmButtonColor: '#728687'
-            });
-            return false;
-        }
-    });
-</script>
 </body>
 </html>

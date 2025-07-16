@@ -10,16 +10,57 @@
     String customerEmail = (String) session.getAttribute("customerEmail");
     String customerPhoneNo = (String) session.getAttribute("customerPhoneNo");
 
-    java.sql.Date checkInDate = (java.sql.Date) session.getAttribute("checkInDate");
-    java.sql.Date checkOutDate = (java.sql.Date) session.getAttribute("checkOutDate");
-    int totalAdults = (Integer) session.getAttribute("totalAdult");
-    int totalKids = (Integer) session.getAttribute("totalKids");
-    double totalPayment = (Double) session.getAttribute("totalPayment");
+    // Handle check-in and check-out dates
+    Object checkInObj = session.getAttribute("checkInDate");
+    Object checkOutObj = session.getAttribute("checkOutDate");
 
+    java.sql.Date checkInDate = null;
+    java.sql.Date checkOutDate = null;
+
+    if (checkInObj instanceof java.sql.Date) {
+        checkInDate = (java.sql.Date) checkInObj;
+    } else if (checkInObj instanceof String) {
+        checkInDate = java.sql.Date.valueOf((String) checkInObj);
+    }
+
+    if (checkOutObj instanceof java.sql.Date) {
+        checkOutDate = (java.sql.Date) checkOutObj;
+    } else if (checkOutObj instanceof String) {
+        checkOutDate = java.sql.Date.valueOf((String) checkOutObj);
+    }
+
+    // Handle totalAdults, totalKids, totalPayment
+    int totalAdults = 0;
+    int totalKids = 0;
+    double totalPayment = 0.0;
+
+    Object totalAdultsObj = session.getAttribute("totalAdult");
+    Object totalKidsObj = session.getAttribute("totalKids");
+    Object totalPaymentObj = session.getAttribute("totalPayment");
+
+    if (totalAdultsObj instanceof Integer) {
+        totalAdults = (Integer) totalAdultsObj;
+    } else if (totalAdultsObj instanceof String) {
+        totalAdults = Integer.parseInt((String) totalAdultsObj);
+    }
+
+    if (totalKidsObj instanceof Integer) {
+        totalKids = (Integer) totalKidsObj;
+    } else if (totalKidsObj instanceof String) {
+        totalKids = Integer.parseInt((String) totalKidsObj);
+    }
+
+    if (totalPaymentObj instanceof Double) {
+        totalPayment = (Double) totalPaymentObj;
+    } else if (totalPaymentObj instanceof String) {
+        totalPayment = Double.parseDouble((String) totalPaymentObj);
+    }
+
+    // Retrieve lists
     List<RoomBooking> bookingList = (List<RoomBooking>) session.getAttribute("roomBookingList");
     List<Service> serviceList = (List<Service>) session.getAttribute("serviceList");
 
-    // Format the java.sql.Date to a string (YYYY-MM-DD)
+    // Format dates
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     String formattedCheckInDate = checkInDate != null ? dateFormat.format(checkInDate) : "Not Set";
     String formattedCheckOutDate = checkOutDate != null ? dateFormat.format(checkOutDate) : "Not Set";

@@ -92,14 +92,6 @@ public class CustomerReservationController extends HttpServlet {
                     service.setServiceCharge(rs.getDouble("serviceCharge"));
                     service.setRoomId(rs.getInt("roomID"));
 
-                    // Optionally add food service details if your Service model supports it
-                    // For example:
-                    // service.setMenuName(rs.getString("menuName"));
-                    // service.setMenuPrice(rs.getDouble("menuPrice"));
-                    // service.setQuantityMenu(rs.getInt("quantityMenu"));
-
-                    // Or event service details similarly
-
                     serviceList.add(service);
                 }
 
@@ -110,8 +102,11 @@ public class CustomerReservationController extends HttpServlet {
                     session.setAttribute("roomType", rs.getString("roomType"));
                     session.setAttribute("roomPrice", rs.getDouble("roomPrice"));
                     session.setAttribute("totalPayment", rs.getDouble("totalPayment"));
-                    session.setAttribute("checkInDate", rs.getDate("checkInDate").toString());
-                    session.setAttribute("checkOutDate", rs.getDate("checkOutDate").toString());
+
+                    // ✅ Save dates as java.sql.Date directly
+                    session.setAttribute("checkInDate", rs.getDate("checkInDate"));
+                    session.setAttribute("checkOutDate", rs.getDate("checkOutDate"));
+
                     session.setAttribute("totalAdult", rs.getInt("totalAdult"));
                     session.setAttribute("totalKids", rs.getInt("totalKids"));
                     sessionReservationSet = true;
