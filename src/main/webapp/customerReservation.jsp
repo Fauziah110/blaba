@@ -4,114 +4,159 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%
-String customerName = (String) session.getAttribute("customerName");
-boolean isLoggedIn = (customerName != null);
+    String customerName = (String) session.getAttribute("customerName");
+    boolean isLoggedIn = (customerName != null);
+    String serviceType = (String) session.getAttribute("serviceType");
+    Double roomPrice = (Double) session.getAttribute("roomPrice");
+    Double serviceCharge = (Double) session.getAttribute("serviceCharge");
+    Double grandTotal = (Double) session.getAttribute("grandTotal");
 
-String serviceType = (String) session.getAttribute("serviceType");
-Double roomPrice = (Double) session.getAttribute("roomPrice");
-Double serviceCharge = (Double) session.getAttribute("serviceCharge");
-Double grandTotal = (Double) session.getAttribute("totalPayment"); // Changed from grandTotal to totalPayment
+    if (roomPrice == null) roomPrice = 0.0;
+    if (serviceCharge == null) serviceCharge = 0.0;
+    if (grandTotal == null) grandTotal = roomPrice + serviceCharge;
 
-if (roomPrice == null) roomPrice = 0.0;
-if (serviceCharge == null) serviceCharge = 0.0;
-if (grandTotal == null) grandTotal = roomPrice + serviceCharge;
-
-// Format dates for input type=date
-java.sql.Date checkInDateObj = (java.sql.Date) session.getAttribute("checkInDate");
-java.sql.Date checkOutDateObj = (java.sql.Date) session.getAttribute("checkOutDate");
-
-String checkInDateStr = (checkInDateObj != null) ? checkInDateObj.toString() : "";
-String checkOutDateStr = (checkOutDateObj != null) ? checkOutDateObj.toString() : "";
+    // Format java.sql.Date to yyyy-MM-dd string for value attribute
+    String checkInDateStr = "";
+    String checkOutDateStr = "";
+    Object ciDateObj = session.getAttribute("checkInDate");
+    Object coDateObj = session.getAttribute("checkOutDate");
+    if (ciDateObj != null) {
+        checkInDateStr = ciDateObj.toString(); // Should be yyyy-MM-dd format
+    }
+    if (coDateObj != null) {
+        checkOutDateStr = coDateObj.toString();
+    }
 %>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Booking Receipt</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: white;
-            margin: 0; padding: 0; color: black;
-        }
-        header {
-            background: white;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 25px;
-            font-size: 18px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
-        .logo a {
-            font-size: 18px;
-            color: #728687;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .receipt-container {
-            max-width: 800px;
-            margin: 40px auto;
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .section {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            background: #f4f4f4;
-        }
-        .section h3 {
-            color: black;
-            margin-bottom: 10px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-        th {
-            background-color: #728687;
-            color: white;
-            font-size: 16px;
-        }
-        .btn {
-            padding: 10px 20px;
-            background-color: #728687;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn:hover {
-            background-color: #5a6e6e;
-        }
-        .message {
-            color: red;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        footer {
-            background: #728687;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            margin-top: 30px;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Booking Receipt</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: white;
+        margin: 0; padding: 0; color: black;
+    }
+    header {
+        background: white;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 10px 25px;
+        font-size: 18px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        position: sticky; top: 0; z-index: 1000;
+    }
+    .logo img {
+        height: 40px;
+        margin-right: 10px;
+    }
+    .logo a {
+        font-size: 18px;
+        color: #728687;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .receipt-container {
+        max-width: 800px;
+        margin: 40px auto;
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .section {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        background: #f4f4f4;
+    }
+    .section h3 {
+        color: black;
+        margin-bottom: 10px;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+    th, td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+    th {
+        background-color: #728687;
+        color: white;
+        font-size: 16px;
+    }
+    .btn {
+        padding: 10px 20px;
+        background-color: #728687;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+    .btn:hover {
+        background-color: #5a6e6e;
+    }
+    .message {
+        color: red;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+    footer {
+        background: #728687;
+        color: white;
+        text-align: center;
+        padding: 10px 0;
+        margin-top: 30px;
+    }
+</style>
+
+<script>
+    // Function to get today's date in yyyy-mm-dd format
+    function getTodayDate() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
+    window.onload = function() {
+        // Set min attribute to today for check-in and check-out inputs
+        const todayStr = getTodayDate();
+
+        const checkInInput = document.getElementById('newCheckInDate');
+        const checkOutInput = document.getElementById('newCheckOutDate');
+
+        checkInInput.min = todayStr;
+        checkOutInput.min = todayStr;
+
+        // Optional: Automatically adjust check-out min date to be at least next day after check-in
+        checkInInput.addEventListener('change', function() {
+            if (checkInInput.value) {
+                let minCheckOut = new Date(checkInInput.value);
+                minCheckOut.setDate(minCheckOut.getDate() + 1);
+                let yyyy = minCheckOut.getFullYear();
+                let mm = String(minCheckOut.getMonth() + 1).padStart(2, '0');
+                let dd = String(minCheckOut.getDate()).padStart(2, '0');
+                let minCheckOutStr = `${yyyy}-${mm}-${dd}`;
+                checkOutInput.min = minCheckOutStr;
+
+                // If current check-out is before new min, update it
+                if (checkOutInput.value && checkOutInput.value < minCheckOutStr) {
+                    checkOutInput.value = minCheckOutStr;
+                }
+            }
+        });
+    };
+</script>
+
 </head>
 <body>
 
@@ -148,17 +193,15 @@ String checkOutDateStr = (checkOutDateObj != null) ? checkOutDateObj.toString() 
 
     <%-- Editable Stay Details Form --%>
     <form action="UpdateBookingController" method="post">
-        <!-- Hidden input for reservationID -->
         <input type="hidden" name="reservationID" value="<%= session.getAttribute("reservationID") %>" />
-
         <div class="section">
             <h3>Stay Details</h3>
             <label for="newCheckInDate"><strong>Check-In:</strong></label>
-            <input type="date" name="newCheckInDate" id="newCheckInDate" 
+            <input type="date" name="newCheckInDate" id="newCheckInDate"
                    value="<%= checkInDateStr %>" required>
             <br><br>
             <label for="newCheckOutDate"><strong>Check-Out:</strong></label>
-            <input type="date" name="newCheckOutDate" id="newCheckOutDate" 
+            <input type="date" name="newCheckOutDate" id="newCheckOutDate"
                    value="<%= checkOutDateStr %>" required>
             <br><br>
             <button type="submit" class="btn">Update Dates</button>

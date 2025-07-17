@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,28 +19,47 @@ public class UpdateBookingController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Retrieve the new dates from the form
-        String newCheckInDate = request.getParameter("newCheckInDate");
-        String newCheckOutDate = request.getParameter("newCheckOutDate");
-
-        // Retrieve reservationID from the form (hidden input)
+        String newCheckInDateStr = request.getParameter("newCheckInDate");
+        String newCheckOutDateStr = request.getParameter("newCheckOutDate");
         String reservationIDStr = request.getParameter("reservationID");
 
         HttpSession session = request.getSession();
 
-        if (newCheckInDate == null || newCheckOutDate == null || newCheckInDate.isEmpty() || newCheckOutDate.isEmpty()) {
-            session.setAttribute("errorMessage", "Please provide valid dates.");
+        if (newCheckInDateStr == null || newCheckOutDateStr == null ||
+            newCheckInDateStr.isEmpty() || newCheckOutDateStr.isEmpty()) {
+            session.setAttribute("errorMessage", "Please provide valid check-in and check-out dates.");
             response.sendRedirect("customerReservation.jsp");
             return;
         }
 
-        if (newCheckInDate.compareTo(newCheckOutDate) >= 0) {
-            session.setAttribute("errorMessage", "Check-In date must be before Check-Out date.");
+        LocalDate newCheckInDate;
+        LocalDate newCheckOutDate;
+        LocalDate today = LocalDate.now();
+
+        try {
+            newCheckInDate = LocalDate.parse(newCheckInDateStr);
+            newCheckOutDate = LocalDate.parse(newCheckOutDateStr);
+        } catch (DateTimeParseException e) {
+            session.setAttribute("errorMessage", "Invalid date format.");
             response.sendRedirect("customerReservation.jsp");
             return;
         }
 
-        int reservationID = 0;
+        // Check if check-in date is before today (past date)
+        if (newCheckInDate.isBefore(today)) {
+            session.setAttribute("errorMessage", "Check-in date cannot be in the past.");
+            response.sendRedirect("customerReservation.jsp");
+            return;
+        }
+
+        // Check if check-out date is before or same as check-in date
+        if (!newCheckOutDate.isAfter(newCheckInDate)) {
+            session.setAttribute("errorMessage", "Check-out date must be after check-in date.");
+            response.sendRedirect("customerReservation.jsp");
+            return;
+        }
+
+        int reservationID;
         try {
             reservationID = Integer.parseInt(reservationIDStr);
         } catch (NumberFormatException e) {
@@ -46,13 +68,12 @@ public class UpdateBookingController extends HttpServlet {
             return;
         }
 
-        // Update session dates with java.sql.Date objects
-        session.setAttribute("checkInDate", java.sql.Date.valueOf(newCheckInDate));
-        session.setAttribute("checkOutDate", java.sql.Date.valueOf(newCheckOutDate));
+        // Update session dates
+        session.setAttribute("checkInDate", newCheckInDate);
+        session.setAttribute("checkOutDate", newCheckOutDate);
 
-        // Update dates in the database
         try {
-            updateBookingDatesInDatabase(reservationID, newCheckInDate, newCheckOutDate);
+            updateBookingDatesInDatabase(reservationID, newCheckInDateStr, newCheckOutDateStr);
         } catch (SQLException e) {
             e.printStackTrace();
             session.setAttribute("errorMessage", "Failed to update booking dates in the database.");
@@ -60,7 +81,6 @@ public class UpdateBookingController extends HttpServlet {
             return;
         }
 
-        // Redirect back to the page to show updated info
         response.sendRedirect("customerReservation.jsp");
     }
 
