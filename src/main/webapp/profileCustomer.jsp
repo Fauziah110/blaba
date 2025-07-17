@@ -202,7 +202,7 @@
 
         <!-- Phone Section -->
         <div class="section">
-            <span class="label">Phone Number:</span>
+            <span class="label">Phone Number: </span>
             <span class="value" id="phone-value"><%= customerPhoneNo %></span>
             <a href="#" class="edit" onclick="enableEdit(event, 'phone-form')">Edit</a>
         </div>
