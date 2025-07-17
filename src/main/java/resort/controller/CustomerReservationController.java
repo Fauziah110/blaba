@@ -93,6 +93,19 @@ public class CustomerReservationController extends HttpServlet {
                     service.setRoomId(rs.getInt("roomID"));
 
                     serviceList.add(service);
+
+                    // Set service details in session for JSP
+                    session.setAttribute("serviceType", rs.getString("serviceType"));
+                    session.setAttribute("serviceCharge", rs.getDouble("serviceCharge"));
+
+                    if ("Food Service".equals(rs.getString("serviceType"))) {
+                        session.setAttribute("menuName", rs.getString("menuName"));
+                        session.setAttribute("quantityMenu", rs.getInt("quantityMenu"));
+                    } else if ("Event Service".equals(rs.getString("serviceType"))) {
+                        session.setAttribute("venue", rs.getString("venue"));
+                        session.setAttribute("eventType", rs.getString("eventType"));
+                        session.setAttribute("duration", rs.getInt("duration"));
+                    }
                 }
 
                 // Store reservation general info once into session
@@ -103,7 +116,7 @@ public class CustomerReservationController extends HttpServlet {
                     session.setAttribute("roomPrice", rs.getDouble("roomPrice"));
                     session.setAttribute("totalPayment", rs.getDouble("totalPayment"));
 
-                    // ✅ Save dates as java.sql.Date directly
+                    // Store dates as java.sql.Date directly
                     session.setAttribute("checkInDate", rs.getDate("checkInDate"));
                     session.setAttribute("checkOutDate", rs.getDate("checkOutDate"));
 
